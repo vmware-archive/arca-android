@@ -71,18 +71,13 @@ public abstract class Task<T> {
 	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
 	private final Set<Task<?>> mDependants = new HashSet<Task<?>>();
 	private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
+	private final Object mTaskLock = new Object();
 			
 	private Priority mPriority;
-
 	private TaskObserver mObserver;
 	private PrioritizableHandler mHandler;
 	private RequestIdentifier<?> mIdentifier;
 	private Context mContext;
-
-	synchronized void execute() {
-		mIdentifier = onCreateIdentifier();
-		checkExecution();
-	}
 	
 	public final RequestIdentifier<?> getIdentifier() {
 		return mIdentifier;
@@ -103,7 +98,34 @@ public abstract class Task<T> {
 	void setPrioritizableHandler(final PrioritizableHandler handler) {
 		mHandler = handler;
 	}
+	
+	void execute() {
+		mIdentifier = onCreateIdentifier();
+		checkPrerequisites();
+	}
 
+	private void checkPrerequisites() {
+		if (allPrerequisitesComplete()) {
+			checkExecution();
+		}	
+	}
+
+	private boolean allPrerequisitesComplete() {
+		synchronized (mTaskLock) {
+			return mPrerequisites.isEmpty();
+		}
+	}
+
+	private void checkExecution() {
+		if (!mErrors.isEmpty()) {
+			final ServiceError error = mErrors.get(0); 
+			notifyFailure(error);
+		} else {
+			mObserver.onTaskStarted(this);
+			executeNetworkRequest();
+		}
+	}
+	
 	// ======================================================
 
 	/**
@@ -111,10 +133,12 @@ public abstract class Task<T> {
 	 * 
 	 * @param task The prerequisite {@link Task}
 	 */
-	public final synchronized void addPrerequisite(final Task<?> task) {
-		if (!mPrerequisites.contains(task)) {
-			mPrerequisites.add(task);
-			task.addDependant(this);
+	public final void addPrerequisite(final Task<?> task) {
+		synchronized (mTaskLock) {
+			if (!mPrerequisites.contains(task)) {
+				mPrerequisites.add(task);
+				task.addDependant(this);
+			}
 		}
 	}
 
@@ -124,13 +148,47 @@ public abstract class Task<T> {
 	 * 
 	 * @param task The dependent {@link Task}
 	 */
-	public final synchronized void addDependant(final Task<?> task) {
-		if (!mDependants.contains(task)) {
-			mDependants.add(task);
-			task.addPrerequisite(this);
+	public final void addDependant(final Task<?> task) {
+		synchronized (mTaskLock) {
+			if (!mDependants.contains(task)) {
+				mDependants.add(task);
+				task.addPrerequisite(this);
+			}
 		}
 	}
 
+	// ======================================================
+
+	/**
+	 * A callback for when a certain prerequisite has completed successfully.</br>
+	 * </br>
+	 * Note that this method is called on the {@link Thread} on which it is being executed.
+	 * 
+	 * @param task The completed prerequisite {@link Task}
+	 */
+	protected void onPrerequisiteComplete(final Task<?> task) {
+		synchronized (mTaskLock) {
+			mPrerequisites.remove(task);
+			checkPrerequisites();
+		}
+	}
+
+	/**
+	 * A callback for when a certain prerequisite has completed with an error.</br>
+	 * </br>
+	 * Note that this method is called on the {@link Thread} on which it is being executed.
+	 * 
+	 * @param task The failed prerequisite {@link Task}
+	 * @param error The {@link ServiceError} that has occurred
+	 */
+	protected void onPrerequisiteFailure(final Task<?> task, final ServiceError error) {
+		synchronized (mTaskLock) {
+			mPrerequisites.remove(task);
+			mErrors.add(error);
+			checkPrerequisites();
+		}
+	}
+	
 	// ======================================================
 
 	private void executeNetworkRequest() {
@@ -173,67 +231,29 @@ public abstract class Task<T> {
 
 	// ======================================================
 
-	/**
-	 * A callback for when a certain prerequisite has completed successfully.</br>
-	 * </br>
-	 * Note that this method is called on the {@link Thread} on which it is being executed.
-	 * 
-	 * @param task The completed prerequisite {@link Task}
-	 */
-	protected void onPrerequisiteComplete(final Task<?> task) {}
-	
-	synchronized void prerequisiteComplete(final Task<?> task) {
-		mPrerequisites.remove(task);
-		checkExecution();
-	}
-
-	/**
-	 * A callback for whena certain prerequisite has completed with an error.</br>
-	 * </br>
-	 * Note that this method is called on the {@link Thread} on which it is being executed.
-	 * 
-	 * @param task The failed prerequisite {@link Task}
-	 * @param error The {@link ServiceError} that has occurred
-	 */
-	protected void onPrerequisiteFailure(final Task<?> task, final ServiceError error) {}
-
-	synchronized void prerequisiteFailure(final Task<?> task, final ServiceError error) {
-		mPrerequisites.remove(task);
-		mErrors.add(error);
-		checkExecution();
-	}
-
-	private void checkExecution() {
-		if (!mPrerequisites.isEmpty()) {
-			return;
-		}
-		
-		if (!mErrors.isEmpty()) {
-			final ServiceError error = mErrors.get(0); 
-			notifyFailure(error);
-		} else {
-			mObserver.onTaskStarted(this);
-			executeNetworkRequest();
-		}
-	}
-
-	// ======================================================
-
-	private synchronized void notifyComplete() {
+	private void notifyComplete() {
 		mObserver.onTaskComplete(this);
+		notifyDependentsOfCompletion();
+	}
 
-		for (final Task<?> dependant : mDependants) {
-			dependant.onPrerequisiteComplete(this);
-			dependant.prerequisiteComplete(this);
-		}
+	private void notifyFailure(final ServiceError error) {
+		mObserver.onTaskFailure(this, error);
+		notifyDependentsOfFailure(error);
 	}
 	
-	private synchronized void notifyFailure(final ServiceError error) {
-		mObserver.onTaskFailure(this, error);
+	private void notifyDependentsOfCompletion() {
+		synchronized (mTaskLock) {
+			for (final Task<?> dependant : mDependants) {
+				dependant.onPrerequisiteComplete(this);
+			}
+		}
+	}
 
-		for (final Task<?> dependant : mDependants) {
-			dependant.onPrerequisiteFailure(this, error);
-			dependant.prerequisiteFailure(this, error);
+	private void notifyDependentsOfFailure(final ServiceError error) {
+		synchronized (mTaskLock) {
+			for (final Task<?> dependant : mDependants) {
+				dependant.onPrerequisiteFailure(this, error);
+			}
 		}
 	}
 	

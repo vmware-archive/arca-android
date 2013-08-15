@@ -83,23 +83,23 @@ public abstract class Task<T> {
 		return mIdentifier;
 	}
 
-	void setContext(final Context context) {
+	public void setContext(final Context context) {
 		mContext = context;
 	}
 
-	void setPriority(final Priority priority) {
+	public void setPriority(final Priority priority) {
 		mPriority = priority;
 	}
 
-	void setTaskObserver(final TaskObserver observer) {
+	public void setTaskObserver(final TaskObserver observer) {
 		mObserver = observer;
 	}
 	
-	void setPrioritizableHandler(final PrioritizableHandler handler) {
+	public void setPrioritizableHandler(final PrioritizableHandler handler) {
 		mHandler = handler;
 	}
 	
-	void execute() {
+	public void execute() {
 		mIdentifier = onCreateIdentifier();
 		checkPrerequisites();
 	}

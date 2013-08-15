@@ -100,19 +100,19 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		return mError;
 	}
 
-	void setContext(final Context context) {
+	public void setContext(final Context context) {
 		mContext = context;
 	}
 
-	void setOperationObserver(final OperationObserver observer) {
+	public void setOperationObserver(final OperationObserver observer) {
 		mObserver = observer;
 	}
 	
-	void setPrioritizableHandler(final PrioritizableHandler handler) {
+	public void setPrioritizableHandler(final PrioritizableHandler handler) {
 		mHandler = handler;
 	}
 
-	void execute() {
+	public void execute() {
 		try {
 			mError = null;
 			onCreateTasks();

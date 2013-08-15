@@ -16,7 +16,7 @@ public final class Tests {
 	}
 	
 	public void run() {
-		test10.run();
+		test6.run();
 	}
 	
 	private final Runnable test0 = new Runnable() {

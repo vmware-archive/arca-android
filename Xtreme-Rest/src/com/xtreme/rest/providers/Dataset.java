@@ -46,8 +46,6 @@ public abstract class Dataset {
 		onCreate(db);
 	}
 
-	public abstract void drop(SQLiteDatabase db);
-
 	public Cursor query(final SQLiteDatabase database, final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
 		return database.query(getName(), projection, selection, selectionArgs, null, null, sortOrder);
 	}
@@ -67,4 +65,6 @@ public abstract class Dataset {
 	public abstract long insert(SQLiteDatabase database, Uri uri, ContentValues values);
 
 	public abstract long insert(SQLiteDatabase database, ContentValues values);
+	
+	public abstract void drop(SQLiteDatabase db);
 }

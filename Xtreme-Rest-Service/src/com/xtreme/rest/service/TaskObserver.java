@@ -1,7 +1,7 @@
 package com.xtreme.rest.service;
 
 
-interface TaskObserver {
+public interface TaskObserver {
 	/**
 	 * A callback for when a {@link Task} has just started executing.</br>
 	 * </br>
@@ -9,7 +9,7 @@ interface TaskObserver {
 	 * 
 	 * @param task The started {@link Task}
 	 */
-	void onTaskStarted(Task<?> task);
+	public void onTaskStarted(Task<?> task);
 
 	/**
 	 * A callback for when a {@link Task} has just completed successfully.</br>
@@ -18,7 +18,7 @@ interface TaskObserver {
 	 * 
 	 * @param task The completed {@link Task}
 	 */
-	void onTaskComplete(Task<?> task);
+	public void onTaskComplete(Task<?> task);
 
 	/**
 	 * A callback for when a {@link Task} has just completed with an error.</br>
@@ -28,5 +28,5 @@ interface TaskObserver {
 	 * @param task The failed {@link Task}
 	 * @param error The {@link ServiceError} that has occurred
 	 */
-	void onTaskFailure(Task<?> task, ServiceError error);
+	public void onTaskFailure(Task<?> task, ServiceError error);
 }

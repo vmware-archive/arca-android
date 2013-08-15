@@ -1,5 +1,5 @@
 package com.xtreme.rest.service;
 
-interface OperationObserver {
-	void onOperationComplete(Operation operation);
+public interface OperationObserver {
+	public void onOperationComplete(Operation operation);
 }

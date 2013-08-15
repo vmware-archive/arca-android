@@ -2,7 +2,7 @@ package com.xtreme.rest.service;
 
 import com.xtreme.threading.PrioritizableRequest;
 
-interface PrioritizableHandler {
-	void executeNetworkComponent(PrioritizableRequest request);
-	void executeProcessingComponent(PrioritizableRequest request);
+public interface PrioritizableHandler {
+	public void executeNetworkComponent(PrioritizableRequest request);
+	public void executeProcessingComponent(PrioritizableRequest request);
 }

@@ -22,13 +22,34 @@ public class TestOperation extends Operation {
 	}
 
 	@Override
-	public void onCreateTasks() {}
+	public void onCreateTasks() {
+		executeTask(new TestTask());
+	}
+	
+	@Override
+	public void onTaskStarted(final Task<?> task) {
+		super.onTaskStarted(task);
+	}
+	
+	@Override
+	public void onTaskComplete(final Task<?> task) {
+		super.onTaskComplete(task);
+	}
+	
+	@Override
+	public void onTaskFailure(final Task<?> task, final ServiceError error) {
+		super.onTaskFailure(task, error);
+	}
+	
+	@Override
+	public void onSuccess(final Context context, final List<Task<?>> completed) {
+		
+	}
 
 	@Override
-	public void onSuccess(final Context context, final List<Task<?>> completed) {}
-
-	@Override
-	public void onFailure(final Context context, final ServiceError error) {}
+	public void onFailure(final Context context, final ServiceError error) {
+		
+	}
 	
 	public static final Parcelable.Creator<TestOperation> CREATOR = new Parcelable.Creator<TestOperation>() {
 		@Override

@@ -29,45 +29,6 @@ import com.xtreme.threading.RequestIdentifier;
  */
 public abstract class Task<T> {
 
-	/**
-	 * This method is meant to execute network-dependent code (or anything that yields the {@link Thread} frequently and is
-	 * light on the CPU). For example, this is where your model would be downloaded and parsed from the API.</br>
-	 * </br>
-	 * Note that you should try to parse straight from the {@link InputStream} instead of converting it to a {@link String}
-	 * and then parsing that. This is to avoid doing any CPU-intensive processing in this method, such as parsing or string
-	 * processing. If it is absolutely necessary, then use this method to only convert the {@link InputStream} to a {@link String},
-	 * and then process the {@link String} and parse it in {@link #onExecuteProcessingRequest(Context, Object)}. In this
-	 * case, you would want to make the generic for this class a {@link String}.</br>
-	 * </br>
-	 * All network processing must happen synchronously within this method.
-	 * 
-	 * @param context The context in which this {@link Task} is running
-	 * @return The result of the network request
-	 * @throws Exception
-	 */
-	public abstract T onExecuteNetworkRequest(Context context) throws Exception;
-
-	/**
-	 * This method is meant to execute CPU-intensive processing requests. For example, this is where one would process a {@link String} or
-	 * insert data into a {@link ContentProvider} backed by a {@link SQLiteDatabase} via the {@link ContentResolver}.</br>
-	 * </br>
-	 * All processing must happen synchronously within this method.
-	 * 
-	 * @param context The context in which this {@link Task} is running
-	 * @param data The result returned from {@link #onExecuteNetworkRequest(Context)}
-	 * @throws Exception
-	 */
-	public abstract void onExecuteProcessingRequest(Context context, T data) throws Exception;
-
-	/**
-	 * This method must return a globally unique {@link RequestIdentifier}. This is used within the {@link AuxiliaryExecutor}
-	 * and ensures that if more than one {@link Task} is processing the same data, only one actually executes and the results
-	 * are then shared among all {@link Operation}s "executing" that {@link Task}.
-	 * 
-	 * @return The unique {@link RequestIdentifier}
-	 */
-	public abstract RequestIdentifier<?> onCreateIdentifier();
-
 	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
 	private final Set<Task<?>> mDependants = new HashSet<Task<?>>();
 	private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
@@ -126,6 +87,47 @@ public abstract class Task<T> {
 		}
 	}
 	
+	// ======================================================
+	
+	/**
+	 * This method must return a globally unique {@link RequestIdentifier}. This is used within the {@link AuxiliaryExecutor}
+	 * and ensures that if more than one {@link Task} is processing the same data, only one actually executes and the results
+	 * are then shared among all {@link Operation}s "executing" that {@link Task}.
+	 * 
+	 * @return The unique {@link RequestIdentifier}
+	 */
+	public abstract RequestIdentifier<?> onCreateIdentifier();
+	
+	/**
+	 * This method is meant to execute network-dependent code (or anything that yields the {@link Thread} frequently and is
+	 * light on the CPU). For example, this is where your model would be downloaded and parsed from the API.</br>
+	 * </br>
+	 * Note that you should try to parse straight from the {@link InputStream} instead of converting it to a {@link String}
+	 * and then parsing that. This is to avoid doing any CPU-intensive processing in this method, such as parsing or string
+	 * processing. If it is absolutely necessary, then use this method to only convert the {@link InputStream} to a {@link String},
+	 * and then process the {@link String} and parse it in {@link #onExecuteProcessingRequest(Context, Object)}. In this
+	 * case, you would want to make the generic for this class a {@link String}.</br>
+	 * </br>
+	 * All network processing must happen synchronously within this method.
+	 * 
+	 * @param context The context in which this {@link Task} is running
+	 * @return The result of the network request
+	 * @throws Exception
+	 */
+	public abstract T onExecuteNetworkRequest(Context context) throws Exception;
+
+	/**
+	 * This method is meant to execute CPU-intensive processing requests. For example, this is where one would process a {@link String} or
+	 * insert data into a {@link ContentProvider} backed by a {@link SQLiteDatabase} via the {@link ContentResolver}.</br>
+	 * </br>
+	 * All processing must happen synchronously within this method.
+	 * 
+	 * @param context The context in which this {@link Task} is running
+	 * @param data The result returned from {@link #onExecuteNetworkRequest(Context)}
+	 * @throws Exception
+	 */
+	public abstract void onExecuteProcessingRequest(Context context, T data) throws Exception;
+
 	// ======================================================
 
 	/**

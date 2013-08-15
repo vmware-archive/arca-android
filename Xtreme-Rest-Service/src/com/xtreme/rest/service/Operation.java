@@ -20,32 +20,6 @@ import android.os.Parcelable;
  */
 @SuppressLint("ParcelCreator")
 public abstract class Operation implements Parcelable, TaskObserver {
-
-	/**
-	 * This is where all {@link Task}s should be created, their dependencies set up, and then executed. To execute
-	 * a {@link Task}, call {@link #executeTask(Task)}.
-	 */
-	public abstract void onCreateTasks();
-
-	/**
-	 * The final callback once all {@link Task}s have been completed successfully.
-	 * 
-	 * @param context The context in which this {@link Operation} is running
-	 * @param completed The completed {@link Task}s
-	 */
-	public abstract void onSuccess(Context context, List<Task<?>> completed);
-
-	/**
-	 * A callback for when all {@link Task}s have finished executing but at least one has failed. You may create recovery
-	 * {@link Task}s and call {@link #executeTask(Task)} here.</br>
-	 * </br>
-	 * IMPORTANT: If the recovery task fails, there will be another callback into this method. Make sure that you don't
-	 * attempt to recover again, or this operation will never finish.
-	 * 
-	 * @param context The context in which this {@link Operation} is running
-	 * @param error The error that caused the failure.
-	 */
-	public abstract void onFailure(Context context, ServiceError error);
 	
 	private final Set<Task<?>> mPendingTasks = new HashSet<Task<?>>();
 	private final Set<Task<?>> mExecutingTasks = new HashSet<Task<?>>();
@@ -123,6 +97,34 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		checkTaskCompletion();
 	}
 
+	// ======================================================
+	
+	/**
+	 * This is where all {@link Task}s should be created, their dependencies set up, and then executed. To execute
+	 * a {@link Task}, call {@link #executeTask(Task)}.
+	 */
+	public abstract void onCreateTasks();
+
+	/**
+	 * The final callback once all {@link Task}s have been completed successfully.
+	 * 
+	 * @param context The context in which this {@link Operation} is running
+	 * @param completed The completed {@link Task}s
+	 */
+	public abstract void onSuccess(Context context, List<Task<?>> completed);
+
+	/**
+	 * A callback for when all {@link Task}s have finished executing but at least one has failed. You may create recovery
+	 * {@link Task}s and call {@link #executeTask(Task)} here.</br>
+	 * </br>
+	 * IMPORTANT: If the recovery task fails, there will be another callback into this method. Make sure that you don't
+	 * attempt to recover again, or this operation will never finish.
+	 * 
+	 * @param context The context in which this {@link Operation} is running
+	 * @param error The error that caused the failure.
+	 */
+	public abstract void onFailure(Context context, ServiceError error);
+	
 	// ======================================================
 
 	/**

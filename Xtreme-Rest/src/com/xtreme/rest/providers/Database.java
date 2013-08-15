@@ -1,49 +1,38 @@
 package com.xtreme.rest.providers;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQuery;
 import android.os.Build;
 
+import com.xtreme.rest.utils.PackageUtils;
+
 /**
- * This class is an extension of the {@link SQLiteOpenHelper} that directly forwards events to database {@link Dataset}.
+ * This class is an extension of the {@link SQLiteOpenHelper} that directly forwards events to its {@link Dataset}s.
  */
 public class Database extends SQLiteOpenHelper {
-	
-	private static final String NOT_INITIALIZED = "Database has not been initialized. Please do this in your applications onCreate method.";
-	
-	private static String sDatabaseName;
-	private static int sDatabaseVersion;
-	
-	public static synchronized void init(final String name, final int version) {
-		sDatabaseName = name;
-		sDatabaseVersion = version;
-	}
-	
-	public static synchronized boolean isInitialized() {
-		return sDatabaseName != null && sDatabaseVersion > 0;
-	}
-	
-	public static void throwExceptionIfNotInitialized() {
-		if (!isInitialized()) 
-			throw new IllegalStateException(NOT_INITIALIZED);
-	}
 	
 	private final Collection<Dataset> mDatasets;
 
 	/**
 	 * @param context
+	 * @param name
 	 * @param factory
+	 * @param version
 	 * @param datasets
 	 *            A list of all {@link Dataset} instances.
 	 */
-	public Database(final Context context, final CursorFactory factory, final Collection<Dataset> datasets) {
-		super(context, sDatabaseName, factory, sDatabaseVersion);
+	public Database(final Context context, final String name, final CursorFactory factory, final int version, final Collection<Dataset> datasets) {
+		super(context, name, factory, version);
 		if (datasets == null)
 			throw new IllegalArgumentException("The list of datasets cannot be null!");
 		mDatasets = datasets;
@@ -52,14 +41,16 @@ public class Database extends SQLiteOpenHelper {
 	/**
 	 * 
 	 * @param context
+	 * @param name
 	 * @param factory
+	 * @param version
+	 * @param errorHandler
 	 * @param datasets
 	 *            A list of all {@link Dataset} instances.
-	 * @param errorHandler
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public Database(final Context context, final CursorFactory factory, final Collection<Dataset> datasets, final DatabaseErrorHandler errorHandler) {
-		super(context, sDatabaseName, factory, sDatabaseVersion, errorHandler);
+	public Database(final Context context, final String name, final CursorFactory factory, final int version, final DatabaseErrorHandler errorHandler, final Collection<Dataset> datasets) {
+		super(context, name, factory, version, errorHandler);
 		if (datasets == null)
 			throw new IllegalArgumentException("The list of datasets cannot be null!");
 		mDatasets = datasets;
@@ -130,22 +121,85 @@ public class Database extends SQLiteOpenHelper {
 			}
 		}
 	}
+	
+	public static class Builder {
 
-	public void truncate() {
-		final SQLiteDatabase db = getWritableDatabase();
-		for (final Dataset dataset : mDatasets) {
-			if (dataset instanceof SQLTable) {
-				SQLTable table = (SQLTable) dataset;
-				table.truncate(db);
+		private final Context mContext;
+
+		private String mDatabaseName;
+		private int mDatabaseVersion;
+		private CursorFactory mCursorFactory;
+		private Collection<Dataset> mDatasets;
+		
+		public Builder(final Context context, final Collection<Dataset> datasets) {
+			mDatasets = datasets;
+			mContext = context;
+		}
+
+		public Builder setDatabaseName(final String databaseName) {
+			mDatabaseName = databaseName;
+			return this;
+		}
+		
+		public Builder setDatabaseVersion(final int databaseVersion) {
+			mDatabaseVersion = databaseVersion;
+			return this;
+		}
+		
+		public Builder setCursorFactory(final CursorFactory factory) {
+			mCursorFactory = factory;
+			return this;
+		}
+		
+		public Database create() {
+			
+			if (mDatabaseName == null) {
+				mDatabaseName = createDefaultDatabaseName(mContext);
+			}
+			
+			if (mDatabaseVersion <= 0) {
+				mDatabaseVersion = createDefaultDatabaseVersion(mContext);
+			}
+			
+			if (mCursorFactory == null) {
+				mCursorFactory = createDefaultCursorFactory();
+			}
+			
+			return new Database(mContext, mDatabaseName, mCursorFactory, mDatabaseVersion, mDatasets);
+		}
+		
+		// ======================================================
+		
+		public static String createDefaultDatabaseName(final Context context) {
+			final String packageName = PackageUtils.getPackageName(context);
+			return String.format(Locale.getDefault(), "%s.db", packageName);
+		}
+
+		public static int createDefaultDatabaseVersion(final Context context) {
+			final int versionCode = PackageUtils.getVersionCode(context);
+			return versionCode > 0 ? versionCode : 1;
+		}
+
+		public static CursorFactory createDefaultCursorFactory() {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				return new RestCursorFactory();
+			} else {
+				return new RestSupportCursorFactory();
 			}
 		}
-	}
 
-	public void reset() {
-		for (final Dataset dataset : mDatasets) {
-			final SQLiteDatabase db = getWritableDatabase();
-			dataset.drop(db);
-			dataset.onCreate(db);
+		private static final class RestSupportCursorFactory implements CursorFactory {
+			@Override
+			public Cursor newCursor(final SQLiteDatabase db, final SQLiteCursorDriver masterQuery, final String editTable, final SQLiteQuery query) {
+				return new RestSQLCursor(db, masterQuery, editTable, query);
+			}
+		}
+
+		private static final class RestCursorFactory implements CursorFactory {
+			@Override
+			public Cursor newCursor(final SQLiteDatabase db, final SQLiteCursorDriver masterQuery, final String editTable, final SQLiteQuery query) {
+				return new RestSQLCursor(masterQuery, editTable, query);
+			}
 		}
 	}
 }

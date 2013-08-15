@@ -50,12 +50,6 @@
           "_NAME_.java",
           "Abs_NAME_.java"
         ]
-      },
-      {
-        "model_name": "",
-        "templates": [
-          "_NAME_Application.java"
-        ]
       }
     ],
     "base_package": "com.crunchbase.app",

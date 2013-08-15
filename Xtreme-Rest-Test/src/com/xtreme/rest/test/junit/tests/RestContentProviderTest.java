@@ -11,7 +11,6 @@ import android.provider.BaseColumns;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
 
-import com.xtreme.rest.providers.Database;
 import com.xtreme.rest.test.junit.mock.providers.TestContentProvider;
 import com.xtreme.rest.test.junit.mock.providers.TestTable1;
 import com.xtreme.rest.test.junit.mock.providers.TestTable2;
@@ -20,10 +19,6 @@ import com.xtreme.rest.test.junit.mock.providers.TestView;
 public class RestContentProviderTest extends ProviderTestCase2<TestContentProvider> {
 
 	private static final int WRONG_ITEM_ID = 1239183702;
-
-	
-	private static final int DATABASE_VERSION = 1;
-	private static final String DATABASE_NAME = "test.db";
 
 	private MockContentResolver mMockResolver;
 	private SQLiteDatabase mDatabase;
@@ -35,8 +30,6 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-
-		Database.init(DATABASE_NAME, DATABASE_VERSION);
 
 		mMockResolver = getMockContentResolver();
 		mDatabase = getProvider().getDatabase();

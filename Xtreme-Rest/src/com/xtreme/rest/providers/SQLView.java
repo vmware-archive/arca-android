@@ -5,23 +5,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public abstract class SQLView extends Dataset {
+	
+	private static final String EXCEPTION_MESSAGE = "Please override onCreateSelectStatement and supply a valid SQLite select statement.";
+	
 	private static final String CREATE_VIEW = "CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM ( %s );";
 	private static final String DROP_VIEW = "DROP VIEW IF EXISTS %s;";
 
-	protected String onCreateSelectStatement() {
-		return null;
-	}
-
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		final String createStatement = onCreateSelectStatement();
-		if (createStatement == null)
-			throw new IllegalStateException("Please override onCreateSelectStatement and supply a valid SQLite select statement.");
+		final String selectStatement = onCreateSelectStatement();
+		if (selectStatement == null)
+			throw new IllegalStateException(EXCEPTION_MESSAGE);
 
-		final String query = String.format(CREATE_VIEW, getName(), createStatement);
+		final String query = String.format(CREATE_VIEW, getName(), selectStatement);
 		db.execSQL(query);
 	}
 
+	protected abstract String onCreateSelectStatement();
+	
 	@Override
 	public void drop(final SQLiteDatabase db) {
 		final String query = String.format(DROP_VIEW, getName());

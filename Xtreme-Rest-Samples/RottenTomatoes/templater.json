@@ -7,8 +7,8 @@
       {
         "model_name": "Movie",
         "templates": [
-          "_NAME_Fragment.java",
           "list_item__name_.xml",
+          "_NAME_Fragment.java",
           "_NAME_.java",
           "_NAME_Activity.java",
           "_NAME_ContentProvider.java",
@@ -34,14 +34,14 @@
         ]
       },
       {
-        "model_name": "Cast",
+        "model_name": "Ratings",
         "templates": [
           "_NAME_.java",
           "Abs_NAME_.java"
         ]
       },
       {
-        "model_name": "Ratings",
+        "model_name": "Cast",
         "templates": [
           "_NAME_.java",
           "Abs_NAME_.java"
@@ -59,12 +59,6 @@
         "templates": [
           "_NAME_.java",
           "Abs_NAME_.java"
-        ]
-      },
-      {
-        "model_name": "",
-        "templates": [
-          "_NAME_Application.java"
         ]
       }
     ],

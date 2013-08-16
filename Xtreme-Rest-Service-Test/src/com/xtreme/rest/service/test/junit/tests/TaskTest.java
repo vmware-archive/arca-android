@@ -10,6 +10,7 @@ import com.xtreme.rest.service.NetworkRequest;
 import com.xtreme.rest.service.ProcessingRequest;
 import com.xtreme.rest.service.RequestHandler;
 import com.xtreme.rest.service.ServiceError;
+import com.xtreme.rest.service.ServiceException;
 import com.xtreme.rest.service.Task;
 import com.xtreme.rest.service.TaskObserver;
 import com.xtreme.rest.service.test.junit.mock.TestRequestHandler;
@@ -37,7 +38,7 @@ public class TaskTest extends AndroidTestCase {
 		// success
 	}
 	
-	public void testTaskExecutesNetworkPrioritizable() {
+	public void testTaskExecutesNetworkRequest() {
 		final TestTask task = new TestTask(null);
 		task.setRequestHandler(new RequestHandler() {
 
@@ -121,7 +122,56 @@ public class TaskTest extends AndroidTestCase {
 		task.execute();
 	}
 	
-	public void testTaskExecutesProcessingPrioritizable() {
+	public void testTaskExecutesWithNetworkError() {
+		final Exception exception = new Exception();
+		final TestTask task = new TestTask(null, null, exception, null);
+		task.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+
+				assertNull(request.getError());
+				
+				request.run();
+				
+				assertNotNull(request.getError());
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				fail();
+			}
+			
+		});
+		task.execute();
+	}
+	
+	public void testTaskExecutesWithNetworkServiceError() {
+		final ServiceError error = new ServiceError("test_error");
+		final ServiceException exception = new ServiceException(error);
+		final TestTask task = new TestTask(null, null, exception, null);
+		task.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				
+				assertNull(request.getError());
+				
+				request.run();
+				
+				assertEquals(request.getError(), error);
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				fail();
+			}
+			
+		});
+		task.execute();
+	}
+	
+	public void testTaskExecutesProcessingRequest() {
 		final AssertionLatch latch = new AssertionLatch(1);
 		final TestTask task = new TestTask(null);
 		task.setRequestHandler(new RequestHandler() {
@@ -133,7 +183,9 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				
 				assertNotNull(request);
+				
 				latch.countDown();
 			}
 			
@@ -155,7 +207,9 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				
 				assertEquals(request.getRequestIdentifier(), identifier);
+				
 				latch.countDown();
 			}
 			
@@ -166,8 +220,7 @@ public class TaskTest extends AndroidTestCase {
 	
 	public void testTaskExecutesWithoutProcessingError() {
 		final AssertionLatch latch = new AssertionLatch(1);
-		final String networkResult = RESULT;
-		final TestTask task = new TestTask(null, networkResult);
+		final TestTask task = new TestTask(null);
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
@@ -207,6 +260,64 @@ public class TaskTest extends AndroidTestCase {
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
 
 				assertEquals(request.getData(), networkResult);
+				
+				latch.countDown();
+			}
+			
+		});
+		task.execute();
+		latch.assertComplete();
+	}
+	
+	public void testTaskExecutesWithProcessingError() {
+		final AssertionLatch latch = new AssertionLatch(1);
+		final Exception exception = new Exception();
+		final TestTask task = new TestTask(null, null, null, exception);
+		task.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				request.notifyComplete(null, null);
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				
+				assertNull(request.getError());
+				
+				request.run();
+				
+				assertNotNull(request.getError());
+				
+				latch.countDown();
+			}
+			
+		});
+		task.execute();
+		latch.assertComplete();
+	}
+	
+	public void testTaskExecutesWithProcessingServiceError() {
+		final AssertionLatch latch = new AssertionLatch(1);
+		final ServiceError error = new ServiceError("test_error");
+		final ServiceException exception = new ServiceException(error);
+		final TestTask task = new TestTask(null, null, null, exception);
+		task.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				request.notifyComplete(null, null);
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				
+				assertNull(request.getError());
+				
+				request.run();
+				
+				assertEquals(request.getError(), error);
+				
 				latch.countDown();
 			}
 			

@@ -23,7 +23,7 @@ public class TestOperation extends Operation {
 
 	@Override
 	public void onCreateTasks() {
-		executeTask(new TestTask());
+		// do nothing for now
 	}
 	
 	@Override

@@ -3,26 +3,26 @@ package com.xtreme.rest.service;
 import com.xtreme.threading.Prioritizable;
 import com.xtreme.threading.RequestIdentifier;
 
-class NetworkPrioritizable<T> extends Prioritizable {
+public class NetworkPrioritizable<T> extends Prioritizable {
 
-	private final Task<T> mTask;
+	private final NetworkRequester<T> mRequester;
 
 	private ServiceError mError;
 	private T mData;
 
-	NetworkPrioritizable(final Task<T> task) {
-		mTask = task;
+	public NetworkPrioritizable(final NetworkRequester<T> requester) {
+		mRequester = requester;
 	}
 
 	@Override
 	public RequestIdentifier<?> getIdentifier() {
-		return mTask.getIdentifier();
+		return mRequester.getIdentifier();
 	}
 
 	@Override
 	public void execute() {
 		try {
-			mData = mTask.startNetworkRequest();
+			mData = mRequester.executeNetworkRequest();
 		} catch (final ServiceException e) {
 			Logger.ex(e);
 			mError = e.getError();
@@ -33,19 +33,19 @@ class NetworkPrioritizable<T> extends Prioritizable {
 	}
 
 	@SuppressWarnings("unchecked")
-	void onComplete(final Object data, final ServiceError error) {
+	public void onComplete(final Object data, final ServiceError error) {
 		if (error == null) {
-			mTask.onNetworkRequestComplete((T) data);
+			mRequester.onNetworkRequestComplete((T) data);
 		} else {
-			mTask.onNetworkRequestFailure(error);
+			mRequester.onNetworkRequestFailure(error);
 		}
 	}
 
-	Object getData() {
+	public Object getData() {
 		return mData;
 	}
 
-	ServiceError getError() {
+	public ServiceError getError() {
 		return mError;
 	}
 

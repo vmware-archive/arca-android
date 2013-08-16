@@ -3,27 +3,27 @@ package com.xtreme.rest.service;
 import com.xtreme.threading.Prioritizable;
 import com.xtreme.threading.RequestIdentifier;
 
-class ProcessingPrioritizable<T> extends Prioritizable {
+public class ProcessingPrioritizable<T> extends Prioritizable {
 
-	private final Task<T> mTask;
+	private final ProcessingRequester<T> mRequester;
 	private final T mData;
 
 	private ServiceError mError;
 
-	ProcessingPrioritizable(final Task<T> task, final T data) {
-		mTask = task;
+	public ProcessingPrioritizable(final ProcessingRequester<T> requester, final T data) {
+		mRequester = requester;
 		mData = data;
 	}
 
 	@Override
 	public RequestIdentifier<?> getIdentifier() {
-		return mTask.getIdentifier();
+		return mRequester.getIdentifier();
 	}
 
 	@Override
 	public void execute() {
 		try {
-			mTask.startProcessingRequest(mData);
+			mRequester.executeProcessingRequest(mData);
 		} catch (final ServiceException e) {
 			Logger.ex(e);
 			mError = e.getError();
@@ -33,15 +33,15 @@ class ProcessingPrioritizable<T> extends Prioritizable {
 		}
 	}
 
-	void onComplete(final ServiceError error) {
+	public void onComplete(final ServiceError error) {
 		if (error == null) {
-			mTask.onProcessingRequestComplete();
+			mRequester.onProcessingRequestComplete();
 		} else {
-			mTask.onProcessingRequestFailure(error);
+			mRequester.onProcessingRequestFailure(error);
 		}
 	}
 
-	ServiceError getError() {
+	public ServiceError getError() {
 		return mError;
 	}
 

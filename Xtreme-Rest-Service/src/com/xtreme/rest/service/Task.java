@@ -27,8 +27,12 @@ import com.xtreme.threading.RequestIdentifier;
  * @param <T> The type downloaded, parsed, and then returned from {@link #onExecuteNetworkRequest(Context)}. In most cases it is a model
  * class, but sometimes it may be a {@link String}.
  */
-public abstract class Task<T> {
+public abstract class Task<T> implements NetworkRequester<T>, ProcessingRequester<T> {
 
+	private static final class Messages {
+		private static final String NO_HANDLER = "Cannot execute request. No handler found.";
+	}
+	
 	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
 	private final Set<Task<?>> mDependants = new HashSet<Task<?>>();
 	private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
@@ -40,6 +44,7 @@ public abstract class Task<T> {
 	private RequestIdentifier<?> mIdentifier;
 	private Context mContext;
 	
+	@Override
 	public final RequestIdentifier<?> getIdentifier() {
 		return mIdentifier;
 	}
@@ -82,11 +87,11 @@ public abstract class Task<T> {
 			final ServiceError error = mErrors.get(0); 
 			notifyFailure(error);
 		} else {
-			mObserver.onTaskStarted(this);
-			executeNetworkRequest();
+			notifyStarted();
+			startNetworkRequest();
 		}
 	}
-	
+
 	// ======================================================
 	
 	/**
@@ -193,53 +198,77 @@ public abstract class Task<T> {
 	
 	// ======================================================
 
-	private void executeNetworkRequest() {
+	private void startNetworkRequest() {
 		final NetworkPrioritizable<T> prioritizable = new NetworkPrioritizable<T>(this);
 		final PrioritizableRequest request = new PrioritizableRequest(prioritizable, mPriority.ordinal());
-		mHandler.executeNetworkComponent(request);
+		if (mHandler != null) {
+			mHandler.executeNetworkComponent(request);
+		} else {
+			notifyFailure(new ServiceError(Messages.NO_HANDLER));
+		}
 	}
 
-	T startNetworkRequest() throws Exception {
+	@Override
+	public final T executeNetworkRequest() throws Exception {
 		return onExecuteNetworkRequest(mContext);
 	}
 
-	void onNetworkRequestComplete(final T data) {
-		executeProcessingRequest(data);
+	@Override
+	public final void onNetworkRequestComplete(final T data) {
+		startProcessingRequest(data);
 	}
 
-	void onNetworkRequestFailure(final ServiceError error) {
+	@Override
+	public final void onNetworkRequestFailure(final ServiceError error) {
 		notifyFailure(error);
 	}
 
 	// ======================================================
 
-	private void executeProcessingRequest(final T data) {
+	private void startProcessingRequest(final T data) {
 		final ProcessingPrioritizable<T> prioritizable = new ProcessingPrioritizable<T>(this, data);
 		final PrioritizableRequest request = new PrioritizableRequest(prioritizable, mPriority.ordinal());
-		mHandler.executeProcessingComponent(request);
+		if (mHandler != null) {
+			mHandler.executeProcessingComponent(request);
+		} else {
+			notifyFailure(new ServiceError(Messages.NO_HANDLER));
+		}
 	}
 
-	void startProcessingRequest(final T data) throws Exception {
+	@Override
+	public final void executeProcessingRequest(final T data) throws Exception {
 		onExecuteProcessingRequest(mContext, data);
 	}
 
-	void onProcessingRequestComplete() {
+	@Override
+	public final void onProcessingRequestComplete() {
 		notifyComplete();
 	}
 
-	void onProcessingRequestFailure(final ServiceError error) {
+	@Override
+	public final void onProcessingRequestFailure(final ServiceError error) {
 		notifyFailure(error);
 	}
 
 	// ======================================================
 
+	private void notifyStarted() {
+		if (mObserver != null) {
+			mObserver.onTaskStarted(this);
+		}
+	}
+	
 	private void notifyComplete() {
-		mObserver.onTaskComplete(this);
+		if (mObserver != null) {
+			mObserver.onTaskComplete(this);
+		}
 		notifyDependentsOfCompletion();
 	}
 
 	private void notifyFailure(final ServiceError error) {
-		mObserver.onTaskFailure(this, error);
+		if (mObserver != null) {
+			mObserver.onTaskFailure(this, error);
+		}
 		notifyDependentsOfFailure(error);
 	}
 	

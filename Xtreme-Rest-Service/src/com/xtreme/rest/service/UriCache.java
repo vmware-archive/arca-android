@@ -15,7 +15,12 @@ class UriCache {
 		return System.currentTimeMillis() - timestamp >= TIMEOUT_IN_MILLIS;
 	}
 
+	public boolean shouldCancel(final Uri uri) {
+		return true;
+	}
+	
 	public synchronized void markComplete(final Uri uri) {
 		mUriCache.put(uri, System.currentTimeMillis());
 	}
+	
 }

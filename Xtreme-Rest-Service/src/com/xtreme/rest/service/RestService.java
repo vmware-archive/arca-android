@@ -43,8 +43,9 @@ public class RestService extends Service implements OperationObserver {
 			return false;
 
 		final Uri uri = operation.getUri();
-
-		if (shouldStart(uri)) {
+		final boolean shouldStart = URI_CACHE.shouldStart(uri);
+		
+		if (shouldStart) {
 			startService(context, operation, Action.START);
 			return true;
 		} else {
@@ -66,29 +67,14 @@ public class RestService extends Service implements OperationObserver {
 			return false;
 		
 		final Uri uri = operation.getUri();
+		final boolean shouldCancel = URI_CACHE.shouldCancel(uri);
 		
-		if (shouldCancel(uri)) {
+		if (shouldCancel) {
 			startService(context, operation, Action.CANCEL);
 			return true;
 		} else {
 			return false;
 		}
-	}
-	
-	private static void markComplete(final Uri uri) {
-		synchronized (URI_CACHE) {
-			URI_CACHE.markComplete(uri);
-		}
-	}
-
-	private static boolean shouldStart(final Uri uri) {
-		synchronized (URI_CACHE) {
-			return URI_CACHE.shouldStart(uri);
-		}
-	}
-
-	private static boolean shouldCancel(final Uri uri) {
-		return true;
 	}
 
 	private static void startService(final Context context, final Operation operation, final Action action) {
@@ -147,7 +133,7 @@ public class RestService extends Service implements OperationObserver {
 		final Uri uri = operation.getUri();
 
 		if (error == null) {
-			markComplete(uri);
+			URI_CACHE.markComplete(uri);
 		}
 
 		if (mExecutor.isEmpty()) {

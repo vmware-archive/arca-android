@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.android;
+package com.xtreme.rest.service.test.android.tasks;
 
 import java.util.Locale;
 
@@ -6,13 +6,15 @@ import android.content.Context;
 import android.util.Log;
 
 import com.xtreme.rest.service.Task;
+import com.xtreme.rest.service.test.android.activities.TestActivity;
 import com.xtreme.threading.RequestIdentifier;
 
 public final class OneSecondTask extends Task<String> {
 
-	static boolean ALWAYS_FAIL = false;
-	static boolean RANDOM_FAIL = false;
-	private static final double FAIL_PROBABILITY = 0.05;
+	public static final double FAIL_PROBABILITY = 0.05;
+
+	public static boolean ALWAYS_FAIL = false;
+	public static boolean RANDOM_FAIL = false;
 
 	private int mId;
 

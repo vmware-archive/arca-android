@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.android;
+package com.xtreme.rest.service.test.android.operations;
 
 import java.util.List;
 
@@ -10,21 +10,23 @@ import android.util.Log;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
+import com.xtreme.rest.service.test.android.activities.TestActivity;
+import com.xtreme.rest.service.test.android.tasks.OneSecondTask;
 
-public class DiamondGraphOperation extends Operation {
+public class DiamondOperation extends Operation {
 
 	private final int mBegin;
 	private final int[] mMiddle;
 	private final int mEnd;
 
-	public DiamondGraphOperation(int operationId, int begin, int[] middle, int end) {
+	public DiamondOperation(int operationId, int begin, int[] middle, int end) {
 		super(Uri.parse(String.format("O%d", operationId)));
 		mBegin = begin;
 		mMiddle = middle;
 		mEnd = end;
 	}
 
-	public DiamondGraphOperation(Parcel source) {
+	public DiamondOperation(Parcel source) {
 		super(source);
 		mBegin = source.readInt();
 		mMiddle = source.createIntArray();
@@ -93,15 +95,15 @@ public class DiamondGraphOperation extends Operation {
 		Log.d(TestActivity.TAG, "Failure for operation: " + getUri());
 	}
 	
-	public static final Creator<DiamondGraphOperation> CREATOR = new Creator<DiamondGraphOperation>() {
+	public static final Creator<DiamondOperation> CREATOR = new Creator<DiamondOperation>() {
 		@Override
-		public DiamondGraphOperation[] newArray(int size) {
-			return new DiamondGraphOperation[size];
+		public DiamondOperation[] newArray(int size) {
+			return new DiamondOperation[size];
 		}
 
 		@Override
-		public DiamondGraphOperation createFromParcel(Parcel source) {
-			return new DiamondGraphOperation(source);
+		public DiamondOperation createFromParcel(Parcel source) {
+			return new DiamondOperation(source);
 		}
 	};
 

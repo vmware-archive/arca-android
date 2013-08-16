@@ -1,7 +1,11 @@
-package com.xtreme.rest.service.test.android;
+package com.xtreme.rest.service.test.android.activities;
 
 import com.xtreme.rest.service.Logger;
 import com.xtreme.rest.service.RestService;
+import com.xtreme.rest.service.test.android.operations.DiamondOperation;
+import com.xtreme.rest.service.test.android.operations.LinearOperation;
+import com.xtreme.rest.service.test.android.operations.SimpleOperation;
+import com.xtreme.rest.service.test.android.operations.ComplexOperation;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -23,14 +27,14 @@ public class TestActivity extends Activity {
 	private final Runnable test0 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new MultipleTaskOperation(1, new int[] {1}));
+			RestService.start(TestActivity.this, new SimpleOperation(1, new int[] {1}));
 		}
 	};
 	
 	private final Runnable test1 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new MultipleTaskOperation(1, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new SimpleOperation(1, new int[] {1, 2, 3}));
 		}
 		
 		/**
@@ -59,8 +63,8 @@ public class TestActivity extends Activity {
 	private final Runnable test2 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new MultipleTaskOperation(1, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new MultipleTaskOperation(2, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new SimpleOperation(1, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new SimpleOperation(2, new int[] {1, 2, 3}));
 		}
 		
 		/**
@@ -98,8 +102,8 @@ public class TestActivity extends Activity {
 	private final Runnable test3 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new MultipleTaskOperation(1, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new MultipleTaskOperation(2, new int[] {1, 2, 4}));
+			RestService.start(TestActivity.this, new SimpleOperation(1, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new SimpleOperation(2, new int[] {1, 2, 4}));
 		}
 		
 		/**
@@ -140,7 +144,7 @@ public class TestActivity extends Activity {
 	private final Runnable test4 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new LinearDependencyOperation(1, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new LinearOperation(1, new int[] {1, 2, 3}));
 		}
 		
 		/**
@@ -171,8 +175,8 @@ public class TestActivity extends Activity {
 	private final Runnable test5 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new LinearDependencyOperation(1, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new MultipleTaskOperation(2, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new LinearOperation(1, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new SimpleOperation(2, new int[] {1, 2, 3}));
 		}
 
 		/**
@@ -215,7 +219,7 @@ public class TestActivity extends Activity {
 	private final Runnable test6 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new DiamondGraphOperation(1, 1, new int[] {2, 3, 4}, 5));
+			RestService.start(TestActivity.this, new DiamondOperation(1, 1, new int[] {2, 3, 4}, 5));
 		}
 		
 		/**
@@ -257,7 +261,7 @@ public class TestActivity extends Activity {
 	private final Runnable test7 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new ReallyComplexOperation(1));
+			RestService.start(TestActivity.this, new ComplexOperation(1));
 		}
 		
 		/**
@@ -352,8 +356,8 @@ public class TestActivity extends Activity {
 	private final Runnable test8 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new ReallyComplexOperation(1));
-			RestService.start(TestActivity.this, new ReallyComplexOperation(2));
+			RestService.start(TestActivity.this, new ComplexOperation(1));
+			RestService.start(TestActivity.this, new ComplexOperation(2));
 		}
 		
 		/**
@@ -479,11 +483,11 @@ public class TestActivity extends Activity {
 	private final Runnable test9 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new MultipleTaskOperation(0, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(1, 2, new int[] {11, 12, 5}, 7));
-			RestService.start(TestActivity.this, new LinearDependencyOperation(2, new int[] {1, 7, 2}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(3, 3, new int[] {14, 2, 5}, 14));
-			RestService.start(TestActivity.this, new ReallyComplexOperation(4));
+			RestService.start(TestActivity.this, new SimpleOperation(0, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new DiamondOperation(1, 2, new int[] {11, 12, 5}, 7));
+			RestService.start(TestActivity.this, new LinearOperation(2, new int[] {1, 7, 2}));
+			RestService.start(TestActivity.this, new DiamondOperation(3, 3, new int[] {14, 2, 5}, 14));
+			RestService.start(TestActivity.this, new ComplexOperation(4));
 		}
 		
 		/**
@@ -621,31 +625,31 @@ public class TestActivity extends Activity {
 	private final Runnable test10 = new Runnable() {
 		@Override
 		public void run() {
-			RestService.start(TestActivity.this, new MultipleTaskOperation(0, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(1, 2, new int[] {11, 12, 5}, 7));
-			RestService.start(TestActivity.this, new LinearDependencyOperation(2, new int[] {1, 7, 2}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(3, 3, new int[] {14, 2, 5}, 14));
-			RestService.start(TestActivity.this, new ReallyComplexOperation(4));
-			RestService.start(TestActivity.this, new MultipleTaskOperation(5, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(6, 2, new int[] {11, 12, 5}, 7));
-			RestService.start(TestActivity.this, new LinearDependencyOperation(7, new int[] {1, 7, 2}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(8, 3, new int[] {14, 2, 5}, 14));
-			RestService.start(TestActivity.this, new ReallyComplexOperation(9));
-			RestService.start(TestActivity.this, new MultipleTaskOperation(10, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(11, 2, new int[] {11, 12, 5}, 7));
-			RestService.start(TestActivity.this, new LinearDependencyOperation(12, new int[] {1, 7, 2}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(13, 3, new int[] {14, 2, 5}, 14));
-			RestService.start(TestActivity.this, new ReallyComplexOperation(14));
-			RestService.start(TestActivity.this, new MultipleTaskOperation(15, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(16, 2, new int[] {11, 12, 5}, 7));
-			RestService.start(TestActivity.this, new LinearDependencyOperation(17, new int[] {1, 7, 2}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(18, 3, new int[] {14, 2, 5}, 14));
-			RestService.start(TestActivity.this, new ReallyComplexOperation(19));
-			RestService.start(TestActivity.this, new MultipleTaskOperation(20, new int[] {1, 2, 3}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(21, 2, new int[] {11, 12, 5}, 7));
-			RestService.start(TestActivity.this, new LinearDependencyOperation(22, new int[] {1, 7, 2}));
-			RestService.start(TestActivity.this, new DiamondGraphOperation(23, 3, new int[] {14, 2, 5}, 14));
-			RestService.start(TestActivity.this, new ReallyComplexOperation(24));
+			RestService.start(TestActivity.this, new SimpleOperation(0, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new DiamondOperation(1, 2, new int[] {11, 12, 5}, 7));
+			RestService.start(TestActivity.this, new LinearOperation(2, new int[] {1, 7, 2}));
+			RestService.start(TestActivity.this, new DiamondOperation(3, 3, new int[] {14, 2, 5}, 14));
+			RestService.start(TestActivity.this, new ComplexOperation(4));
+			RestService.start(TestActivity.this, new SimpleOperation(5, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new DiamondOperation(6, 2, new int[] {11, 12, 5}, 7));
+			RestService.start(TestActivity.this, new LinearOperation(7, new int[] {1, 7, 2}));
+			RestService.start(TestActivity.this, new DiamondOperation(8, 3, new int[] {14, 2, 5}, 14));
+			RestService.start(TestActivity.this, new ComplexOperation(9));
+			RestService.start(TestActivity.this, new SimpleOperation(10, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new DiamondOperation(11, 2, new int[] {11, 12, 5}, 7));
+			RestService.start(TestActivity.this, new LinearOperation(12, new int[] {1, 7, 2}));
+			RestService.start(TestActivity.this, new DiamondOperation(13, 3, new int[] {14, 2, 5}, 14));
+			RestService.start(TestActivity.this, new ComplexOperation(14));
+			RestService.start(TestActivity.this, new SimpleOperation(15, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new DiamondOperation(16, 2, new int[] {11, 12, 5}, 7));
+			RestService.start(TestActivity.this, new LinearOperation(17, new int[] {1, 7, 2}));
+			RestService.start(TestActivity.this, new DiamondOperation(18, 3, new int[] {14, 2, 5}, 14));
+			RestService.start(TestActivity.this, new ComplexOperation(19));
+			RestService.start(TestActivity.this, new SimpleOperation(20, new int[] {1, 2, 3}));
+			RestService.start(TestActivity.this, new DiamondOperation(21, 2, new int[] {11, 12, 5}, 7));
+			RestService.start(TestActivity.this, new LinearOperation(22, new int[] {1, 7, 2}));
+			RestService.start(TestActivity.this, new DiamondOperation(23, 3, new int[] {14, 2, 5}, 14));
+			RestService.start(TestActivity.this, new ComplexOperation(24));
 		}
 		
 		// All operations succeeded as expected.

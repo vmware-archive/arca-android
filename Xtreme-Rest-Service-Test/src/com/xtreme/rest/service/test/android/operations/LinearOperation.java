@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.android;
+package com.xtreme.rest.service.test.android.operations;
 
 import java.util.List;
 
@@ -10,17 +10,19 @@ import android.util.Log;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
+import com.xtreme.rest.service.test.android.activities.TestActivity;
+import com.xtreme.rest.service.test.android.tasks.OneSecondTask;
 
-public class MultipleTaskOperation extends Operation {
+public class LinearOperation extends Operation {
 
 	private final int[] mIndices;
 
-	public MultipleTaskOperation(int i, int[] indices) {
-		super(Uri.parse(String.format("O%d", i)));
+	public LinearOperation(int id, int[] indices) {
+		super(Uri.parse(String.format("O%d", id)));
 		this.mIndices = indices;
 	}
 
-	public MultipleTaskOperation(Parcel source) {
+	public LinearOperation(Parcel source) {
 		super(source);
 		mIndices = source.createIntArray();
 	}
@@ -35,8 +37,17 @@ public class MultipleTaskOperation extends Operation {
 	public void onCreateTasks() {
 		Log.d(TestActivity.TAG, "onCreateTasks for Operation: " + getUri());
 
-		for (int index : mIndices)
-			executeTask(new OneSecondTask(index));
+		OneSecondTask[] tasks = new OneSecondTask[mIndices.length];
+		for (int i = 0; i < tasks.length; i++)
+			tasks[i] = new OneSecondTask(mIndices[i]);
+
+
+		for (int i = tasks.length - 1; i > 0; i--)
+			tasks[i].addPrerequisite(tasks[i - 1]);
+
+
+		for (OneSecondTask task : tasks)
+			executeTask(task);
 	}
 
 	@Override
@@ -67,15 +78,15 @@ public class MultipleTaskOperation extends Operation {
 		Log.d(TestActivity.TAG, "Failure for operation: " + getUri());
 	}
 
-	public static final Creator<MultipleTaskOperation> CREATOR = new Creator<MultipleTaskOperation>() {
+	public static final Creator<LinearOperation> CREATOR = new Creator<LinearOperation>() {
 		@Override
-		public MultipleTaskOperation[] newArray(int size) {
-			return new MultipleTaskOperation[size];
+		public LinearOperation[] newArray(int size) {
+			return new LinearOperation[size];
 		}
 
 		@Override
-		public MultipleTaskOperation createFromParcel(Parcel source) {
-			return new MultipleTaskOperation(source);
+		public LinearOperation createFromParcel(Parcel source) {
+			return new LinearOperation(source);
 		}
 	};
 

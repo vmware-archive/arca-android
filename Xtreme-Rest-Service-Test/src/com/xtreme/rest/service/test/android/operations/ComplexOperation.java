@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.android;
+package com.xtreme.rest.service.test.android.operations;
 
 import java.util.List;
 
@@ -10,14 +10,16 @@ import android.util.Log;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
+import com.xtreme.rest.service.test.android.activities.TestActivity;
+import com.xtreme.rest.service.test.android.tasks.OneSecondTask;
 
-public class ReallyComplexOperation extends Operation {
+public class ComplexOperation extends Operation {
 
-	public ReallyComplexOperation(int i) {
+	public ComplexOperation(int i) {
 		super(Uri.parse(String.format("O%d", i)));
 	}
 
-	public ReallyComplexOperation(Parcel source) {
+	public ComplexOperation(Parcel source) {
 		super(source);
 	}
 
@@ -100,15 +102,15 @@ public class ReallyComplexOperation extends Operation {
 		executeTask(new OneSecondTask(15));
 	}
 
-	public static final Creator<ReallyComplexOperation> CREATOR = new Creator<ReallyComplexOperation>() {
+	public static final Creator<ComplexOperation> CREATOR = new Creator<ComplexOperation>() {
 		@Override
-		public ReallyComplexOperation[] newArray(int size) {
-			return new ReallyComplexOperation[size];
+		public ComplexOperation[] newArray(int size) {
+			return new ComplexOperation[size];
 		}
 
 		@Override
-		public ReallyComplexOperation createFromParcel(Parcel source) {
-			return new ReallyComplexOperation(source);
+		public ComplexOperation createFromParcel(Parcel source) {
+			return new ComplexOperation(source);
 		}
 	};
 

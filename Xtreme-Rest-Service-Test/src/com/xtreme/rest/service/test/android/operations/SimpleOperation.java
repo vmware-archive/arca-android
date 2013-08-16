@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.android;
+package com.xtreme.rest.service.test.android.operations;
 
 import java.util.List;
 
@@ -10,17 +10,19 @@ import android.util.Log;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
+import com.xtreme.rest.service.test.android.activities.TestActivity;
+import com.xtreme.rest.service.test.android.tasks.OneSecondTask;
 
-public class LinearDependencyOperation extends Operation {
+public class SimpleOperation extends Operation {
 
 	private final int[] mIndices;
 
-	public LinearDependencyOperation(int id, int[] indices) {
-		super(Uri.parse(String.format("O%d", id)));
+	public SimpleOperation(int i, int[] indices) {
+		super(Uri.parse(String.format("O%d", i)));
 		this.mIndices = indices;
 	}
 
-	public LinearDependencyOperation(Parcel source) {
+	public SimpleOperation(Parcel source) {
 		super(source);
 		mIndices = source.createIntArray();
 	}
@@ -35,17 +37,8 @@ public class LinearDependencyOperation extends Operation {
 	public void onCreateTasks() {
 		Log.d(TestActivity.TAG, "onCreateTasks for Operation: " + getUri());
 
-		OneSecondTask[] tasks = new OneSecondTask[mIndices.length];
-		for (int i = 0; i < tasks.length; i++)
-			tasks[i] = new OneSecondTask(mIndices[i]);
-
-
-		for (int i = tasks.length - 1; i > 0; i--)
-			tasks[i].addPrerequisite(tasks[i - 1]);
-
-
-		for (OneSecondTask task : tasks)
-			executeTask(task);
+		for (int index : mIndices)
+			executeTask(new OneSecondTask(index));
 	}
 
 	@Override
@@ -76,15 +69,15 @@ public class LinearDependencyOperation extends Operation {
 		Log.d(TestActivity.TAG, "Failure for operation: " + getUri());
 	}
 
-	public static final Creator<LinearDependencyOperation> CREATOR = new Creator<LinearDependencyOperation>() {
+	public static final Creator<SimpleOperation> CREATOR = new Creator<SimpleOperation>() {
 		@Override
-		public LinearDependencyOperation[] newArray(int size) {
-			return new LinearDependencyOperation[size];
+		public SimpleOperation[] newArray(int size) {
+			return new SimpleOperation[size];
 		}
 
 		@Override
-		public LinearDependencyOperation createFromParcel(Parcel source) {
-			return new LinearDependencyOperation(source);
+		public SimpleOperation createFromParcel(Parcel source) {
+			return new SimpleOperation(source);
 		}
 	};
 

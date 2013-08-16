@@ -4,7 +4,6 @@ import android.test.AndroidTestCase;
 
 import com.xtreme.rest.service.NetworkPrioritizable;
 import com.xtreme.rest.service.PrioritizableHandler;
-import com.xtreme.rest.service.Priority;
 import com.xtreme.rest.service.ProcessingPrioritizable;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
@@ -69,6 +68,30 @@ public class TaskTest extends AndroidTestCase {
 		task.execute();
 	}
 	
+	public void testTaskExecutesWithoutNetworkError() {
+		final TestTask task = new TestTask(null, null);
+		task.setPrioritizableHandler(new PrioritizableHandler() {
+
+			@Override
+			public void executeNetworkComponent(final PrioritizableRequest request) {
+				final NetworkPrioritizable<?> prioritizable = (NetworkPrioritizable<?>) request.getPrioritizable();
+
+				assertNull(prioritizable.getError());
+				
+				request.run();
+				
+				assertNull(prioritizable.getError());
+			}
+
+			@Override
+			public void executeProcessingComponent(final PrioritizableRequest request) {
+				// empty
+			}
+			
+		});
+		task.execute();
+	}
+	
 	public void testTaskExecutesWithNetworkResult() {
 		final String networkResult = "test_result";
 		
@@ -80,12 +103,10 @@ public class TaskTest extends AndroidTestCase {
 				final NetworkPrioritizable<?> prioritizable = (NetworkPrioritizable<?>) request.getPrioritizable();
 
 				assertNull(prioritizable.getData());
-				assertNull(prioritizable.getError());
 				
 				request.run();
 				
 				assertEquals(prioritizable.getData(), networkResult);
-				assertNull(prioritizable.getError());
 			}
 
 			@Override
@@ -118,6 +139,29 @@ public class TaskTest extends AndroidTestCase {
 				request.run();
 				
 				assertNull(prioritizable.getError());
+			}
+			
+		});
+		task.execute();
+	}
+	
+	public void testTaskExecutesWithProcessingDataFromNetwork() {
+		final String networkResult = "test_result";
+		
+		final TestTask task = new TestTask(null, null);
+		task.setPrioritizableHandler(new PrioritizableHandler() {
+
+			@Override
+			public void executeNetworkComponent(final PrioritizableRequest request) {
+				final NetworkPrioritizable<?> prioritizable = (NetworkPrioritizable<?>) request.getPrioritizable();
+				prioritizable.onComplete(networkResult, null);
+			}
+
+			@Override
+			public void executeProcessingComponent(final PrioritizableRequest request) {
+				final ProcessingPrioritizable<?> prioritizable = (ProcessingPrioritizable<?>) request.getPrioritizable();
+
+				assertEquals(prioritizable.getData(), networkResult);
 			}
 			
 		});

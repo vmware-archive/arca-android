@@ -40,6 +40,10 @@ public class ProcessingPrioritizable<T> extends Prioritizable {
 			mRequester.onProcessingRequestFailure(error);
 		}
 	}
+	
+	public Object getData() {
+		return mData;
+	}
 
 	public ServiceError getError() {
 		return mError;

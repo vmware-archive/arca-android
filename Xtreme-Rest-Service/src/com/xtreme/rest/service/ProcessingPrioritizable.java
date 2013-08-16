@@ -5,39 +5,31 @@ import com.xtreme.threading.RequestIdentifier;
 
 public class ProcessingPrioritizable<T> extends Prioritizable {
 
-	private final ProcessingRequester<T> mRequester;
+	private final ProcessingHandler<T> mHandler;
 	private final T mData;
 
 	private ServiceError mError;
 
-	public ProcessingPrioritizable(final ProcessingRequester<T> requester, final T data) {
-		mRequester = requester;
+	public ProcessingPrioritizable(final ProcessingHandler<T> handler, final T data) {
+		mHandler = handler;
 		mData = data;
 	}
 
 	@Override
 	public RequestIdentifier<?> getIdentifier() {
-		return mRequester.getIdentifier();
+		return mHandler.getIdentifier();
 	}
 
 	@Override
 	public void execute() {
 		try {
-			mRequester.executeProcessingRequest(mData);
+			mHandler.executeProcessingRequest(mData);
 		} catch (final ServiceException e) {
 			Logger.ex(e);
 			mError = e.getError();
 		} catch (final Exception e) {
 			Logger.ex(e);
 			mError = new ServiceError(e);
-		}
-	}
-
-	public void onComplete(final ServiceError error) {
-		if (error == null) {
-			mRequester.onProcessingRequestComplete();
-		} else {
-			mRequester.onProcessingRequestFailure(error);
 		}
 	}
 	

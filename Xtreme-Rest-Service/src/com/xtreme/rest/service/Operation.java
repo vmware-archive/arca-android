@@ -30,7 +30,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	private final Uri mUri;
 
 	private OperationObserver mObserver;
-	private PrioritizableHandler mHandler;
+	private RequestHandler mHandler;
 	
 	private Context mContext;
 	private ServiceError mError;
@@ -82,7 +82,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		mObserver = observer;
 	}
 	
-	public void setPrioritizableHandler(final PrioritizableHandler handler) {
+	public void setRequestHandler(final RequestHandler handler) {
 		mHandler = handler;
 	}
 
@@ -139,7 +139,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		task.setContext(mContext);
 		task.setPriority(mPriority);
 		task.setTaskObserver(this);
-		task.setPrioritizableHandler(mHandler);
+		task.setRequestHandler(mHandler);
 		task.execute();
 	}
 

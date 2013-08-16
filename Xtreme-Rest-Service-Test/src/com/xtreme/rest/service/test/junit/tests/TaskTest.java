@@ -1,19 +1,26 @@
 package com.xtreme.rest.service.test.junit.tests;
 
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import android.test.AndroidTestCase;
 
-import com.xtreme.rest.service.NetworkPrioritizable;
-import com.xtreme.rest.service.PrioritizableHandler;
-import com.xtreme.rest.service.ProcessingPrioritizable;
+import com.xtreme.rest.service.NetworkRequest;
+import com.xtreme.rest.service.ProcessingRequest;
+import com.xtreme.rest.service.RequestHandler;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
 import com.xtreme.rest.service.TaskObserver;
-import com.xtreme.rest.service.test.junit.mock.TestPrioritizableHandler;
+import com.xtreme.rest.service.test.junit.mock.TestRequestHandler;
 import com.xtreme.rest.service.test.junit.mock.TestTask;
-import com.xtreme.threading.PrioritizableRequest;
 import com.xtreme.threading.RequestIdentifier;
 
 public class TaskTest extends AndroidTestCase {
+
+	private static final String RESULT = "test_result";
+	private static final String IDENTIFIER = "test_identifier";
+
 
 	@Override
 	protected void setUp() throws Exception {
@@ -30,38 +37,37 @@ public class TaskTest extends AndroidTestCase {
 		// success
 	}
 	
-	public void testTaskExecutesPrioritizables() {
+	public void testTaskExecutesNetworkPrioritizable() {
 		final TestTask task = new TestTask(null);
-		task.setPrioritizableHandler(new PrioritizableHandler() {
+		task.setRequestHandler(new RequestHandler() {
 
 			@Override
-			public void executeNetworkComponent(final PrioritizableRequest request) {
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
 				assertNotNull(request);
 			}
 
 			@Override
-			public void executeProcessingComponent(final PrioritizableRequest request) {
-				assertNotNull(request);
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				fail();
 			}
 			
 		});
 		task.execute();
 	}
 	
-	public void testTaskExecutesWithIdentifier() {
-		final RequestIdentifier<String> identifier = new RequestIdentifier<String>("test_identifier");
-		
+	public void testTaskExecutesWithNetworkIdentifier() {
+		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
 		final TestTask task = new TestTask(identifier);
-		task.setPrioritizableHandler(new PrioritizableHandler() {
+		task.setRequestHandler(new RequestHandler() {
 
 			@Override
-			public void executeNetworkComponent(final PrioritizableRequest request) {
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
 				assertEquals(request.getRequestIdentifier(), identifier);
 			}
 
 			@Override
-			public void executeProcessingComponent(final PrioritizableRequest request) {
-				assertEquals(request.getRequestIdentifier(), identifier);
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				fail();
 			}
 			
 		});
@@ -69,23 +75,22 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesWithoutNetworkError() {
-		final TestTask task = new TestTask(null, null);
-		task.setPrioritizableHandler(new PrioritizableHandler() {
+		final TestTask task = new TestTask(null);
+		task.setRequestHandler(new RequestHandler() {
 
 			@Override
-			public void executeNetworkComponent(final PrioritizableRequest request) {
-				final NetworkPrioritizable<?> prioritizable = (NetworkPrioritizable<?>) request.getPrioritizable();
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
 
-				assertNull(prioritizable.getError());
+				assertNull(request.getError());
 				
 				request.run();
 				
-				assertNull(prioritizable.getError());
+				assertNull(request.getError());
 			}
 
 			@Override
-			public void executeProcessingComponent(final PrioritizableRequest request) {
-				// empty
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				fail();
 			}
 			
 		});
@@ -93,97 +98,139 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesWithNetworkResult() {
-		final String networkResult = "test_result";
-		
+		final String networkResult = RESULT;
 		final TestTask task = new TestTask(null, networkResult);
-		task.setPrioritizableHandler(new PrioritizableHandler() {
+		task.setRequestHandler(new RequestHandler() {
 
 			@Override
-			public void executeNetworkComponent(final PrioritizableRequest request) {
-				final NetworkPrioritizable<?> prioritizable = (NetworkPrioritizable<?>) request.getPrioritizable();
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
 
-				assertNull(prioritizable.getData());
+				assertNull(request.getData());
 				
 				request.run();
 				
-				assertEquals(prioritizable.getData(), networkResult);
+				assertEquals(request.getData(), networkResult);
 			}
 
 			@Override
-			public void executeProcessingComponent(final PrioritizableRequest request) {
-				// empty
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				fail();
 			}
 			
 		});
 		task.execute();
+	}
+	
+	public void testTaskExecutesProcessingPrioritizable() {
+		final AssertionLatch latch = new AssertionLatch(1);
+		final TestTask task = new TestTask(null);
+		task.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				request.notifyComplete(null, null);
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				assertNotNull(request);
+				latch.countDown();
+			}
+			
+		});
+		task.execute();
+		latch.assertComplete();
+	}
+	
+	public void testTaskExecutesWithProcessingIdentifier() {
+		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
+		final TestTask task = new TestTask(identifier);
+		task.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				request.notifyComplete(null, null);
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				assertEquals(request.getRequestIdentifier(), identifier);
+				latch.countDown();
+			}
+			
+		});
+		task.execute();
+		latch.assertComplete();
 	}
 	
 	public void testTaskExecutesWithoutProcessingError() {
-		final String networkResult = "test_result";
-		
+		final AssertionLatch latch = new AssertionLatch(1);
+		final String networkResult = RESULT;
 		final TestTask task = new TestTask(null, networkResult);
-		task.setPrioritizableHandler(new PrioritizableHandler() {
+		task.setRequestHandler(new RequestHandler() {
 
 			@Override
-			public void executeNetworkComponent(final PrioritizableRequest request) {
-				final NetworkPrioritizable<?> prioritizable = (NetworkPrioritizable<?>) request.getPrioritizable();
-				prioritizable.onComplete(null, null);
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				request.notifyComplete(null, null);
 			}
 
 			@Override
-			public void executeProcessingComponent(final PrioritizableRequest request) {
-				final ProcessingPrioritizable<?> prioritizable = (ProcessingPrioritizable<?>) request.getPrioritizable();
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
 
-				assertNull(prioritizable.getError());
+				assertNull(request.getError());
 				
 				request.run();
 				
-				assertNull(prioritizable.getError());
+				assertNull(request.getError());
+				
+				latch.countDown();
 			}
 			
 		});
 		task.execute();
+		latch.assertComplete();
 	}
 	
 	public void testTaskExecutesWithProcessingDataFromNetwork() {
-		final String networkResult = "test_result";
-		
+		final AssertionLatch latch = new AssertionLatch(1);
+		final String networkResult = RESULT;
 		final TestTask task = new TestTask(null, null);
-		task.setPrioritizableHandler(new PrioritizableHandler() {
+		task.setRequestHandler(new RequestHandler() {
 
 			@Override
-			public void executeNetworkComponent(final PrioritizableRequest request) {
-				final NetworkPrioritizable<?> prioritizable = (NetworkPrioritizable<?>) request.getPrioritizable();
-				prioritizable.onComplete(networkResult, null);
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				request.notifyComplete(networkResult, null);
 			}
 
 			@Override
-			public void executeProcessingComponent(final PrioritizableRequest request) {
-				final ProcessingPrioritizable<?> prioritizable = (ProcessingPrioritizable<?>) request.getPrioritizable();
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
 
-				assertEquals(prioritizable.getData(), networkResult);
+				assertEquals(request.getData(), networkResult);
+				latch.countDown();
 			}
 			
 		});
 		task.execute();
+		latch.assertComplete();
 	}
 	
 	public void testTaskCompletesExecution() {
-		final String networkResult = "test_result";
-		final RequestIdentifier<String> identifier = new RequestIdentifier<String>("test_identifier");
-		
+		final AssertionLatch latch = new AssertionLatch(2);
+		final String networkResult = RESULT;
+		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
 		final TestTask task = new TestTask(identifier, networkResult);
-		task.setPrioritizableHandler(new TestPrioritizableHandler());
+		task.setRequestHandler(new TestRequestHandler());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
 			public void onTaskStarted(final Task<?> t) {
-				// pass
+				latch.countDown();
 			}
 
 			@Override
 			public void onTaskComplete(final Task<?> t) {
-				// pass
+				latch.countDown();
 			}
 
 			@Override
@@ -192,5 +239,25 @@ public class TaskTest extends AndroidTestCase {
 			}
 		});
 		task.execute();
+		latch.assertComplete();
+	}
+	
+	
+	// =============================================
+	
+	
+	private static class AssertionLatch extends CountDownLatch {
+
+		public AssertionLatch(int count) {
+			super(count);
+		}
+		
+		public void assertComplete() {
+			try {
+				assertTrue(await(0, TimeUnit.SECONDS));
+			} catch (final InterruptedException e) {
+				fail();
+			}
+		}
 	}
 }

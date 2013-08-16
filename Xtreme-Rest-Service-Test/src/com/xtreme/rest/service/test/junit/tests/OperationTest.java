@@ -5,7 +5,7 @@ import android.test.AndroidTestCase;
 
 import com.xtreme.rest.service.test.junit.mock.TestOperation;
 import com.xtreme.rest.service.test.junit.mock.TestOperationObserver;
-import com.xtreme.rest.service.test.junit.mock.TestPrioritizableHandler;
+import com.xtreme.rest.service.test.junit.mock.TestRequestHandler;
 
 public class OperationTest extends AndroidTestCase {
 
@@ -19,7 +19,7 @@ public class OperationTest extends AndroidTestCase {
 		
 		mOperation = new TestOperation(uri);
 		mOperation.setOperationObserver(new TestOperationObserver());
-		mOperation.setPrioritizableHandler(new TestPrioritizableHandler());
+		mOperation.setRequestHandler(new TestRequestHandler());
 	}
 	
 	@Override

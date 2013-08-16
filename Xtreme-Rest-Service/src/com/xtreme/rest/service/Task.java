@@ -12,7 +12,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.xtreme.threading.AuxiliaryExecutor;
-import com.xtreme.threading.PrioritizableRequest;
 import com.xtreme.threading.RequestIdentifier;
 
 /**
@@ -27,7 +26,7 @@ import com.xtreme.threading.RequestIdentifier;
  * @param <T> The type downloaded, parsed, and then returned from {@link #onExecuteNetworkRequest(Context)}. In most cases it is a model
  * class, but sometimes it may be a {@link String}.
  */
-public abstract class Task<T> implements NetworkRequester<T>, ProcessingRequester<T> {
+public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, ProcessingHandler<T>, ProcessingObserver<T> {
 
 	private static final class Messages {
 		private static final String NO_HANDLER = "Cannot execute request. No handler found.";
@@ -40,7 +39,7 @@ public abstract class Task<T> implements NetworkRequester<T>, ProcessingRequeste
 			
 	private Priority mPriority = Priority.MEDIUM;
 	private TaskObserver mObserver;
-	private PrioritizableHandler mHandler;
+	private RequestHandler mHandler;
 	private RequestIdentifier<?> mIdentifier;
 	private Context mContext;
 	
@@ -61,7 +60,7 @@ public abstract class Task<T> implements NetworkRequester<T>, ProcessingRequeste
 		mObserver = observer;
 	}
 	
-	public void setPrioritizableHandler(final PrioritizableHandler handler) {
+	public void setRequestHandler(final RequestHandler handler) {
 		mHandler = handler;
 	}
 	
@@ -199,10 +198,10 @@ public abstract class Task<T> implements NetworkRequester<T>, ProcessingRequeste
 	// ======================================================
 
 	private void startNetworkRequest() {
-		final NetworkPrioritizable<T> prioritizable = new NetworkPrioritizable<T>(this);
-		final PrioritizableRequest request = new PrioritizableRequest(prioritizable, mPriority.ordinal());
 		if (mHandler != null) {
-			mHandler.executeNetworkComponent(request);
+			final NetworkPrioritizable<T> prioritzable = new NetworkPrioritizable<T>(this);
+			final NetworkRequest<T> request = new NetworkRequest<T>(prioritzable, mPriority.ordinal(), this);
+			mHandler.executeNetworkRequest(request);
 		} else {
 			notifyFailure(new ServiceError(Messages.NO_HANDLER));
 		}
@@ -226,10 +225,10 @@ public abstract class Task<T> implements NetworkRequester<T>, ProcessingRequeste
 	// ======================================================
 
 	private void startProcessingRequest(final T data) {
-		final ProcessingPrioritizable<T> prioritizable = new ProcessingPrioritizable<T>(this, data);
-		final PrioritizableRequest request = new PrioritizableRequest(prioritizable, mPriority.ordinal());
 		if (mHandler != null) {
-			mHandler.executeProcessingComponent(request);
+			final ProcessingPrioritizable<T> prioritizable = new ProcessingPrioritizable<T>(this, data);
+			final ProcessingRequest<T> request = new ProcessingRequest<T>(prioritizable, mPriority.ordinal(), this);
+			mHandler.executeProcessingRequest(request);
 		} else {
 			notifyFailure(new ServiceError(Messages.NO_HANDLER));
 		}

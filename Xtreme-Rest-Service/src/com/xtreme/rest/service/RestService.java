@@ -122,7 +122,7 @@ public class RestService extends Service implements OperationObserver {
 
 	private void handleStart(final Operation operation) {
 		operation.setContext(getApplicationContext());
-		operation.setPrioritizableHandler(mExecutor);
+		operation.setRequestHandler(mExecutor);
 		operation.setOperationObserver(mHandler);
 		operation.execute();
 	}

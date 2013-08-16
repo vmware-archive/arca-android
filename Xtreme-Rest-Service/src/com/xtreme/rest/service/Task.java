@@ -38,7 +38,7 @@ public abstract class Task<T> implements NetworkRequester<T>, ProcessingRequeste
 	private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
 	private final Object mTaskLock = new Object();
 			
-	private Priority mPriority;
+	private Priority mPriority = Priority.MEDIUM;
 	private TaskObserver mObserver;
 	private PrioritizableHandler mHandler;
 	private RequestIdentifier<?> mIdentifier;

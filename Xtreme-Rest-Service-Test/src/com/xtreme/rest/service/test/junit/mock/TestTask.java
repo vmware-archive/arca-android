@@ -12,6 +12,10 @@ public class TestTask extends Task<String> {
 	private Exception mProcessingException;
 	private String mNetworkResult;
 
+	public TestTask(final RequestIdentifier<?> identifier) {
+		this(identifier, null, null, null);
+	}
+	
 	public TestTask(final RequestIdentifier<?> identifier, final String networkResult) {
 		this(identifier, networkResult, null, null);
 	}

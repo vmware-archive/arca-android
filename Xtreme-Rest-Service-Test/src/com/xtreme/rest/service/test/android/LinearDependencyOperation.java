@@ -33,7 +33,7 @@ public class LinearDependencyOperation extends Operation {
 
 	@Override
 	public void onCreateTasks() {
-		Log.d(Tests.TAG, "onCreateTasks for Operation: " + getUri());
+		Log.d(TestActivity.TAG, "onCreateTasks for Operation: " + getUri());
 
 		OneSecondTask[] tasks = new OneSecondTask[mIndices.length];
 		for (int i = 0; i < tasks.length; i++)
@@ -50,30 +50,30 @@ public class LinearDependencyOperation extends Operation {
 
 	@Override
 	public synchronized void onTaskComplete(Task<?> task) {
-		Log.d(Tests.TAG, "onTaskComplete for operation: " + getUri() + ", " + task);
+		Log.d(TestActivity.TAG, "onTaskComplete for operation: " + getUri() + ", " + task);
 		super.onTaskComplete(task);
 	}
 
 	@Override
 	public synchronized void onTaskFailure(Task<?> task, ServiceError error) {
-		Log.d(Tests.TAG, "onTaskFailure for operation: " + getUri() + ", " + task);
+		Log.d(TestActivity.TAG, "onTaskFailure for operation: " + getUri() + ", " + task);
 		super.onTaskFailure(task, error);
 	}
 
 	@Override
 	public synchronized void onTaskStarted(Task<?> task) {
-		Log.d(Tests.TAG, "onTaskStarted for operation: " + getUri() + ", " + task);
+		Log.d(TestActivity.TAG, "onTaskStarted for operation: " + getUri() + ", " + task);
 		super.onTaskStarted(task);
 	}
 
 	@Override
 	public void onSuccess(Context context, List<Task<?>> completed) {
-		Log.d(Tests.TAG, "Success for operation: " + getUri());
+		Log.d(TestActivity.TAG, "Success for operation: " + getUri());
 	}
 
 	@Override
 	public void onFailure(Context context, ServiceError error) {
-		Log.d(Tests.TAG, "Failure for operation: " + getUri());
+		Log.d(TestActivity.TAG, "Failure for operation: " + getUri());
 	}
 
 	public static final Creator<LinearDependencyOperation> CREATOR = new Creator<LinearDependencyOperation>() {

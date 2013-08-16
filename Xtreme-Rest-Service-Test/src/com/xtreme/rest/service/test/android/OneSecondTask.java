@@ -22,20 +22,20 @@ public final class OneSecondTask extends Task<String> {
 
 	@Override
 	public String onExecuteNetworkRequest(Context context) throws Exception {
-		Log.d(Tests.TAG, "onExecuteNetworkRequest for task: " + this);
+		Log.d(TestActivity.TAG, "onExecuteNetworkRequest for task: " + this);
 		sleep();
 		return String.valueOf(mId);
 	}
 
 	@Override
 	public void onExecuteProcessingRequest(Context context, String data) throws Exception {
-		Log.d(Tests.TAG, "onExecuteProcessingRequest for task: " + this);
+		Log.d(TestActivity.TAG, "onExecuteProcessingRequest for task: " + this);
 		sleep();
 	}
 
 	private final void sleep() throws Exception {
 		if (ALWAYS_FAIL || (RANDOM_FAIL && Math.random() < FAIL_PROBABILITY)) {
-			Log.e(Tests.TAG, "Task " + this + " just failed.");
+			Log.e(TestActivity.TAG, "Task " + this + " just failed.");
 			throw new RuntimeException();
 		}
 		Thread.sleep(1000);

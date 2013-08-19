@@ -149,10 +149,9 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 	}
 
 	/**
-	 * Adds a dependent. The provided {@link Task} will not execute until this, and all its other prerequisites
-	 * are finished.
+	 * Adds a dependant. The {@link Task} will notify all dependants when it has completed so they may execute.
 	 * 
-	 * @param task The dependent {@link Task}
+	 * @param task The dependant {@link Task}
 	 */
 	public final void addDependant(final Task<?> task) {
 		synchronized (mTaskLock) {

@@ -42,20 +42,21 @@ public class TaskTest extends AndroidTestCase {
 	
 	
 	public void testTaskExecutesNetworkRequest() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
 				
 				assertNotNull(request);
-				
-				latch.countDown();
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
 				fail();
 			}
 			
@@ -65,21 +66,22 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesNetworkRequestWithIdentifier() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 0);
 		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
 		final TestTask task = TestTaskFactory.newTaskWithIdentifier(identifier);
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
 				
 				assertEquals(request.getRequestIdentifier(), identifier);
-				
-				latch.countDown();
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
 				fail();
 			}
 			
@@ -89,24 +91,25 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesNetworkRequestWithoutError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
-
+				latch.executeNetworkRequest();
+				
 				assertNull(request.getError());
 				
 				request.run();
 				
 				assertNull(request.getError());
-				
-				latch.countDown();
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
 				fail();
 			}
 			
@@ -116,25 +119,26 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesNetworkRequestWithResult() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 0);
 		final String networkResult = RESULT;
 		final TestTask task = TestTaskFactory.newTaskWithNetworkResult(networkResult);
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
-
+				latch.executeNetworkRequest();
+				
 				assertNull(request.getData());
 				
 				request.run();
 				
 				assertEquals(request.getData(), networkResult);
-				
-				latch.countDown();
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
 				fail();
 			}
 			
@@ -144,25 +148,26 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesNetworkRequestWithError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
-
+				latch.executeNetworkRequest();
+				
 				assertNull(request.getError());
 				
 				request.run();
 				
 				assertNotNull(request.getError().getMessage());
-				
-				latch.countDown();
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
 				fail();
 			}
 			
@@ -172,7 +177,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesNetworkRequestWithCustomError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
@@ -180,18 +185,19 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
 				
 				assertNull(request.getError());
 				
 				request.run();
 				
 				assertEquals(request.getError(), error);
-				
-				latch.countDown();
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
 				fail();
 			}
 			
@@ -201,21 +207,22 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesProcessingRequest() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 1);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
 				request.notifyComplete(null, null);
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
 				
 				assertNotNull(request);
-				
-				latch.countDown();
 			}
 			
 		});
@@ -224,22 +231,23 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesProcessingRequestWithIdentifier() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 1);
 		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
 		final TestTask task = TestTaskFactory.newTaskWithIdentifier(identifier);
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
 				request.notifyComplete(null, null);
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
 				
 				assertEquals(request.getRequestIdentifier(), identifier);
-				
-				latch.countDown();
 			}
 			
 		});
@@ -248,25 +256,26 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesProcessingRequestWithoutError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 1);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
 				request.notifyComplete(null, null);
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
-
+				latch.executeProcessingRequest();
+				
 				assertNull(request.getError());
 				
 				request.run();
 				
 				assertNull(request.getError());
-				
-				latch.countDown();
 			}
 			
 		});
@@ -275,22 +284,23 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesProcessingRequestWithDataFromNetwork() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 1);
 		final String networkResult = RESULT;
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
 				request.notifyComplete(networkResult, null);
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
-
-				assertEquals(request.getData(), networkResult);
+				latch.executeProcessingRequest();
 				
-				latch.countDown();
+				assertEquals(request.getData(), networkResult);
 			}
 			
 		});
@@ -299,26 +309,27 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesProcessingRequestWithError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
 		task.setRequestHandler(new RequestHandler() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
 				request.notifyComplete(null, null);
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
 				
 				assertNull(request.getError());
 				
 				request.run();
 				
 				assertNotNull(request.getError().getMessage());
-				
-				latch.countDown();
 			}
 			
 		});
@@ -327,7 +338,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskExecutesProcessingRequestWithCustomError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final RequestCounter latch = new RequestCounter(1, 1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
@@ -335,19 +346,20 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
 				request.notifyComplete(null, null);
 			}
 
 			@Override
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
 				
 				assertNull(request.getError());
 				
 				request.run();
 				
 				assertEquals(request.getError(), error);
-				
-				latch.countDown();
 			}
 			
 		});
@@ -359,55 +371,28 @@ public class TaskTest extends AndroidTestCase {
 	// =============================================
 	
 	
-	public void testTaskStarted() {
-		final AssertionLatch latch = new AssertionLatch(1);
-		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(new TestRequestHandler());
-		task.setTaskObserver(new TaskObserver() {
-
-			@Override
-			public void onTaskStarted(final Task<?> t) {
-				
-				assertNotNull(t);
-				
-				latch.countDown();
-			}
-
-			@Override
-			public void onTaskComplete(final Task<?> t) {
-				// 
-			}
-
-			@Override
-			public void onTaskFailure(final Task<?> t, final ServiceError e) {
-				fail();
-			}
-		});
-		task.execute();
-		latch.assertComplete();
-	}
-	
 	public void testTaskCompleted() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final ObserverCounter latch = new ObserverCounter(1, 1, 0);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestHandler(new TestRequestHandler());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
 			public void onTaskStarted(final Task<?> t) {
-				//
+				latch.onTaskStarted();
 			}
 
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
 				
 				assertNotNull(t);
-				
-				latch.countDown();
 			}
 
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
 				fail();
 			}
 		});
@@ -416,7 +401,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskFailedNetworkRequestWithError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
 		task.setRequestHandler(new TestRequestHandler());
@@ -424,21 +409,22 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void onTaskStarted(final Task<?> t) {
-				//
+				latch.onTaskStarted();
 			}
 
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertNotNull(t);
 				assertNotNull(e.getMessage());
-				
-				latch.countDown();
 			}
 		});
 		task.execute();
@@ -446,7 +432,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskFailedNetworkRequestWithCustomError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
@@ -455,21 +441,22 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void onTaskStarted(final Task<?> t) {
-				// 
+				latch.onTaskStarted();
 			}
 
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertNotNull(t);
 				assertEquals(e, error);
-				
-				latch.countDown();
 			}
 		});
 		task.execute();
@@ -477,7 +464,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskFailedProcessingRequestWithError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
 		task.setRequestHandler(new TestRequestHandler());
@@ -485,21 +472,22 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void onTaskStarted(final Task<?> t) {
-				//
+				latch.onTaskStarted();
 			}
 
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertNotNull(t);
 				assertNotNull(e.getMessage());
-				
-				latch.countDown();
 			}
 		});
 		task.execute();
@@ -507,7 +495,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskFailedProcessingRequestWithCustomError() {
-		final AssertionLatch latch = new AssertionLatch(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
@@ -516,55 +504,57 @@ public class TaskTest extends AndroidTestCase {
 
 			@Override
 			public void onTaskStarted(final Task<?> t) {
-				// 
+				latch.onTaskStarted();
 			}
 
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertNotNull(t);
 				assertEquals(e, error);
-				
-				latch.countDown();
 			}
 		});
 		task.execute();
 		latch.assertComplete();
 	}
 	
+	
 	// =============================================
 	
 	
 	public void testTaskPrerequisitesSuccess() {
-		final AssertionLatch latch = new AssertionLatch(4);
+		final ObserverCounter latch = new ObserverCounter(2, 2, 0);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisites();
 
 		final TaskObserver observer = new TaskObserver() {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
 				fail();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
 				
 				assertEquals(t, expectedOrder.remove(0));
-				
-				latch.countDown();
 			}
 		};
 
@@ -578,7 +568,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskPrerequisitesFirstTaskFailsWithNetworkError() {
-		final AssertionLatch latch = new AssertionLatch(3);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesFirstTaskFailsWithNetworkException(exception);
 		
@@ -586,22 +576,22 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 		};
@@ -616,7 +606,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskPrerequisitesSecondTaskFailsWithNetworkError() {
-		final AssertionLatch latch = new AssertionLatch(4);
+		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesSecondTaskFailsWithNetworkException(exception);
 		
@@ -624,28 +614,25 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 0);
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 1);
-				
-				latch.countDown();
 			}
 		};
 		
@@ -659,7 +646,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskPrerequisitesFirstTaskFailsWithProcessingError() {
-		final AssertionLatch latch = new AssertionLatch(3);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesFirstTaskFailsWithProcessingException(exception);
 		
@@ -667,22 +654,22 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 		};
@@ -697,7 +684,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskPrerequisitesSecondTaskFailsWithProcessingError() {
-		final AssertionLatch latch = new AssertionLatch(4);
+		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesSecondTaskFailsWithProcessingException(exception);
 		
@@ -705,28 +692,25 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 0);
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 1);
-				
-				latch.countDown();
 			}
 		};
 		
@@ -740,30 +724,30 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskDependantsSuccess() {
-		final AssertionLatch latch = new AssertionLatch(4);
+		final ObserverCounter latch = new ObserverCounter(2, 2, 0);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependants();
 
 		final TaskObserver observer = new TaskObserver() {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
 				fail();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
 				
 				assertEquals(t, expectedOrder.remove(0));
-				
-				latch.countDown();
 			}
 		};
 		
@@ -777,7 +761,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskDependantsFirstTaskFailsWithNetworkError() {
-		final AssertionLatch latch = new AssertionLatch(3);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithNetworkException(exception);
 		
@@ -785,22 +769,22 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 		};
@@ -815,7 +799,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskDependantsSecondTaskFailsWithNetworkError() {
-		final AssertionLatch latch = new AssertionLatch(4);
+		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsSecondTaskFailsWithNetworkException(exception);
 		
@@ -823,29 +807,25 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 0);
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 1);
-				
-				latch.countDown();
-				
 			}
 		};
 		
@@ -859,7 +839,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskDependantsFirstTaskFailsWithProcessingError() {
-		final AssertionLatch latch = new AssertionLatch(3);
+		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithProcessingException(exception);
 		
@@ -867,22 +847,22 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
 				fail();
 			}
 		};
@@ -897,7 +877,7 @@ public class TaskTest extends AndroidTestCase {
 	}
 	
 	public void testTaskDependantsSecondTaskFailsWithProcessingError() {
-		final AssertionLatch latch = new AssertionLatch(4);
+		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
 		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsSecondTaskFailsWithProcessingException(exception);
 		
@@ -905,28 +885,25 @@ public class TaskTest extends AndroidTestCase {
 			
 			@Override
 			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
 				
 				assertEquals(t, expectedOrder.get(0));
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 0);
-				
-				latch.countDown();
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
 				
 				assertEquals(t, expectedOrder.remove(0));
 				assertEquals(expectedOrder.size(), 1);
-				
-				latch.countDown();
 			}
 		};
 		
@@ -954,6 +931,81 @@ public class TaskTest extends AndroidTestCase {
 			} catch (final InterruptedException e) {
 				fail();
 			}
+		}
+	}
+	
+	private static class ObserverCounter {
+
+		final AssertionLatch mStartLatch;
+		final AssertionLatch mCompleteLatch;
+		final AssertionLatch mFailureLatch;
+		
+		public ObserverCounter(final int startCount, final int completeCount, final int failureCount) {
+			mStartLatch = new AssertionLatch(startCount);
+			mCompleteLatch = new AssertionLatch(completeCount);
+			mFailureLatch = new AssertionLatch(failureCount);
+		}
+		
+		public void onTaskStarted() {
+			if (mStartLatch.getCount() == 0) {
+				fail();
+			} else {
+				mStartLatch.countDown();
+			}
+		}
+		
+		public void onTaskComplete() {
+			if (mCompleteLatch.getCount() == 0) {
+				fail();
+			} else {
+				mCompleteLatch.countDown();
+			}
+		}
+
+		public void onTaskFailure() {
+			if (mFailureLatch.getCount() == 0) {
+				fail();
+			} else {
+				mFailureLatch.countDown();
+			}
+		}
+		
+		public void assertComplete() {
+			mStartLatch.assertComplete();
+			mCompleteLatch.assertComplete();
+			mFailureLatch.assertComplete();
+		}
+	}
+	
+	private static class RequestCounter {
+		
+		final AssertionLatch mNetworkLatch;
+		final AssertionLatch mProcessingLatch;
+		
+		public RequestCounter(final int networkCount, final int processingCount) {
+			mNetworkLatch = new AssertionLatch(networkCount);
+			mProcessingLatch = new AssertionLatch(processingCount);
+		}
+		
+		public void executeNetworkRequest() {
+			if (mNetworkLatch.getCount() == 0) {
+				fail();
+			} else {
+				mNetworkLatch.countDown();
+			}
+		}
+		
+		public void executeProcessingRequest() {
+			if (mProcessingLatch.getCount() == 0) {
+				fail();
+			} else {
+				mProcessingLatch.countDown();
+			}
+		}
+		
+		public void assertComplete() {
+			mNetworkLatch.assertComplete();
+			mProcessingLatch.assertComplete();
 		}
 	}
 }

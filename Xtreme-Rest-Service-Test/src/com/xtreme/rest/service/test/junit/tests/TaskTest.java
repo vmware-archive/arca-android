@@ -925,6 +925,16 @@ public class TaskTest extends AndroidTestCase {
 			super(count);
 		}
 		
+		@Override
+		public void countDown() {
+			final long count = getCount();
+			if (count == 0) {
+				fail("This latch has already finished.");
+			} else {
+				super.countDown();
+			}
+		}
+		
 		public void assertComplete() {
 			try {
 				assertTrue(await(0, TimeUnit.SECONDS));
@@ -947,27 +957,15 @@ public class TaskTest extends AndroidTestCase {
 		}
 		
 		public void onTaskStarted() {
-			if (mStartLatch.getCount() == 0) {
-				fail();
-			} else {
-				mStartLatch.countDown();
-			}
+			mStartLatch.countDown();
 		}
 		
 		public void onTaskComplete() {
-			if (mCompleteLatch.getCount() == 0) {
-				fail();
-			} else {
-				mCompleteLatch.countDown();
-			}
+			mCompleteLatch.countDown();
 		}
 
 		public void onTaskFailure() {
-			if (mFailureLatch.getCount() == 0) {
-				fail();
-			} else {
-				mFailureLatch.countDown();
-			}
+			mFailureLatch.countDown();
 		}
 		
 		public void assertComplete() {
@@ -988,19 +986,11 @@ public class TaskTest extends AndroidTestCase {
 		}
 		
 		public void executeNetworkRequest() {
-			if (mNetworkLatch.getCount() == 0) {
-				fail();
-			} else {
-				mNetworkLatch.countDown();
-			}
+			mNetworkLatch.countDown();
 		}
 		
 		public void executeProcessingRequest() {
-			if (mProcessingLatch.getCount() == 0) {
-				fail();
-			} else {
-				mProcessingLatch.countDown();
-			}
+			mProcessingLatch.countDown();
 		}
 		
 		public void assertComplete() {

@@ -1,6 +1,8 @@
 package com.rottentomatoes.app.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -30,9 +32,11 @@ public class SyncMoviesOperation extends Operation {
 	}
 	
 	@Override
-	public void onCreateTasks() {
+	public Set<Task<?>> onCreateTasks() {
+		final Set<Task<?>> set = new HashSet<Task<?>>();
 		final String type = getUri().getLastPathSegment();
-		executeTask(new MovieListTask(type));
+		set.add(new MovieListTask(type));
+		return set;
 	}
 
 	@Override

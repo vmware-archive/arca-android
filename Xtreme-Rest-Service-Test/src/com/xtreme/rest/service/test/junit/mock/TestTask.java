@@ -29,7 +29,11 @@ public class TestTask extends Task<String> {
 	
 	@Override
 	public RequestIdentifier<?> onCreateIdentifier() {
-		return mIdentifier;
+		if (mIdentifier == null) {
+			return new RequestIdentifier<String>("empty");
+		} else {
+			return mIdentifier;
+		}
 	}
 	
 	@Override

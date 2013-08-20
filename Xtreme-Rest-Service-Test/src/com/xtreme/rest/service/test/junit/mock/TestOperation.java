@@ -1,6 +1,7 @@
 package com.xtreme.rest.service.test.junit.mock;
 
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.net.Uri;
@@ -13,32 +14,25 @@ import com.xtreme.rest.service.Task;
 
 public class TestOperation extends Operation {
 
-	public TestOperation(final Uri uri) {
+	private final Set<Task<?>> mTasks;
+	
+	public TestOperation(final Set<Task<?>> tasks) {
+		this(null, tasks);
+	}
+	
+	public TestOperation(final Uri uri, final Set<Task<?>> tasks) {
 		super(uri);
+		mTasks = tasks;
 	}
 	
 	public TestOperation(final Parcel in) {
 		super(in);
+		mTasks = null;
 	}
 
 	@Override
-	public void onCreateTasks() {
-		// do nothing for now
-	}
-	
-	@Override
-	public void onTaskStarted(final Task<?> task) {
-		super.onTaskStarted(task);
-	}
-	
-	@Override
-	public void onTaskComplete(final Task<?> task) {
-		super.onTaskComplete(task);
-	}
-	
-	@Override
-	public void onTaskFailure(final Task<?> task, final ServiceError error) {
-		super.onTaskFailure(task, error);
+	public Set<Task<?>> onCreateTasks() {
+		return mTasks;
 	}
 	
 	@Override

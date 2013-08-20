@@ -1,6 +1,8 @@
 package ${base_package}.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -29,9 +31,11 @@ public class ${name}Operation extends Operation {
 	}
 
 	@Override
-	public void onCreateTasks() {
+	public Set<Task<?>> onCreateTasks() {
+		final Set<Task<?>> set = new HashSet<Task<?>>();
 		final String id = getUri().getLastPathSegment();
-		executeTask(new ${name}Task(id));
+		set.add(new ${name}Task(id));
+		return set;
 	}
 
 	@Override

@@ -87,23 +87,48 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	}
 
 	public void execute() {
-		try {
-			mError = null;
-			onCreateTasks();
-		} catch (final Exception e) {
-			Logger.ex(e);
-			mError = new ServiceError(e);
+		final Set<Task<?>> tasks = onCreateTasks();
+		checkTasks(tasks);
+	}
+
+	private void checkTasks(final Set<Task<?>> tasks) {
+		if (tasks != null && !tasks.isEmpty()) {
+			addTasksToPending(tasks);
+			executeTasks(tasks);
+		} else {
+			notifyComplete();
 		}
-		checkTaskCompletion();
+	}
+
+	private void addTasksToPending(final Set<Task<?>> tasks) {
+		for (final Task<?> task : tasks) {
+			addTaskToPending(task);
+		}
+	}
+
+	private void executeTasks(final Set<Task<?>> tasks) {
+		for (final Task<?> task : tasks) {
+			executeTaskNow(task);
+		}
+	}
+	
+	private void executeTaskNow(final Task<?> task) {
+		task.setContext(mContext);
+		task.setPriority(mPriority);
+		task.setTaskObserver(this);
+		task.setRequestHandler(mHandler);
+		task.execute();
 	}
 
 	// ======================================================
-	
+
+
 	/**
-	 * This is where all {@link Task}s should be created, their dependencies set up, and then executed. To execute
-	 * a {@link Task}, call {@link #executeTask(Task)}.
+	 * This is where all {@link Task}s should be created.
+	 * 
+	 * @return The list of {@link Task}s to be executed.
 	 */
-	public abstract void onCreateTasks();
+	public abstract Set<Task<?>> onCreateTasks();
 
 	/**
 	 * The final callback once all {@link Task}s have been completed successfully.
@@ -114,11 +139,12 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	public abstract void onSuccess(Context context, List<Task<?>> completed);
 
 	/**
-	 * A callback for when all {@link Task}s have finished executing but at least one has failed. You may create recovery
-	 * {@link Task}s and call {@link #executeTask(Task)} here.</br>
+	 * A callback for when all {@link Task}s have finished executing but at least one has 
+	 * failed. You may create recovery {@link Task}s and call {@link #executeTask(Task)} 
+	 * here.</br>
 	 * </br>
-	 * IMPORTANT: If the recovery task fails, there will be another callback into this method. Make sure that you don't
-	 * attempt to recover again, or this operation will never finish.
+	 * IMPORTANT: If the recovery task fails, there will be another callback into this method. 
+	 * Make sure that you don't attempt to recover again, or this operation will never finish.
 	 * 
 	 * @param context The context in which this {@link Operation} is running
 	 * @param error The error that caused the failure.
@@ -128,19 +154,16 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	// ======================================================
 
 	/**
-	 * Adds a {@link Task} to the queues to be executed. This method must be called on all {@link Task}s
-	 * that should execute. This method should only be called after dependencies have been set up, usually
-	 * in {@link #onCreateTasks()} or {@link #onFailure(Context, ServiceError)}.
+	 * Adds a {@link Task} to the queues to be executed. Typically {@link Task}s should be created 
+	 * in {@link #onCreateTasks()} but you may call this method explicitly if you need to schedule
+	 * a task to run after you receive a call to {@link #onFailure(Context, ServiceError)} or
+	 * {@link #onSuccess(Context, List)}.
 	 * 
 	 * @param task The {@link Task} to be executed.
 	 */
-	public void executeTask(final Task<?> task) {
+	protected void executeTask(final Task<?> task) {
 		addTaskToPending(task);
-		task.setContext(mContext);
-		task.setPriority(mPriority);
-		task.setTaskObserver(this);
-		task.setRequestHandler(mHandler);
-		task.execute();
+		executeTaskNow(task);
 	}
 
 	@Override
@@ -216,7 +239,9 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		} else {
 			onFailure(mContext, mError);
 		}
-		mObserver.onOperationComplete(this);
+		if (mObserver != null) {
+			mObserver.onOperationComplete(this);
+		}
 	}
 
 	// ======================================================

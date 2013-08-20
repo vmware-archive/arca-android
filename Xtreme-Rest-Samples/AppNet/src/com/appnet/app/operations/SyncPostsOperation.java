@@ -1,6 +1,8 @@
 package com.appnet.app.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -30,8 +32,10 @@ public class SyncPostsOperation extends Operation {
 	}
 	
 	@Override
-	public void onCreateTasks() {
-		executeTask(new PostListTask());
+	public Set<Task<?>> onCreateTasks() {
+		final Set<Task<?>> set = new HashSet<Task<?>>();
+		set.add(new PostListTask());
+		return set;
 	}
 
 	@Override

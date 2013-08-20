@@ -1,6 +1,8 @@
 package com.xtreme.rest.service.test.android.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.net.Uri;
@@ -24,7 +26,7 @@ public class ComplexOperation extends Operation {
 	}
 
 	@Override
-	public void onCreateTasks() {
+	public Set<Task<?>> onCreateTasks() {
 		Log.d(TestActivity.TAG, "onCreateTasks for Operation: " + getUri());
 
 		OneSecondTask[] tasks = new OneSecondTask[15];
@@ -68,8 +70,11 @@ public class ComplexOperation extends Operation {
 		tasks[14].addPrerequisite(tasks[13]);
 		
 		// execute tasks
+		final Set<Task<?>> set = new HashSet<Task<?>>();
 		for (OneSecondTask task : tasks)
-			executeTask(task);
+			set.add(task);
+		
+		return set;
 	}
 
 	@Override

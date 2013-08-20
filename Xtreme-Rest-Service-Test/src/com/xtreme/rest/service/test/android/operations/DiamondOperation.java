@@ -1,6 +1,8 @@
 package com.xtreme.rest.service.test.android.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.net.Uri;
@@ -42,7 +44,7 @@ public class DiamondOperation extends Operation {
 	}
 
 	@Override
-	public void onCreateTasks() {
+	public Set<Task<?>> onCreateTasks() {
 		Log.d(TestActivity.TAG, "onCreateTasks for Operation: " + getUri());
 
 		OneSecondTask beginning = new OneSecondTask(mBegin);
@@ -59,12 +61,16 @@ public class DiamondOperation extends Operation {
 			end.addPrerequisite(task);
 		}
 
-
-		executeTask(beginning);
-		for (OneSecondTask task : middle) {
-			executeTask(task);
-		}
-		executeTask(end);
+		
+		final Set<Task<?>> set = new HashSet<Task<?>>();
+		set.add(beginning);
+		
+		for (OneSecondTask task : middle)
+			set.add(task);
+		
+		set.add(end);
+		
+		return set;
 	}
 
 	@Override

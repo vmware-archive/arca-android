@@ -1,6 +1,8 @@
 package com.xtreme.rest.service.test.android.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.net.Uri;
@@ -34,11 +36,14 @@ public class SimpleOperation extends Operation {
 	}
 
 	@Override
-	public void onCreateTasks() {
+	public Set<Task<?>> onCreateTasks() {
 		Log.d(TestActivity.TAG, "onCreateTasks for Operation: " + getUri());
 
+		final Set<Task<?>> set = new HashSet<Task<?>>();
 		for (int index : mIndices)
-			executeTask(new OneSecondTask(index));
+			set.add(new OneSecondTask(index));
+		
+		return set;
 	}
 
 	@Override

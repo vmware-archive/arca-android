@@ -1,6 +1,8 @@
 package com.xtreme.rest.service.test.android.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.net.Uri;
@@ -34,7 +36,7 @@ public class LinearOperation extends Operation {
 	}
 
 	@Override
-	public void onCreateTasks() {
+	public Set<Task<?>> onCreateTasks() {
 		Log.d(TestActivity.TAG, "onCreateTasks for Operation: " + getUri());
 
 		OneSecondTask[] tasks = new OneSecondTask[mIndices.length];
@@ -46,8 +48,11 @@ public class LinearOperation extends Operation {
 			tasks[i].addPrerequisite(tasks[i - 1]);
 
 
+		final Set<Task<?>> set = new HashSet<Task<?>>();
 		for (OneSecondTask task : tasks)
-			executeTask(task);
+			set.add(task);
+		
+		return set;
 	}
 
 	@Override

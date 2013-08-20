@@ -1,6 +1,8 @@
 package com.crunchbase.app.operations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -29,8 +31,10 @@ public class CompanyListOperation extends Operation {
 	}
 
 	@Override
-	public void onCreateTasks() {
-		executeTask(new CompanyListTask(1));
+	public Set<Task<?>> onCreateTasks() {
+		final Set<Task<?>> set = new HashSet<Task<?>>();
+		set.add(new CompanyListTask(1));
+		return set;
 	}
 	
 	@Override

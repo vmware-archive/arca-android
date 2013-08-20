@@ -262,14 +262,14 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 		}
 		notifyDependentsOfCompletion();
 	}
-
+	
 	private void notifyFailure(final ServiceError error) {
 		if (mObserver != null) {
 			mObserver.onTaskFailure(this, error);
 		}
 		notifyDependentsOfFailure(error);
 	}
-	
+
 	private void notifyDependentsOfCompletion() {
 		synchronized (mTaskLock) {
 			for (final Task<?> dependant : mDependants) {

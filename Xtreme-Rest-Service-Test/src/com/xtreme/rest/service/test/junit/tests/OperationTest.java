@@ -27,24 +27,6 @@ public class OperationTest extends AndroidTestCase {
 		super.tearDown();
 	}
 	
-	public void testOperationFinishesWithoutTasks() {
-		final ObserverCounter latch = new ObserverCounter(1);
-		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
-		operation.setRequestHandler(new TestRequestHandler());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-				
-				assertNotNull(o);
-			}
-			
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-	
 	public void testOperationSucceedsWithoutTasks() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
@@ -120,7 +102,48 @@ public class OperationTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testOperationSucceedsWithTaskPrerequisites() {
+	public void testOperationFailsWithProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final Exception exception = new Exception(ERROR);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNotNull(o.getError());
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationFailsWithCustomProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final ServiceError error = new ServiceError(ERROR);
+		final ServiceException exception = new ServiceException(error);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertEquals(o.getError(), error);
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	// =============================================
+	
+	public void testOperationWithTaskPrerequisitesSucceeds() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisites();
 		operation.setRequestHandler(new TestRequestHandler());
@@ -139,7 +162,89 @@ public class OperationTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testOperationSucceedsWithTaskDependants() {
+	public void testOperationWithTaskPrerequisitesFailsWithNetworkError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final Exception exception = new Exception(ERROR);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNotNull(o.getError());
+				
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskPrerequisitesFailsWithCustomNetworkError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final ServiceError error = new ServiceError(ERROR);
+		final ServiceException exception = new ServiceException(error);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertEquals(o.getError(), error);
+				
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskPrerequisitesFailsWithProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final Exception exception = new Exception(ERROR);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNotNull(o.getError());
+				
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskPrerequisitesFailsWithCustomProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final ServiceError error = new ServiceError(ERROR);
+		final ServiceException exception = new ServiceException(error);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertEquals(o.getError(), error);
+				
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskDependantsSucceeds() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependants();
 		operation.setRequestHandler(new TestRequestHandler());
@@ -150,6 +255,84 @@ public class OperationTest extends AndroidTestCase {
 				latch.onOperationComplete();
 				
 				assertNull(o.getError());
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskDependantsFailsWithNetworkError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final Exception exception = new Exception(ERROR);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsNetworkException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNotNull(o.getError());
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskDependantsFailsWithCustomNetworkError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final ServiceError error = new ServiceError(ERROR);
+		final ServiceException exception = new ServiceException(error);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsNetworkException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertEquals(o.getError(), error);
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskDependantsFailsWithProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final Exception exception = new Exception(ERROR);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsProcessingException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNotNull(o.getError());
+			}
+			
+		});
+		operation.execute();
+		latch.assertComplete();
+	}
+	
+	public void testOperationWithTaskDependantsFailsWithCustomProcssingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final ServiceError error = new ServiceError(ERROR);
+		final ServiceException exception = new ServiceException(error);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsProcessingException(exception);
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertEquals(o.getError(), error);
 			}
 			
 		});

@@ -380,6 +380,8 @@ public class TaskTest extends AndroidTestCase {
 			@Override
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
+				
+				assertNotNull(t);
 			}
 
 			@Override

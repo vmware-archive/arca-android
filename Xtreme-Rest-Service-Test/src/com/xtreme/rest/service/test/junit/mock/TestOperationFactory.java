@@ -12,7 +12,7 @@ public class TestOperationFactory {
 		return new TestOperation(tasks);
 	}
 	
-	public static TestOperation newOperationWithPassingTask() {
+	public static TestOperation newOperationWithTask() {
 		final Set<Task<?>> tasks = new HashSet<Task<?>>();
 		tasks.add(TestTaskFactory.newTask());
 		return new TestOperation(tasks);

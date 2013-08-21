@@ -17,8 +17,7 @@ import com.xtreme.threading.RequestIdentifier;
 /**
  * A Task consists of two components: a network request, and a processing request.</br>
  * The network request occurs in {@link #onExecuteNetworkRequest(Context)} and is used to download data from a network,
- * and is then parsed into the generic specified. The processing request then processes the data that was just downloaded
- * and stores it if necessary.</br>
+ * and is then parsed into the generic specified. The processing request then processes the data stores it if necessary.</br>
  * </br>
  * Please keep in mind that no CPU-intensive processing should happen in {@link #onExecuteNetworkRequest(Context)}, as that
  * may cause UI lag. All of that work should be done in {@link #onExecuteProcessingRequest(Context, Object)}.
@@ -135,7 +134,9 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 	// ======================================================
 
 	/**
-	 * Adds a prerequisite. This {@link Task} will wait until all prerequisites are finished before being executed.
+	 * Adds a prerequisite. This {@link Task} will wait until all prerequisites are finished before being executed.</br>
+	 * </br>
+	 * Note that by adding a prerequisite, the necessary dependants are also added to the task parameter.
 	 * 
 	 * @param task The prerequisite {@link Task}
 	 */
@@ -149,7 +150,9 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 	}
 
 	/**
-	 * Adds a dependant. The {@link Task} will notify all dependants when it has completed so they may execute.
+	 * Adds a dependant. The {@link Task} will notify all dependants when it has completed so they may execute.</br>
+	 * </br>
+	 * Note that by adding a dependant, the necessary prerequisites are also added to the task parameter.
 	 * 
 	 * @param task The dependant {@link Task}
 	 */

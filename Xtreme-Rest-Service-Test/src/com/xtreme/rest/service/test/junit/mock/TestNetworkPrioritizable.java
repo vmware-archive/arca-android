@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.tests;
+package com.xtreme.rest.service.test.junit.mock;
 
 import com.xtreme.rest.service.NetworkPrioritizable;
 import com.xtreme.threading.RequestIdentifier;

@@ -117,7 +117,8 @@ public class RequestExecutor implements RequestHandler, RequestObserver {
 	public void onProcessingRequestCancelled(final ProcessingRequest<?> request) {
 		// do nothing
 	}
-
+	
+	
 	
 	private final AuxiliaryExecutorObserver mNetworkObserver = new AuxiliaryExecutorObserver() {
 		

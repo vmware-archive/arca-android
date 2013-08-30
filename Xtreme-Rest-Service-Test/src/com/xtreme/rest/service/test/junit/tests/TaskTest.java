@@ -2,8 +2,6 @@ package com.xtreme.rest.service.test.junit.tests;
 
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import android.test.AndroidTestCase;
 
@@ -17,6 +15,7 @@ import com.xtreme.rest.service.TaskObserver;
 import com.xtreme.rest.service.test.junit.mock.TestRequestHandler;
 import com.xtreme.rest.service.test.junit.mock.TestTask;
 import com.xtreme.rest.service.test.junit.mock.TestTaskFactory;
+import com.xtreme.rest.service.test.junit.utils.AssertionLatch;
 import com.xtreme.threading.RequestIdentifier;
 
 public class TaskTest extends AndroidTestCase {
@@ -920,31 +919,6 @@ public class TaskTest extends AndroidTestCase {
 	
 	// =============================================
 	
-	
-	private static class AssertionLatch extends CountDownLatch {
-
-		public AssertionLatch(final int count) {
-			super(count);
-		}
-		
-		@Override
-		public void countDown() {
-			final long count = getCount();
-			if (count == 0) {
-				fail("This latch has already finished.");
-			} else {
-				super.countDown();
-			}
-		}
-		
-		public void assertComplete() {
-			try {
-				assertTrue(await(0, TimeUnit.SECONDS));
-			} catch (final InterruptedException e) {
-				fail();
-			}
-		}
-	}
 	
 	private static class ObserverCounter {
 

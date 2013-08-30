@@ -1,5 +1,8 @@
 package com.xtreme.rest.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +15,10 @@ import com.xtreme.threading.AuxiliaryExecutor;
  * This class serves as the main entry point to the system, where {@link Operation}s are started, and their {@link Task}s execute.
  * This {@link Service} runs as long as there are {@link Operation}s running and stops itself once the last one is done.</br>
  * </br>
- * Note: This class must be declared in the AndroidManifest.xml file as a service as follows:</br>
+ * Note: This class must be declared in the AndroidManifest.xml file as follows:</br>
  * {@code <service android:name="com.xtreme.rest.service.RestService" android:exported="false" />}
  */
-public class RestService extends Service implements OperationObserver {
+public class RestService extends Service {
 
 	private static enum Action {
 		START, CANCEL;
@@ -84,27 +87,29 @@ public class RestService extends Service implements OperationObserver {
 		context.startService(intent);
 	}
 
-	private OperationHandler mHandler;
-	private Executor mExecutor;
+	private final Set<Operation> mOperations = new HashSet<Operation>();
+	
+	private OperationObserver mObserver;
+	private RequestHandler mHandler;
 	private int mLatestStartId;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		Logger.v("Creating service %s", this.getClass());
-		mHandler = new OperationHandler(this);
-		mExecutor = new Executor();
+		mObserver = new OperationHandler(this);
+		mHandler = new RequestExecutor();
 	}
 	
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		final int start = super.onStartCommand(intent, flags, startId);
 		mLatestStartId = startId;
-		handleCommand(intent);
+		handleIntent(intent);
 		return start;
 	}
 
-	private void handleCommand(final Intent intent) {
+	private void handleIntent(final Intent intent) {
 		if (intent != null && intent.hasExtra(Extras.OPERATION)) {
 			final Action action = (Action) intent.getSerializableExtra(Extras.ACTION);
 			final Operation operation = intent.getParcelableExtra(Extras.OPERATION);
@@ -121,22 +126,24 @@ public class RestService extends Service implements OperationObserver {
 	}
 
 	private void handleStart(final Operation operation) {
+		mOperations.add(operation);
 		operation.setContext(getApplicationContext());
-		operation.setRequestHandler(mExecutor);
-		operation.setOperationObserver(mHandler);
+		operation.setRequestHandler(mHandler);
+		operation.setOperationObserver(mObserver);
 		operation.execute();
 	}
 
-	@Override
-	public void onOperationComplete(final Operation operation) {
+	void handleFinish(final Operation operation) {
 		final ServiceError error = operation.getError();
 		final Uri uri = operation.getUri();
 
 		if (error == null) {
 			URI_CACHE.markComplete(uri);
 		}
+		
+		mOperations.remove(operation);
 
-		if (mExecutor.isEmpty()) {
+		if (mOperations.isEmpty()) {
 			stopSelf(mLatestStartId);
 		}
 	}

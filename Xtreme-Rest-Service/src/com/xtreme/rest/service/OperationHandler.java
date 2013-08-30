@@ -7,10 +7,10 @@ public class OperationHandler extends Handler implements OperationObserver {
 
 	private static final int NOTIFY_COMPLETE = 100;
 	
-	private final OperationObserver mObserver;
+	private final RestService mService;
 	
-	public OperationHandler(final OperationObserver observer) {
-		mObserver = observer;
+	public OperationHandler(final RestService service) {
+		mService = service;
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class OperationHandler extends Handler implements OperationObserver {
 	public void handleMessage(final Message msg) {
 		if (msg.what == NOTIFY_COMPLETE) {
 			final Operation operation = (Operation) msg.obj;
-			mObserver.onOperationComplete(operation);
+			mService.handleFinish(operation);
 		}
-	};
+	}
 }

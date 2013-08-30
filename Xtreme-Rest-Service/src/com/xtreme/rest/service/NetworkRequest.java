@@ -5,19 +5,19 @@ import com.xtreme.threading.PrioritizableRequest;
 
 public class NetworkRequest<T> extends PrioritizableRequest {
 
-	private final NetworkObserver<T> mListener;
+	private final NetworkObserver<T> mObserver;
 	
-	public NetworkRequest(final Prioritizable prioritizable, final int accessorIndex, final NetworkObserver<T> listener) {
+	public NetworkRequest(final Prioritizable prioritizable, final int accessorIndex, final NetworkObserver<T> observer) {
 		super(prioritizable, accessorIndex);
-		mListener = listener;
+		mObserver = observer;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void notifyComplete(final Object data, final ServiceError error) {
 		if (error == null) {
-			mListener.onNetworkRequestComplete((T) data);
+			mObserver.onNetworkRequestComplete((T) data);
 		} else {
-			mListener.onNetworkRequestFailure(error);
+			mObserver.onNetworkRequestFailure(error);
 		}
 	}
 

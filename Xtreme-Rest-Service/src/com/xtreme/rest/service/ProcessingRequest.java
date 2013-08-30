@@ -5,18 +5,18 @@ import com.xtreme.threading.PrioritizableRequest;
 
 public class ProcessingRequest<T> extends PrioritizableRequest {
 
-	private final ProcessingObserver<T> mListener;
+	private final ProcessingObserver<T> mObserver;
 	
-	public ProcessingRequest(final Prioritizable prioritizable, final int accessorIndex, final ProcessingObserver<T> listener) {
+	public ProcessingRequest(final Prioritizable prioritizable, final int accessorIndex, final ProcessingObserver<T> observer) {
 		super(prioritizable, accessorIndex);
-		mListener = listener;
+		mObserver = observer;
 	}
 	
 	public void notifyComplete(final ServiceError error) {
 		if (error == null) {
-			mListener.onProcessingRequestComplete();
+			mObserver.onProcessingRequestComplete();
 		} else {
-			mListener.onProcessingRequestFailure(error);
+			mObserver.onProcessingRequestFailure(error);
 		}
 	}
 

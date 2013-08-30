@@ -74,7 +74,7 @@ public class TaskTest extends AndroidTestCase {
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
 				latch.executeNetworkRequest();
 				
-				assertEquals(request.getRequestIdentifier(), identifier);
+				assertEquals(identifier, request.getRequestIdentifier());
 			}
 
 			@Override
@@ -131,7 +131,7 @@ public class TaskTest extends AndroidTestCase {
 				
 				request.run();
 				
-				assertEquals(request.getData(), networkResult);
+				assertEquals(networkResult, request.getData());
 			}
 
 			@Override
@@ -190,7 +190,7 @@ public class TaskTest extends AndroidTestCase {
 				
 				request.run();
 				
-				assertEquals(request.getError(), error);
+				assertEquals(error, request.getError());
 			}
 
 			@Override
@@ -246,7 +246,7 @@ public class TaskTest extends AndroidTestCase {
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
 				latch.executeProcessingRequest();
 				
-				assertEquals(request.getRequestIdentifier(), identifier);
+				assertEquals(identifier, request.getRequestIdentifier());
 			}
 			
 		});
@@ -299,7 +299,7 @@ public class TaskTest extends AndroidTestCase {
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
 				latch.executeProcessingRequest();
 				
-				assertEquals(request.getData(), networkResult);
+				assertEquals(networkResult, request.getData());
 			}
 			
 		});
@@ -358,7 +358,7 @@ public class TaskTest extends AndroidTestCase {
 				
 				request.run();
 				
-				assertEquals(request.getError(), error);
+				assertEquals(error, request.getError());
 			}
 			
 		});
@@ -457,7 +457,7 @@ public class TaskTest extends AndroidTestCase {
 				latch.onTaskFailure();
 				
 				assertNotNull(t);
-				assertEquals(e, error);
+				assertEquals(error, e);
 			}
 		});
 		task.execute();
@@ -520,7 +520,7 @@ public class TaskTest extends AndroidTestCase {
 				latch.onTaskFailure();
 				
 				assertNotNull(t);
-				assertEquals(e, error);
+				assertEquals(error, e);
 			}
 		});
 		task.execute();
@@ -541,7 +541,7 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
@@ -555,7 +555,7 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskComplete(final Task<?> t) {
 				latch.onTaskComplete();
 				
-				assertEquals(t, expectedOrder.remove(0));
+				assertEquals(expectedOrder.remove(0), t);
 			}
 		};
 
@@ -579,14 +579,14 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
+				assertEquals(expectedOrder.remove(0), t);
 			}
 			
 			@Override
@@ -617,23 +617,23 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 0);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(0, expectedOrder.size());
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
 				latch.onTaskComplete();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 1);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(1, expectedOrder.size());
 			}
 		};
 		
@@ -657,14 +657,14 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
+				assertEquals(expectedOrder.remove(0), t);
 			}
 			
 			@Override
@@ -695,23 +695,23 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 0);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(0, expectedOrder.size());
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
 				latch.onTaskComplete();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 1);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(1, expectedOrder.size());
 			}
 		};
 		
@@ -734,7 +734,7 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
@@ -748,7 +748,7 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskComplete(final Task<?> t) {
 				latch.onTaskComplete();
 				
-				assertEquals(t, expectedOrder.remove(0));
+				assertEquals(expectedOrder.remove(0), t);
 			}
 		};
 		
@@ -772,14 +772,14 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
+				assertEquals(expectedOrder.remove(0), t);
 			}
 			
 			@Override
@@ -810,23 +810,23 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 0);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(0, expectedOrder.size());
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
 				latch.onTaskComplete();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 1);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(1, expectedOrder.size());
 			}
 		};
 		
@@ -850,14 +850,14 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
+				assertEquals(expectedOrder.remove(0), t);
 			}
 			
 			@Override
@@ -888,23 +888,23 @@ public class TaskTest extends AndroidTestCase {
 			public void onTaskStarted(final Task<?> t) {
 				latch.onTaskStarted();
 				
-				assertEquals(t, expectedOrder.get(0));
+				assertEquals(expectedOrder.get(0), t);
 			}
 			
 			@Override
 			public void onTaskFailure(final Task<?> t, final ServiceError e) {
 				latch.onTaskFailure();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 0);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(0, expectedOrder.size());
 			}
 			
 			@Override
 			public void onTaskComplete(final Task<?> t) {
 				latch.onTaskComplete();
 				
-				assertEquals(t, expectedOrder.remove(0));
-				assertEquals(expectedOrder.size(), 1);
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(1, expectedOrder.size());
 			}
 		};
 		

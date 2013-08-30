@@ -172,7 +172,7 @@ public class OperationTest extends AndroidTestCase {
 			public void onOperationComplete(final Operation o) {
 				latch.onOperationComplete();
 				
-				assertEquals(o.getError(), error);
+				assertEquals(error, o.getError());
 			}
 			
 		});
@@ -211,7 +211,7 @@ public class OperationTest extends AndroidTestCase {
 			public void onOperationComplete(final Operation o) {
 				latch.onOperationComplete();
 				
-				assertEquals(o.getError(), error);
+				assertEquals(error, o.getError());
 			}
 			
 		});
@@ -270,7 +270,7 @@ public class OperationTest extends AndroidTestCase {
 			public void onOperationComplete(final Operation o) {
 				latch.onOperationComplete();
 				
-				assertEquals(o.getError(), error);
+				assertEquals(error, o.getError());
 			}
 			
 		});
@@ -309,7 +309,7 @@ public class OperationTest extends AndroidTestCase {
 			public void onOperationComplete(final Operation o) {
 				latch.onOperationComplete();
 				
-				assertEquals(o.getError(), error);
+				assertEquals(error, o.getError());
 			}
 			
 		});
@@ -366,7 +366,7 @@ public class OperationTest extends AndroidTestCase {
 			public void onOperationComplete(final Operation o) {
 				latch.onOperationComplete();
 				
-				assertEquals(o.getError(), error);
+				assertEquals(error, o.getError());
 			}
 			
 		});
@@ -405,7 +405,7 @@ public class OperationTest extends AndroidTestCase {
 			public void onOperationComplete(final Operation o) {
 				latch.onOperationComplete();
 				
-				assertEquals(o.getError(), error);
+				assertEquals(error, o.getError());
 			}
 			
 		});

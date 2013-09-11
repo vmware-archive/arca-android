@@ -1,5 +1,7 @@
 package com.xtreme.rest.service.test.junit.tests;
 
+import android.net.Uri;
+import android.os.Parcel;
 import android.test.AndroidTestCase;
 
 import com.xtreme.rest.service.NetworkRequest;
@@ -12,6 +14,8 @@ import com.xtreme.rest.service.ServiceException;
 import com.xtreme.rest.service.test.junit.mock.TestOperation;
 import com.xtreme.rest.service.test.junit.mock.TestOperationFactory;
 import com.xtreme.rest.service.test.junit.mock.TestRequestHandler;
+import com.xtreme.rest.service.test.junit.mock.TestTask;
+import com.xtreme.rest.service.test.junit.mock.TestTaskFactory;
 import com.xtreme.rest.service.test.junit.utils.AssertionLatch;
 
 public class OperationTest extends AndroidTestCase {
@@ -29,6 +33,203 @@ public class OperationTest extends AndroidTestCase {
 	}
 	
 	// =============================================
+	
+	public void testOperationDoesNotExecuteNullTask() {
+		final RequestCounter latch = new RequestCounter(0, 0);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
+				fail();
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
+				fail();
+			}
+			
+		});
+		operation.executeTask(null);
+		latch.assertComplete();
+	}
+	
+	public void testOperationExecutesTaskNetworkRequest() {
+		final RequestCounter latch = new RequestCounter(1, 0);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
+				assertNotNull(request);
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
+				fail();
+			}
+			
+		});
+		operation.executeTask(TestTaskFactory.newTask());
+		latch.assertComplete();
+	}
+	
+	public void testOperationExecutesTaskProcessingRequest() {
+		final RequestCounter latch = new RequestCounter(1, 1);
+		final TestOperation operation = TestOperationFactory.newOperationWithTask();
+		operation.setRequestHandler(new RequestHandler() {
+
+			@Override
+			public void executeNetworkRequest(final NetworkRequest<?> request) {
+				latch.executeNetworkRequest();
+				
+				request.notifyComplete(null, null);
+			}
+
+			@Override
+			public void executeProcessingRequest(final ProcessingRequest<?> request) {
+				latch.executeProcessingRequest();
+				
+				assertNotNull(request);
+			}
+			
+		});
+		operation.executeTask(TestTaskFactory.newTask());
+		latch.assertComplete();
+	}
+
+	
+	// =============================================
+
+	public void testOperationExecutedNullTaskSucceeds() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNull(o.getError());
+			}
+			
+		});
+		operation.executeTask(null);
+		latch.assertComplete();
+	}
+	
+	public void testOperationExecutedTaskSucceeds() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNull(o.getError());
+			}
+			
+		});
+		operation.executeTask(TestTaskFactory.newTask());
+		latch.assertComplete();
+	}
+	
+	public void testOperationExecutedTaskFailsWithNetworkError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final Exception exception = new Exception(ERROR);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNotNull(o.getError());
+			}
+			
+		});
+		operation.executeTask(task);
+		latch.assertComplete();
+	}
+	
+	public void testOperationExecutedTaskFailsWithCustomNetworkError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final ServiceError error = new ServiceError(ERROR);
+		final ServiceException exception = new ServiceException(error);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertEquals(error, o.getError());
+			}
+			
+		});
+		operation.executeTask(task);
+		latch.assertComplete();
+	}
+	
+	public void testOperationExecutedTaskFailsWithProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final Exception exception = new Exception(ERROR);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertNotNull(o.getError());
+			}
+			
+		});
+		operation.executeTask(task);
+		latch.assertComplete();
+	}
+	
+	public void testOperationExecutedTaskFailsWithCustomProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(1);
+		final ServiceError error = new ServiceError(ERROR);
+		final ServiceException exception = new ServiceException(error);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		operation.setRequestHandler(new TestRequestHandler());
+		operation.setOperationObserver(new OperationObserver() {
+
+			@Override
+			public void onOperationComplete(final Operation o) {
+				latch.onOperationComplete();
+				
+				assertEquals(error, o.getError());
+			}
+			
+		});
+		operation.executeTask(task);
+		latch.assertComplete();
+	}
+	
+	
+	// =============================================
+	
 	
 	public void testOperationWithoutTasksDoesNotExecuteRequest() {
 		final RequestCounter latch = new RequestCounter(0, 0);
@@ -416,6 +617,33 @@ public class OperationTest extends AndroidTestCase {
 	
 	// =============================================
 	
+	
+	public void testOperationParcelableDescribeContents() {
+		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+		assertEquals(0, operation.describeContents());
+	}
+	
+	public void testOperationParcelableCreatorArray() {
+		final TestOperation[] operation = TestOperation.CREATOR.newArray(1);
+		assertEquals(1, operation.length);
+	}
+	
+	public void testOperationParcelableCreator() {
+		final Uri uri = Uri.parse("http://empty");
+		final TestOperation operation = TestOperationFactory.newOperationWithUri(uri);
+		
+		final Parcel parcel = Parcel.obtain();
+		operation.writeToParcel(parcel, 0);
+		parcel.setDataPosition(0);
+		
+		final TestOperation parceled = TestOperation.CREATOR.createFromParcel(parcel);
+		assertEquals(uri, parceled.getUri());
+		
+		parcel.recycle();
+	}
+	
+	
+	// =============================================
 
 	
 	private static class ObserverCounter {

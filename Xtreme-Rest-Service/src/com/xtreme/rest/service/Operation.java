@@ -52,8 +52,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	 * @param uri The associated {@link Uri}
 	 */
 	public Operation(final Uri uri) {
-		mUri = uri;
-		mPriority = Priority.LIVE;
+		this(uri, Priority.LIVE);
 	}
 
 	/**
@@ -157,13 +156,19 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	 * Adds a {@link Task} to the queues to be executed. Typically {@link Task}s should be created 
 	 * in {@link #onCreateTasks()} but you may call this method explicitly if you need to schedule
 	 * a task to run after you receive a call to {@link #onFailure(Context, ServiceError)} or
-	 * {@link #onSuccess(Context, List)}.
+	 * {@link #onSuccess(Context, List)}.</br>
+	 * </br>
+	 * Note: Executing {@link Task}s with prerequisites/dependants is not supported.
 	 * 
 	 * @param task The {@link Task} to be executed.
 	 */
 	protected void executeTask(final Task<?> task) {
-		addTaskToPending(task);
-		executeTaskNow(task);
+		if (task != null) {
+			addTaskToPending(task);
+			executeTaskNow(task);
+		} else {
+			notifyComplete();
+		}
 	}
 
 	@Override
@@ -256,10 +261,5 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		dest.writeParcelable(mUri, flags);
 		dest.writeSerializable(mPriority);
 	}
-
-	@Override
-	public String toString() {
-		return String.format("[%s] %s", getUri(), super.toString());
-	}
-
+	
 }

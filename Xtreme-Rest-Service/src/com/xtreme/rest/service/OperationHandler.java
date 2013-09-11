@@ -3,7 +3,7 @@ package com.xtreme.rest.service;
 import android.os.Handler;
 import android.os.Message;
 
-public class OperationHandler extends Handler implements OperationObserver {
+class OperationHandler extends Handler implements OperationObserver {
 
 	private static final int NOTIFY_COMPLETE = 100;
 	

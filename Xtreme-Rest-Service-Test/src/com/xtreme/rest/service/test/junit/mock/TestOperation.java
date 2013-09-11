@@ -36,6 +36,11 @@ public class TestOperation extends Operation {
 	}
 	
 	@Override
+	public void executeTask(final Task<?> task) {
+		super.executeTask(task);
+	}
+	
+	@Override
 	public void onSuccess(final Context context, final List<Task<?>> completed) {
 		
 	}

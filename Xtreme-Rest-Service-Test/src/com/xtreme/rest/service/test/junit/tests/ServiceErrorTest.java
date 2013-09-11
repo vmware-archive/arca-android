@@ -19,20 +19,22 @@ public class ServiceErrorTest extends AndroidTestCase {
 		super.tearDown();
 	}
 	
-	public void testServiceErrorCodes() {
-		assertEquals(100, ServiceError.Codes.UNKNOWN);
-	}
-	
-	public void testServiceErrorMessages() {
-		assertEquals("An unknown error occured.", ServiceError.Messages.UNKNOWN);
-	}
-	
 	public void testServiceErrorToString() {
 		final int code = ServiceError.Codes.UNKNOWN;
 		final String message = ServiceError.Messages.UNKNOWN;
 		final String expected = String.format(Locale.getDefault(), "[%d] %s", code, message);
 		final ServiceError error = new ServiceError(code, message);
 		assertEquals(expected, error.toString());
+	}
+	
+	public void testServiceErrorCodes() {
+		assertNotNull(new ServiceError.Codes());
+		assertEquals(100, ServiceError.Codes.UNKNOWN);
+	}
+	
+	public void testServiceErrorMessages() {
+		assertNotNull(new ServiceError.Messages());
+		assertEquals("An unknown error occured.", ServiceError.Messages.UNKNOWN);
 	}
 	
 	public void testServiceErrorNullMessage() {
@@ -96,23 +98,23 @@ public class ServiceErrorTest extends AndroidTestCase {
 	
 	public void testServiceErrorParcelableCreatorArray() {
 		final ServiceError[] error = ServiceError.CREATOR.newArray(1);
-		assertNotNull(error);
+		assertEquals(1, error.length);
 	}
 	
 	public void testServiceErrorParcelableCreator() {
 		final int code = 1;
 		final String type = "type";
 		final String message = "message";
+		final ServiceError error = new ServiceError(code, type, message);
 		
 		final Parcel parcel = Parcel.obtain();
-		new ServiceError(code, type, message).writeToParcel(parcel, 0);
-		
+		error.writeToParcel(parcel, 0);
 		parcel.setDataPosition(0);
 		
-		final ServiceError error = ServiceError.CREATOR.createFromParcel(parcel);
-		assertEquals(code, error.getCode());
-		assertEquals(type, error.getType());
-		assertEquals(message, error.getMessage());
+		final ServiceError parceled = ServiceError.CREATOR.createFromParcel(parcel);
+		assertEquals(code, parceled.getCode());
+		assertEquals(type, parceled.getType());
+		assertEquals(message, parceled.getMessage());
 		
 		parcel.recycle();
 	}

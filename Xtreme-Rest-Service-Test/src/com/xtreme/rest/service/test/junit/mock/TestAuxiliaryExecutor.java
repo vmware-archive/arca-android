@@ -1,5 +1,6 @@
 package com.xtreme.rest.service.test.junit.mock;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import com.xtreme.threading.AuxiliaryExecutor;
@@ -10,6 +11,7 @@ import com.xtreme.threading.RequestIdentifier;
 public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 
 	private final AuxiliaryExecutorObserver mObserver;
+	private Runnable mCurrent;
 	
 	public TestAuxiliaryExecutor(final AuxiliaryExecutorObserver observer) {
 		mObserver = observer;
@@ -18,8 +20,12 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 	@Override
 	public void execute(final Runnable command) {
 		
+		mCurrent = command;
+		
 		// Tell the request to run synchronously
 		command.run();
+		
+		mCurrent = null;
 		
 		// Notify Immediately
 		mObserver.onComplete((PrioritizableRequest) command);
@@ -27,17 +33,17 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 
 	@Override
 	public void notifyRequestComplete(final RequestIdentifier<?> identifier) {
-		throw new UnsupportedOperationException();
+		// do nothing
 	}
 
 	@Override
 	public BlockingQueue<Runnable> getQueue() {
-		throw new UnsupportedOperationException();
+		return new ArrayBlockingQueue<Runnable>(1);
 	}
 
 	@Override
 	public int getActiveCount() {
-		throw new UnsupportedOperationException();
+		return mCurrent != null ? 1 : 0;
 	}
 
 	@Override

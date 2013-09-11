@@ -5,6 +5,7 @@ import android.test.AndroidTestCase;
 
 import com.xtreme.rest.service.NetworkRequest;
 import com.xtreme.rest.service.ProcessingRequest;
+import com.xtreme.rest.service.RequestExecutor;
 import com.xtreme.rest.service.test.junit.mock.TestNetworkPrioritizable;
 import com.xtreme.rest.service.test.junit.mock.TestNetworkRequest;
 import com.xtreme.rest.service.test.junit.mock.TestProcessingPrioritizable;
@@ -25,7 +26,19 @@ public class RequestExecutorTest extends AndroidTestCase {
 		super.tearDown();
 	}
 	
-	public void testNetworkRequestCompletes() {
+	public void testRequestExecutorConfig() {
+		assertNotNull(new RequestExecutor.Config());
+		assertEquals(2, RequestExecutor.Config.NUM_NETWORK_THREADS);
+		assertEquals(1, RequestExecutor.Config.NUM_PROCESSING_THREADS);
+		assertEquals(15, RequestExecutor.Config.THREAD_KEEP_ALIVE_TIME);
+	}
+	
+	public void testRequestExecutorInitiallyEmpty() {
+		final TestRequestExecutor executor = new TestRequestExecutor();
+		assertTrue(executor.isEmpty());
+	}
+	
+	public void testRequestExecutorNetworkRequestCompletes() {
 		final RequestHandlerCounter latch = new RequestHandlerCounter(1, 0);
 		final TestNetworkPrioritizable prioritizable = new TestNetworkPrioritizable();
 		final TestNetworkRequest request = new TestNetworkRequest(prioritizable);
@@ -42,7 +55,15 @@ public class RequestExecutorTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testProcessingRequestCompletes() {
+	public void testRequestExecutorEmptyAfterExecutingNetworkRequest() {
+		final TestNetworkPrioritizable prioritizable = new TestNetworkPrioritizable();
+		final TestNetworkRequest request = new TestNetworkRequest(prioritizable);
+		final TestRequestExecutor executor = new TestRequestExecutor();
+		executor.executeNetworkRequest(request);
+		assertTrue(executor.isEmpty());
+	}
+	
+	public void testRequestExecutorProcessingRequestCompletes() {
 		final RequestHandlerCounter latch = new RequestHandlerCounter(0, 1);
 		final TestProcessingPrioritizable prioritizable = new TestProcessingPrioritizable();
 		final TestProcessingRequest request = new TestProcessingRequest(prioritizable);
@@ -57,6 +78,14 @@ public class RequestExecutorTest extends AndroidTestCase {
 		};
 		executor.executeProcessingRequest(request);
 		latch.assertComplete();
+	}
+	
+	public void testRequestExecutorEmptyAfterExecutingProcessingRequest() {
+		final TestProcessingPrioritizable prioritizable = new TestProcessingPrioritizable();
+		final TestProcessingRequest request = new TestProcessingRequest(prioritizable);
+		final TestRequestExecutor executor = new TestRequestExecutor();
+		executor.executeProcessingRequest(request);
+		assertTrue(executor.isEmpty());
 	}
 
 	

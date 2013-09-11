@@ -10,10 +10,10 @@ import com.xtreme.threading.RequestIdentifier;
 
 public class RequestExecutor implements RequestHandler, RequestObserver {
 	
-	private static final class Config {
-		private static final int NUM_NETWORK_THREADS = 2;
-		private static final int NUM_PROCESSING_THREADS = 1;
-		private static final long THREAD_KEEP_ALIVE_TIME = 15;
+	public static final class Config {
+		public static final int NUM_NETWORK_THREADS = 2;
+		public static final int NUM_PROCESSING_THREADS = 1;
+		public static final long THREAD_KEEP_ALIVE_TIME = 15;
 	}
 
 	private final IdentifierMap<NetworkRequest<?>> mNetworkMap = new IdentifierMap<NetworkRequest<?>>();

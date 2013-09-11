@@ -27,8 +27,8 @@ import com.xtreme.threading.RequestIdentifier;
  */
 public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, ProcessingHandler<T>, ProcessingObserver<T> {
 
-	private static final class Messages {
-		private static final String NO_HANDLER = "Cannot execute request. No handler found.";
+	public static final class Messages {
+		public static final String NO_HANDLER = "Cannot execute request. No handler found.";
 	}
 	
 	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
@@ -287,10 +287,5 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 				dependant.onPrerequisiteFailure(this, error);
 			}
 		}
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("[%s] %s", getIdentifier().getData().toString(), super.toString());
 	}
 }

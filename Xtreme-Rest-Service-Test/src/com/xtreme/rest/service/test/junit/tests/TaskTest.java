@@ -1,6 +1,5 @@
 package com.xtreme.rest.service.test.junit.tests;
 
-
 import java.util.List;
 
 import android.test.AndroidTestCase;
@@ -36,9 +35,14 @@ public class TaskTest extends AndroidTestCase {
 		super.tearDown();
 	}
 	
-	
 	// =============================================
 	
+	public void testTaskMessages() {
+		assertNotNull(new Task.Messages());
+		assertEquals("Cannot execute request. No handler found.", Task.Messages.NO_HANDLER);
+	}
+	
+	// =============================================
 	
 	public void testTaskExecutesNetworkRequest() {
 		final RequestCounter latch = new RequestCounter(1, 0);
@@ -368,6 +372,71 @@ public class TaskTest extends AndroidTestCase {
 	
 	
 	// =============================================
+	
+	
+	public void testTaskFailsWithoutHandlerForNetworkRequest() {
+		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
+		final TestTask task = TestTaskFactory.newTask();
+		task.setRequestHandler(null);
+		task.setTaskObserver(new TaskObserver() {
+
+			@Override
+			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
+				
+				assertNotNull(t);
+			}
+
+			@Override
+			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
+				fail();
+			}
+
+			@Override
+			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
+				assertNotNull(t);
+				assertEquals(Task.Messages.NO_HANDLER, e.getMessage());
+			}
+		});
+		task.execute();
+		latch.assertComplete();
+	}
+	
+	public void testTaskFailsWithoutHandlerForProcessingRequest() {
+		final ObserverCounter latch = new ObserverCounter(0, 0, 1);
+		final TestTask task = TestTaskFactory.newTask();
+		task.setRequestHandler(null);
+		task.setTaskObserver(new TaskObserver() {
+
+			@Override
+			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
+				
+				fail();
+			}
+
+			@Override
+			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
+				fail();
+			}
+
+			@Override
+			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
+				assertNotNull(t);
+				assertEquals(Task.Messages.NO_HANDLER, e.getMessage());
+			}
+		});
+		task.onNetworkRequestComplete(null);
+		latch.assertComplete();
+	}
 	
 	
 	public void testTaskCompleted() {

@@ -1,14 +1,14 @@
 package com.xtreme.rest.service.test.android.activities;
 
+import android.app.Activity;
+import android.os.Bundle;
+
 import com.xtreme.rest.service.Logger;
 import com.xtreme.rest.service.RestService;
+import com.xtreme.rest.service.test.android.operations.ComplexOperation;
 import com.xtreme.rest.service.test.android.operations.DiamondOperation;
 import com.xtreme.rest.service.test.android.operations.LinearOperation;
 import com.xtreme.rest.service.test.android.operations.SimpleOperation;
-import com.xtreme.rest.service.test.android.operations.ComplexOperation;
-
-import android.app.Activity;
-import android.os.Bundle;
 
 @SuppressWarnings("unused")
 public class TestActivity extends Activity {
@@ -21,7 +21,7 @@ public class TestActivity extends Activity {
 		
 		Logger.setup(true, TAG);
 		
-		test5.run();
+		test5.run(); 
 	}
 	
 	private final Runnable test0 = new Runnable() {

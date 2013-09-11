@@ -7,6 +7,7 @@ import java.util.Set;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
+import android.os.Parcelable.Creator;
 import android.util.Log;
 
 import com.xtreme.rest.service.Operation;

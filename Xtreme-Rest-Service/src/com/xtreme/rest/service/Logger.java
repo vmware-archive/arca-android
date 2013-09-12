@@ -5,33 +5,40 @@ import java.util.Locale;
 import android.os.Looper;
 import android.util.Log;
 
-public class Logger {
+public enum Logger {
+	INSTANCE;
 
-	private static final class LogLevel {
-		private static final int ERROR = 0;
-		private static final int WARNING = 1;
-		private static final int INFO = 2;
-		private static final int DEBUG = 3;
-		private static final int VERBOSE = 4;
+	public static final class Level {
+		public static final int ERROR = 0;
+		public static final int WARNING = 1;
+		public static final int INFO = 2;
+		public static final int DEBUG = 3;
+		public static final int VERBOSE = 4;
 	}
 
-	private static final int MAX_LOG_LEVEL = LogLevel.VERBOSE;
+	private static final int MAX_LOG_LEVEL = Level.VERBOSE;
 
 	private static final String UI_THREAD = "UI";
-	private static final String BACKGROUND_THREAD = "BG";
+	private static final String BG_THREAD = "BG";
 
-	private static String sTagName = "Xtreme-Rest-Service";
 	private static boolean sIsDebuggable = false;
-
-	private static final class Holder { 
-        public static final Logger INSTANCE = new Logger();
-	}
-	
-	private static Logger getInstance() {
-	    return Holder.INSTANCE;
-	}
+	private static String sTagName = "Logger";
 
 	private Logger() {}
+	
+	/**
+	 * Sets the debuggable flag in the logger and assigns a tag to the log message.</br>
+	 * </br> 
+	 * If set to 'true' then all messages will be logged.</br> 
+	 * If set to 'false' then only error messages will be logged.
+	 * 
+	 * @param isDebuggable
+	 * @param tagName
+	 */
+	public static void setup(final boolean isDebuggable, final String tagName) {
+		sIsDebuggable = isDebuggable;
+		sTagName = tagName;
+	}
 
 	/**
 	 * prints to info log stream
@@ -42,7 +49,7 @@ public class Logger {
 	 *            objects for objects (variable argument list - optional)
 	 */
 	public static void i(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= LogLevel.INFO) {
+		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.INFO) {
 			final String formattedString = formatMessage(message, objects);
 			Log.i(sTagName, formattedString);
 		}
@@ -61,7 +68,7 @@ public class Logger {
 	 *            objects for objects (variable argument list - optional)
 	 */
 	public static void w(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= LogLevel.WARNING) {
+		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.WARNING) {
 			final String formattedString = formatMessage(message, objects);
 			Log.w(sTagName, formattedString);
 		}
@@ -80,7 +87,7 @@ public class Logger {
 	 *            objects for objects (variable argument list - optional)
 	 */
 	public static void v(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= LogLevel.VERBOSE) {
+		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.VERBOSE) {
 			final String formattedString = formatMessage(message, objects);
 			Log.v(sTagName, formattedString);
 		}
@@ -99,7 +106,7 @@ public class Logger {
 	 *            objects for objects (variable argument list - optional)
 	 */
 	public static void d(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= LogLevel.DEBUG) {
+		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.DEBUG) {
 			final String formattedString = formatMessage(message, objects);
 			Log.d(sTagName, formattedString);
 		}
@@ -118,7 +125,7 @@ public class Logger {
 	 *            objects for objects (variable argument list - optional)
 	 */
 	public static void e(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= LogLevel.ERROR) {
+		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.ERROR) {
 			final String formattedString = formatMessage(message, objects);
 			Log.e(sTagName, formattedString);
 		}
@@ -159,40 +166,49 @@ public class Logger {
 		ex(tr);
 	}
 
-	/**
-	 * Sets the debuggable flag in the logger.</br> 
-	 * If set to 'true' then all messages will be logged.</br> 
-	 * If set to 'false' then only error messages will be logged.
-	 * 
-	 * @param isDebuggable
-	 * @param tagName
-	 */
-	public static void setup(final boolean isDebuggable, final String tagName) {
-		sIsDebuggable = isDebuggable;
-		sTagName = tagName;
+	
+	// ========================================
+	
+	
+	private static boolean isUiThread() {
+		return Looper.myLooper() == Looper.getMainLooper();
 	}
 
-	private static String formatMessage(String message, final Object... objects) {
-		
+	private static String formatMessage(final String message, final Object... objects) {
 		if (objects.length > 0) {
-			message = String.format(Locale.getDefault(), message, objects);
+			return formatMessage(String.format(Locale.getDefault(), message, objects));
+		} else {
+			return formatMessage(message);
 		}
+	}
+
+	private static String formatMessage(final String message) {
+		final String threadInfo = formatThreadInfo();
+		final String stackTraceInfo = formatStackTraceInfo();
 		
+		return String.format(Locale.getDefault(), "*%s* [%s] %s", threadInfo, stackTraceInfo, message);
+	}
+	
+	private static String formatThreadInfo() {
+		final String threadName = isUiThread() ? UI_THREAD : BG_THREAD;
+		final long threadId = Thread.currentThread().getId();
+		
+		return String.format(Locale.getDefault(), "%s:%d", threadName, threadId);
+	}
+
+	private static String formatStackTraceInfo() {
 		final StackTraceElement element = getCallingStackTraceElement();
-		final String threadInfo = getThreadInfo();
 		final String className = element.getClassName();
 		final String methodName = element.getMethodName();
 		final int lineNumber = element.getLineNumber();
-		final long threadId = Thread.currentThread().getId();
 		
-		return String.format(Locale.getDefault(), "%s [%s:%s:%d:tid%d] %s", threadInfo, className, methodName, lineNumber, threadId, message);
+		return String.format(Locale.getDefault(), "%s:%s:%d", className, methodName, lineNumber);
 	}
-	
 
 	private static StackTraceElement getCallingStackTraceElement() {
 		
 		final StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-		final String loggerClassName = getInstance().getClass().getName();
+		final String loggerClassName = INSTANCE.getClass().getName();
 
 		boolean foundLogger = false;
 		for (int i = 0; i < elements.length; i++) {
@@ -215,17 +231,5 @@ public class Logger {
 			}
 		}
 		return null;
-	}
-
-	private static String getThreadInfo() {
-		if (isUiThread()) {
-			return "*" + UI_THREAD + "*";
-		} else {
-			return "*" + BACKGROUND_THREAD + "*";
-		}
-	}
-
-	private static boolean isUiThread() {
-		return Looper.myLooper() == Looper.getMainLooper();
 	}
 }

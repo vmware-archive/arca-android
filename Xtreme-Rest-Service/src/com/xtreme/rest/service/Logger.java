@@ -1,6 +1,7 @@
 package com.xtreme.rest.service;
 
-import android.annotation.SuppressLint;
+import java.util.Locale;
+
 import android.os.Looper;
 import android.util.Log;
 
@@ -159,52 +160,47 @@ public class Logger {
 	}
 
 	/**
-	 * sets the debuggable flag in the logger. if set to 'true' then all messages will be logged. if set to 'false' then only error messages will be logged.
+	 * Sets the debuggable flag in the logger.</br> 
+	 * If set to 'true' then all messages will be logged.</br> 
+	 * If set to 'false' then only error messages will be logged.
 	 * 
 	 * @param isDebuggable
+	 * @param tagName
 	 */
 	public static void setup(final boolean isDebuggable, final String tagName) {
-		Logger.sIsDebuggable = isDebuggable;
-		Logger.sTagName = tagName;
+		sIsDebuggable = isDebuggable;
+		sTagName = tagName;
 	}
 
-	/**
-	 * formats and returns a message for the logger
-	 * 
-	 * @param message
-	 *            the message formatting string, including (optional) format specifiers
-	 * @param objects
-	 *            objects to be formatted in the formatted string (optional)
-	 * @return the formatted message
-	 */
-	@SuppressLint("DefaultLocale")
-	private static String formatMessage(final String message, final Object... objects) {
-
-		final StackTraceElement s = getCallingStackTraceElement();
-		String formattedMessage = String.format("[%s:%s:%d:tid%d] ", s.getClassName(), s.getMethodName(), s.getLineNumber(), Thread.currentThread().getId());
-
-		if (objects.length > 0)
-			formattedMessage += String.format(message, objects);
-		else
-			formattedMessage += message;
-
-		return addThreadInfo(formattedMessage);
+	private static String formatMessage(String message, final Object... objects) {
+		
+		if (objects.length > 0) {
+			message = String.format(Locale.getDefault(), message, objects);
+		}
+		
+		final StackTraceElement element = getCallingStackTraceElement();
+		final String threadInfo = getThreadInfo();
+		final String className = element.getClassName();
+		final String methodName = element.getMethodName();
+		final int lineNumber = element.getLineNumber();
+		final long threadId = Thread.currentThread().getId();
+		
+		return String.format(Locale.getDefault(), "%s [%s:%s:%d:tid%d] %s", threadInfo, className, methodName, lineNumber, threadId, message);
 	}
+	
 
-	/**
-	 * @return the StackTraceElement for the method that called into the logger
-	 */
 	private static StackTraceElement getCallingStackTraceElement() {
-		final StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		
+		final StackTraceElement[] elements = Thread.currentThread().getStackTrace();
 		final String loggerClassName = getInstance().getClass().getName();
 
 		boolean foundLogger = false;
-		for (int i = 0; i < stackTraceElements.length; i += 1) {
-			final StackTraceElement s = stackTraceElements[i];
+		for (int i = 0; i < elements.length; i++) {
+			final StackTraceElement element = elements[i];
 
 			// Scan down the list until we find the Logger itself
 			if (!foundLogger) {
-				if (s.getClassName().equalsIgnoreCase(loggerClassName)) {
+				if (element.getClassName().equalsIgnoreCase(loggerClassName)) {
 					foundLogger = true;
 				}
 				continue;
@@ -213,20 +209,20 @@ public class Logger {
 			// After finding the Logger, look for the first class that isn't the
 			// logger -- that's the class that called the Logger!
 			if (foundLogger) {
-				if (!s.getClassName().equalsIgnoreCase(loggerClassName)) {
-					return s;
+				if (!element.getClassName().equalsIgnoreCase(loggerClassName)) {
+					return element;
 				}
 			}
 		}
-
-		// Should never happen?
 		return null;
 	}
 
-	private static String addThreadInfo(final String string) {
-		if (isUiThread())
-			return "*" + UI_THREAD + "* " + string;
-		return "*" + BACKGROUND_THREAD + "* " + string;
+	private static String getThreadInfo() {
+		if (isUiThread()) {
+			return "*" + UI_THREAD + "*";
+		} else {
+			return "*" + BACKGROUND_THREAD + "*";
+		}
 	}
 
 	private static boolean isUiThread() {

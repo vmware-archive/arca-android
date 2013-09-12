@@ -6,10 +6,7 @@ import java.util.Set;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.IBinder;
-
-import com.xtreme.threading.AuxiliaryExecutor;
 
 /**
  * This class serves as the main entry point to the system, where {@link Operation}s are started, and their {@link Task}s execute.
@@ -29,62 +26,43 @@ public class RestService extends Service {
 		private static final String OPERATION = "operation";
 	}
 
-	private static final UriCache URI_CACHE = new UriCache();
-
 	/**
-	 * Starts an {@link Operation}. This schedules its {@link Task}s to run on the {@link AuxiliaryExecutor}s
-	 * managed by this {@link Service}.</br>
+	 * Starts an {@link Operation}. The {@link Operation} is given a {@link Context}, 
+	 * {@link OperationObserver} and {@link RequestHandler} before being executed.</br>
 	 * </br>
-	 * Note that this method uses {@link Context#startService(Intent)} method to deliver the message.
+	 * Note: This method uses {@link Context#startService(Intent)} method to deliver the message.
 	 * 
 	 * @param context The {@link Context} in which this service should be started
 	 * @param operation The {@link Operation} to be started
 	 * @return <code>true</code> if the {@link Operation} was started, <code>false</code> otherwise
 	 */
 	public static boolean start(final Context context, final Operation operation) {
-		if (operation == null)
-			return false;
-
-		final Uri uri = operation.getUri();
-		final boolean shouldStart = URI_CACHE.shouldStart(uri);
-		
-		if (shouldStart) {
-			startService(context, operation, Action.START);
-			return true;
-		} else {
-			return false;
-		}
+		return startService(context, operation, Action.START);
 	}
 
 	/**
 	 * Attempts to cancel a currently running {@link Operation}.</br>
 	 * </br>
-	 * Note that this method uses {@link Context#startService(Intent)} method to deliver the message.
+	 * Note: This method uses {@link Context#startService(Intent)} method to deliver the message.
 	 * 
 	 * @param context The {@link Context} in which this service should be started
 	 * @param operation The {@link Operation} to be canceled
 	 * @return <code>false<code> if the cancel cannot be attempted, <code>true</code> otherwise
 	 */
 	public static boolean cancel(final Context context, final Operation operation) {
-		if (operation == null)
-			return false;
-		
-		final Uri uri = operation.getUri();
-		final boolean shouldCancel = URI_CACHE.shouldCancel(uri);
-		
-		if (shouldCancel) {
-			startService(context, operation, Action.CANCEL);
+		return startService(context, operation, Action.CANCEL);
+	}
+
+	private static boolean startService(final Context context, final Operation operation, final Action action) {
+		if (operation != null && context != null) {
+			final Intent intent = new Intent(context, RestService.class);
+			intent.putExtra(Extras.OPERATION, operation);
+			intent.putExtra(Extras.ACTION, action);
+			context.startService(intent);
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	private static void startService(final Context context, final Operation operation, final Action action) {
-		final Intent intent = new Intent(context, RestService.class);
-		intent.putExtra(Extras.OPERATION, operation);
-		intent.putExtra(Extras.ACTION, action);
-		context.startService(intent);
 	}
 
 	private final Set<Operation> mOperations = new HashSet<Operation>();
@@ -125,7 +103,7 @@ public class RestService extends Service {
 		}
 	}
 
-	private void handleStart(final Operation operation) {
+	public void handleStart(final Operation operation) {
 		mOperations.add(operation);
 		operation.setContext(getApplicationContext());
 		operation.setRequestHandler(mHandler);
@@ -133,14 +111,7 @@ public class RestService extends Service {
 		operation.execute();
 	}
 
-	void handleFinish(final Operation operation) {
-		final ServiceError error = operation.getError();
-		final Uri uri = operation.getUri();
-
-		if (error == null) {
-			URI_CACHE.markComplete(uri);
-		}
-		
+	public void handleFinish(final Operation operation) {
 		mOperations.remove(operation);
 
 		if (mOperations.isEmpty()) {

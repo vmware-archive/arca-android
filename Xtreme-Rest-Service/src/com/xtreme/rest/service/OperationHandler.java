@@ -3,9 +3,9 @@ package com.xtreme.rest.service;
 import android.os.Handler;
 import android.os.Message;
 
-class OperationHandler extends Handler implements OperationObserver {
+public class OperationHandler extends Handler implements OperationObserver {
 
-	private static final int NOTIFY_COMPLETE = 100;
+	protected static final int NOTIFY_COMPLETE = 100;
 	
 	private final RestService mService;
 	

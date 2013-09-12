@@ -26,6 +26,10 @@ public class RequestExecutorTest extends AndroidTestCase {
 		super.tearDown();
 	}
 	
+	public void testRequestExecutorCreate() {
+		assertNotNull(new RequestExecutor());
+	}
+	
 	public void testRequestExecutorConfig() {
 		assertNotNull(new RequestExecutor.Config());
 		assertEquals(2, RequestExecutor.Config.NUM_NETWORK_THREADS);

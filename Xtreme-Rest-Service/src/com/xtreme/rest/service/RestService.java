@@ -17,13 +17,13 @@ import android.os.IBinder;
  */
 public class RestService extends Service {
 
-	private static enum Action {
+	public static enum Action {
 		START, CANCEL;
 	}
 	
-	private static final class Extras {
-		private static final String ACTION = "action";
-		private static final String OPERATION = "operation";
+	protected static class Extras {
+		public static final String ACTION = "action";
+		public static final String OPERATION = "operation";
 	}
 
 	/**
@@ -75,8 +75,16 @@ public class RestService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Logger.v("Creating service %s", this.getClass());
-		mObserver = new OperationHandler(this);
-		mHandler = new RequestExecutor();
+		mObserver = onCreateOperationObserver();
+		mHandler = onCreateRequestHandler();
+	}
+
+	protected OperationObserver onCreateOperationObserver() {
+		return new OperationHandler(this);
+	}
+	
+	protected RequestHandler onCreateRequestHandler() {
+		return new RequestExecutor();
 	}
 	
 	@Override
@@ -103,20 +111,31 @@ public class RestService extends Service {
 		}
 	}
 
-	public void handleStart(final Operation operation) {
-		mOperations.add(operation);
-		operation.setContext(getApplicationContext());
-		operation.setRequestHandler(mHandler);
-		operation.setOperationObserver(mObserver);
-		operation.execute();
+	public boolean handleStart(final Operation operation) {
+		if (mOperations.add(operation)) {
+			operation.setContext(getApplicationContext());
+			operation.setRequestHandler(mHandler);
+			operation.setOperationObserver(mObserver);
+			operation.execute();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public void handleFinish(final Operation operation) {
+	public boolean handleFinish(final Operation operation) {
 		mOperations.remove(operation);
 
 		if (mOperations.isEmpty()) {
 			stopSelf(mLatestStartId);
+			return true;
+		} else {
+			return false;
 		}
+	}
+	
+	protected Set<Operation> getOperations() {
+		return mOperations;
 	}
 	
 	@Override

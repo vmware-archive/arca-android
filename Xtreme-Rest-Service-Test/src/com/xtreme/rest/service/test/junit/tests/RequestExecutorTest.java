@@ -33,10 +33,37 @@ public class RequestExecutorTest extends AndroidTestCase {
 		assertEquals(15, RequestExecutor.Config.THREAD_KEEP_ALIVE_TIME);
 	}
 	
+	
+	// =============================================
+	
+	
 	public void testRequestExecutorInitiallyEmpty() {
 		final TestRequestExecutor executor = new TestRequestExecutor();
+		assertEquals(0, executor.getRequestCount());
 		assertTrue(executor.isEmpty());
 	}
+	
+	public void testRequestExecutorEmptyAfterExecutingNetworkRequest() {
+		final TestNetworkPrioritizable prioritizable = new TestNetworkPrioritizable();
+		final TestNetworkRequest request = new TestNetworkRequest(prioritizable);
+		final TestRequestExecutor executor = new TestRequestExecutor();
+		executor.executeNetworkRequest(request);
+		assertEquals(0, executor.getRequestCount());
+		assertTrue(executor.isEmpty());
+	}
+	
+	public void testRequestExecutorEmptyAfterExecutingProcessingRequest() {
+		final TestProcessingPrioritizable prioritizable = new TestProcessingPrioritizable();
+		final TestProcessingRequest request = new TestProcessingRequest(prioritizable);
+		final TestRequestExecutor executor = new TestRequestExecutor();
+		executor.executeProcessingRequest(request);
+		assertEquals(0, executor.getRequestCount());
+		assertTrue(executor.isEmpty());
+	}
+	
+	
+	// =============================================
+	
 	
 	public void testRequestExecutorNetworkRequestCompletes() {
 		final RequestHandlerCounter latch = new RequestHandlerCounter(1, 0);
@@ -46,6 +73,7 @@ public class RequestExecutorTest extends AndroidTestCase {
 			
 			@Override
 			public void onNetworkRequestComplete(final NetworkRequest<?> r) {
+				super.onNetworkRequestComplete(r);
 				latch.onNetworkRequestComplete();
 				
 				assertEquals(request, r);
@@ -53,14 +81,6 @@ public class RequestExecutorTest extends AndroidTestCase {
 		};
 		executor.executeNetworkRequest(request);
 		latch.assertComplete();
-	}
-	
-	public void testRequestExecutorEmptyAfterExecutingNetworkRequest() {
-		final TestNetworkPrioritizable prioritizable = new TestNetworkPrioritizable();
-		final TestNetworkRequest request = new TestNetworkRequest(prioritizable);
-		final TestRequestExecutor executor = new TestRequestExecutor();
-		executor.executeNetworkRequest(request);
-		assertTrue(executor.isEmpty());
 	}
 	
 	public void testRequestExecutorProcessingRequestCompletes() {
@@ -71,6 +91,7 @@ public class RequestExecutorTest extends AndroidTestCase {
 			
 			@Override
 			public void onProcessingRequestComplete(final ProcessingRequest<?> r) {
+				super.onProcessingRequestComplete(r);
 				latch.onProcessingRequestComplete();
 				
 				assertEquals(request, r);
@@ -80,14 +101,48 @@ public class RequestExecutorTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testRequestExecutorEmptyAfterExecutingProcessingRequest() {
+	
+	// =============================================
+	
+	
+	public void testRequestExecutorNetworkRequestCancelled() {
+		final RequestHandlerCounter latch = new RequestHandlerCounter(1, 0);
+		final TestNetworkPrioritizable prioritizable = new TestNetworkPrioritizable();
+		final TestNetworkRequest request = new TestNetworkRequest(prioritizable);
+		final TestRequestExecutor executor = new TestRequestExecutor() {
+			
+			@Override
+			public void onNetworkRequestCancelled(final NetworkRequest<?> r) {
+				super.onNetworkRequestCancelled(r);
+				latch.onNetworkRequestCancelled();
+				
+				assertEquals(request, r);
+			}
+		};
+		request.cancel();
+		executor.executeNetworkRequest(request);
+		latch.assertComplete();
+	}
+	
+	public void testRequestExecutorProcessingRequestCancelled() {
+		final RequestHandlerCounter latch = new RequestHandlerCounter(0, 1);
 		final TestProcessingPrioritizable prioritizable = new TestProcessingPrioritizable();
 		final TestProcessingRequest request = new TestProcessingRequest(prioritizable);
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final TestRequestExecutor executor = new TestRequestExecutor() {
+			
+			@Override
+			public void onProcessingRequestCancelled(final ProcessingRequest<?> r) {
+				super.onProcessingRequestCancelled(r);
+				latch.onProcessingRequestCancelled();
+				
+				assertEquals(request, r);
+			}
+		};
+		request.cancel();
 		executor.executeProcessingRequest(request);
-		assertTrue(executor.isEmpty());
+		latch.assertComplete();
 	}
-
+	
 	
 	// =============================================
 	
@@ -106,7 +161,15 @@ public class RequestExecutorTest extends AndroidTestCase {
 			mNetworkLatch.countDown();
 		}
 		
+		public void onNetworkRequestCancelled() {
+			mNetworkLatch.countDown();
+		}
+		
 		public void onProcessingRequestComplete() {
+			mProcessingLatch.countDown();
+		}
+		
+		public void onProcessingRequestCancelled() {
 			mProcessingLatch.countDown();
 		}
 		

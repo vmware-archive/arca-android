@@ -1,5 +1,7 @@
 package com.xtreme.rest.service.test.junit.mock;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -10,8 +12,8 @@ import com.xtreme.threading.RequestIdentifier;
 
 public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 
+	private final Set<RequestIdentifier<?>> mIdentifiers = new HashSet<RequestIdentifier<?>>();
 	private final AuxiliaryExecutorObserver mObserver;
-	private Runnable mCurrent;
 	
 	public TestAuxiliaryExecutor(final AuxiliaryExecutorObserver observer) {
 		mObserver = observer;
@@ -20,20 +22,28 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 	@Override
 	public void execute(final Runnable command) {
 		
-		mCurrent = command;
+		final PrioritizableRequest request = (PrioritizableRequest) command;
+		final RequestIdentifier<?> identifier = request.getRequestIdentifier();
 		
-		// Tell the request to run synchronously
-		command.run();
+		if (!mIdentifiers.contains(identifier)) {
 		
-		mCurrent = null;
-		
-		// Notify Immediately
-		mObserver.onComplete((PrioritizableRequest) command);
+			mIdentifiers.add(identifier);
+			
+			// Run synchronously
+			request.run();
+			
+			// Notify immediately
+			if (request.isCancelled()) {
+				mObserver.onCancelled(request);
+			} else {
+				mObserver.onComplete(request);
+			}
+		}
 	}
 
 	@Override
 	public void notifyRequestComplete(final RequestIdentifier<?> identifier) {
-		// do nothing
+		mIdentifiers.remove(identifier);
 	}
 
 	@Override
@@ -43,7 +53,7 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 
 	@Override
 	public int getActiveCount() {
-		return mCurrent != null ? 1 : 0;
+		return mIdentifiers.size();
 	}
 
 	@Override

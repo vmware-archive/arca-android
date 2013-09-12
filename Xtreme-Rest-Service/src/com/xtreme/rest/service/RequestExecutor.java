@@ -8,7 +8,7 @@ import com.xtreme.threading.AuxiliaryExecutorObserver;
 import com.xtreme.threading.PrioritizableRequest;
 import com.xtreme.threading.RequestIdentifier;
 
-public class RequestExecutor implements RequestHandler, RequestObserver {
+public class RequestExecutor implements AuxiliaryExecutorObserver, RequestHandler, RequestObserver {
 	
 	public static final class Config {
 		public static final int NUM_NETWORK_THREADS = 2;
@@ -28,14 +28,14 @@ public class RequestExecutor implements RequestHandler, RequestObserver {
 	}
 	
 	protected AuxiliaryExecutor onCreateNetworkExecutor() {
-		final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), mNetworkObserver);
+		final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), this);
 		builder.setCorePoolSize(Config.NUM_NETWORK_THREADS);
 		builder.setKeepAliveTime(Config.THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS);
 		return builder.create();
 	}
 
 	protected AuxiliaryExecutor onCreateProcessingExecutor() {
-		final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), mProcessingObserver);
+		final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), this);
 		builder.setCorePoolSize(Config.NUM_PROCESSING_THREADS);
 		builder.setKeepAliveTime(Config.THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS);
 		return builder.create();
@@ -72,6 +72,30 @@ public class RequestExecutor implements RequestHandler, RequestObserver {
 			final RequestIdentifier<?> identifier = request.getRequestIdentifier();
 			mProcessingMap.add(identifier, request);
 			mProcessingExecutor.execute(request);
+		}
+	}
+	
+	@Override
+	public void onComplete(final PrioritizableRequest request) {
+		
+		if (request instanceof NetworkRequest) { 
+			onNetworkRequestComplete((NetworkRequest<?>) request);
+		}
+		
+		if (request instanceof ProcessingRequest) { 
+			onProcessingRequestComplete((ProcessingRequest<?>) request);
+		}
+	}
+	
+	@Override
+	public void onCancelled(final PrioritizableRequest request) {
+		
+		if (request instanceof NetworkRequest) { 
+			onNetworkRequestCancelled((NetworkRequest<?>) request);
+		}
+		
+		if (request instanceof ProcessingRequest) { 
+			onProcessingRequestCancelled((ProcessingRequest<?>) request);
 		}
 	}
 	
@@ -117,33 +141,5 @@ public class RequestExecutor implements RequestHandler, RequestObserver {
 	public void onProcessingRequestCancelled(final ProcessingRequest<?> request) {
 		// do nothing
 	}
-	
-	
-	
-	private final AuxiliaryExecutorObserver mNetworkObserver = new AuxiliaryExecutorObserver() {
-		
-		@Override
-		public void onComplete(final PrioritizableRequest request) {
-			onNetworkRequestComplete((NetworkRequest<?>) request);
-		}
-		
-		@Override
-		public void onCancelled(final PrioritizableRequest request) {
-			onNetworkRequestCancelled((NetworkRequest<?>) request);
-		}
-	};
-	
-	private final AuxiliaryExecutorObserver mProcessingObserver = new AuxiliaryExecutorObserver() {
-		
-		@Override
-		public void onComplete(final PrioritizableRequest request) {
-			onProcessingRequestComplete((ProcessingRequest<?>) request);
-		}
-		
-		@Override
-		public void onCancelled(final PrioritizableRequest request) {
-			onProcessingRequestCancelled((ProcessingRequest<?>) request);
-		}
-	};
 	
 }

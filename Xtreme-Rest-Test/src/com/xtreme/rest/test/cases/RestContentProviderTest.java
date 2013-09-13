@@ -20,7 +20,6 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 
 	private static final int WRONG_ITEM_ID = 1239183702;
 
-	private MockContentResolver mMockResolver;
 	private SQLiteDatabase mDatabase;
 
 	public RestContentProviderTest() {
@@ -31,7 +30,6 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		mMockResolver = getMockContentResolver();
 		mDatabase = getProvider().getDatabase();
 	}
 
@@ -59,8 +57,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST QUERY ITEM ID ==============
 		
 		final Cursor idCursor = queryItemFromTable(testId);
-		assertNotNull(idCursor);
-		assertTrue(idCursor.getCount() == 1);
+		assertEquals(1, idCursor.getCount());
 		assertTrue(idCursor.moveToFirst());
 		assertValuesEqualsCursor(testValue, idCursor);
 		idCursor.close();
@@ -68,15 +65,13 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST QUERY WRONG ITEM ID ==============
 		
 		final Cursor wrongIdCursor = queryItemFromTable(WRONG_ITEM_ID);
-		assertNotNull(wrongIdCursor);
-		assertTrue(wrongIdCursor.getCount() == 0);
+		assertEquals(0, wrongIdCursor.getCount());
 		wrongIdCursor.close();
 		
 		// ======== TEST QUERY ALL ITEMS ==============
 		
 		final Cursor allCursor = queryAllItemsFromTable();
-		assertNotNull(allCursor);
-		assertTrue(allCursor.getCount() == values.length);
+		assertEquals(values.length, allCursor.getCount());
 
 		for (int i = 0; i < values.length; i++) {
 			assertTrue(allCursor.moveToPosition(i));
@@ -95,11 +90,10 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		
 		final Uri firstUri = insertIntoTable(values);
 		final long firstId = ContentUris.parseId(firstUri);
-		assertNotNull(firstUri);
 		assertTrue(firstId > 0);
 
 		final Cursor firstCursor = queryAllItemsFromTable();
-		assertTrue(firstCursor.getCount() == 1);
+		assertEquals(1, firstCursor.getCount());
 		assertTrue(firstCursor.moveToFirst());
 		assertCursorEqualsValues(firstCursor, values);
 		firstCursor.close();
@@ -113,11 +107,10 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		
 		final Uri secondUri = insertIntoTable(values);
 		final long secondId = ContentUris.parseId(secondUri);
-		assertNotNull(secondUri);
 		assertTrue(secondId > 0);
 		
 		final Cursor secondCursor = queryAllItemsFromTable();
-		assertTrue(secondCursor.getCount() == 1);
+		assertEquals(1, secondCursor.getCount());
 		assertTrue(secondCursor.moveToFirst());
 		assertCursorEqualsValues(secondCursor, values);
 		secondCursor.close();
@@ -131,10 +124,10 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST BULK INSERT ITEMS ==============
 		
 		final long firstCount = bulkInsertIntoTable(values);
-		assertTrue(firstCount == values.length);
+		assertEquals(values.length, firstCount);
 
 		final Cursor firstCursor = queryAllItemsFromTable();
-		assertTrue(firstCursor.getCount() == values.length);
+		assertEquals(values.length, firstCursor.getCount());
 
 		for (int i = 0; i < values.length; i++) {
 			assertTrue(firstCursor.moveToPosition(i));
@@ -151,10 +144,10 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		 */
 		
 		final long secondCount = bulkInsertIntoTable(values);
-		assertTrue(secondCount == values.length);
+		assertEquals(values.length, secondCount);
 
 		final Cursor secondCursor = queryAllItemsFromTable();
-		assertTrue(secondCursor.getCount() == values.length);
+		assertEquals(values.length, secondCursor.getCount());
 
 		for (int i = 0; i < values.length; i++) {
 			assertTrue(secondCursor.moveToPosition(i));
@@ -177,14 +170,14 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST NO ITEM TO UPDATE ==============
 		
 		final long emptyUpdatedCount = updateItemFromTable(partiallyUpdatedValues, testId);
-		assertTrue(emptyUpdatedCount == 0);
+		assertEquals(0, emptyUpdatedCount);
 		
 		bulkInsertIntoTable(originalValues);
 		
 		// ======== TEST PARTIAL UPDATE OF 1 ITEM ==============
 		
 		final long itemPartiallyUpdatedCount = updateItemFromTable(partiallyUpdatedValues, testId);
-		assertTrue(itemPartiallyUpdatedCount == 1);
+		assertEquals(1, itemPartiallyUpdatedCount);
 
 		final Cursor itemPartiallyUpdateCursor = queryItemFromTable(testId);
 		assertTrue(itemPartiallyUpdateCursor.moveToFirst());
@@ -194,7 +187,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST FULL UPDATE OF 1 ITEM ==============
 		
 		final long itemFullyUpdatedCount = updateItemFromTable(fullyUpdatedValues, testId);
-		assertTrue(itemFullyUpdatedCount == 1);
+		assertEquals(1, itemFullyUpdatedCount);
 
 		final Cursor itemFullyUpdatedCursor = queryItemFromTable(testId);
 		assertTrue(itemFullyUpdatedCursor.moveToFirst());
@@ -204,7 +197,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST PARTIAL UPDATE OF ALL ITEMS ==============
 
 		final long allPartiallyUpdatedCount = updateAllItemsFromTable(partiallyUpdatedValues);
-		assertTrue(allPartiallyUpdatedCount == originalValues.length);
+		assertEquals(originalValues.length, allPartiallyUpdatedCount);
 
 		final Cursor allPartiallyUpdatedCursor = queryAllItemsFromTable();
 		for (int i = 0; i < originalValues.length; i++) {
@@ -222,10 +215,10 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		 */
 
 		final long allFullyUpdatedCount = updateAllItemsFromTable(fullyUpdatedValues);
-		assertTrue(allFullyUpdatedCount == originalValues.length);
+		assertEquals(originalValues.length, allFullyUpdatedCount);
 		
 		final Cursor allFullyUpdatedCursor = queryAllItemsFromTable();
-		assertTrue(allFullyUpdatedCursor.getCount() == 1);
+		assertEquals(1, allFullyUpdatedCursor.getCount());
 		assertTrue(allFullyUpdatedCursor.moveToFirst());
 		assertCursorEqualsValues(allFullyUpdatedCursor, fullyUpdatedValues);
 		allFullyUpdatedCursor.close();
@@ -242,29 +235,28 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST DELETE WHEN EMPTY ==============
 		
 		final long emptyDeleted = deleteItemFromTable(testId);
-		assertTrue(emptyDeleted == 0);
+		assertEquals(0, emptyDeleted);
 		
 		bulkInsertIntoTable(originalValues);
 		
 		// ======== TEST DELETE ITEM ID ==============
 		
 		final long idDeletedCount = deleteItemFromTable(testId);
-		assertTrue(idDeletedCount == 1);
+		assertEquals(1, idDeletedCount);
 
 		final Cursor idCursor = queryItemFromTable(testId);
-		assertNotNull(idCursor);
-		assertTrue(idCursor.getCount() == 0);
+		assertEquals(0, idCursor.getCount());
 		idCursor.close();
 		
 		// ======== TEST DELETE WRONG ITEM ID ==============
 		
 		final long wrongIdDeletedCount = deleteItemFromTable(WRONG_ITEM_ID);
-		assertTrue(wrongIdDeletedCount == 0);
+		assertEquals(0, wrongIdDeletedCount);
 		
 		// ======== TEST DELETE ALL ITEMS ==============
 		
 		final long deleteCount = deleteAllItemsFromTable();
-		assertTrue(deleteCount == (originalValues.length - idDeletedCount));
+		assertEquals((originalValues.length - idDeletedCount), deleteCount);
 
 		assertTableIsEmpty();
 	}
@@ -291,8 +283,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST QUERY ITEM ID ==============
 		
 		final Cursor idCursor = queryItemFromView(testId);
-		assertNotNull(idCursor);
-		assertTrue(idCursor.getCount() == 1);
+		assertEquals(1, idCursor.getCount());
 		assertTrue(idCursor.moveToFirst());
 		assertValuesEqualsCursor(testValue, idCursor);
 		idCursor.close();
@@ -300,15 +291,13 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		// ======== TEST QUERY WRONG ITEM ID ==============
 		
 		final Cursor wrongIdCursor = queryItemFromView(WRONG_ITEM_ID);
-		assertNotNull(wrongIdCursor);
-		assertTrue(wrongIdCursor.getCount() == 0);
+		assertEquals(0, wrongIdCursor.getCount());
 		wrongIdCursor.close();
 		
 		// ======== TEST QUERY ALL ITEMS ==============
 		
 		final Cursor allCursor = queryAllItemsFromView();
-		assertNotNull(allCursor);
-		assertTrue(allCursor.getCount() == values.length);
+		assertEquals(values.length, allCursor.getCount());
 
 		for (int i = 0; i < values.length; i++) {
 			assertTrue(allCursor.moveToPosition(i));
@@ -359,13 +348,12 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 
 	
 	private MockContentResolver getContentResolver() {
-		return mMockResolver;
+		return getMockContentResolver();
 	}
 
 	private void assertTableIsEmpty() {
 		final Cursor cursor = queryAllItemsFromTable();
-		assertNotNull(cursor);
-		assertTrue(cursor.getCount() == 0);
+		assertEquals(0, cursor.getCount());
 		cursor.close();
 	}
 
@@ -433,8 +421,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	
 	private void assertViewIsEmpty() {
 		final Cursor cursor = queryAllItemsFromView();
-		assertNotNull(cursor);
-		assertTrue(cursor.getCount() == 0);
+		assertEquals(0, cursor.getCount());
 		cursor.close();
 	}
 
@@ -488,7 +475,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 			} else {
 				final String expected = values.getAsString(columnName);
 				final String actual = cursor.getString(cursor.getColumnIndex(columnName));
-				assertTrue((actual == expected) || actual.equals(expected));
+				assertEquals(expected, actual);
 			}
 		}
 	}
@@ -498,7 +485,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 			final String columnName = entry.getKey();
 			final String expected = String.valueOf(entry.getValue());
 			final String actual = cursor.getString(cursor.getColumnIndex(columnName));
-			assertTrue(actual.equals(expected));
+			assertEquals(expected, actual);
 		}
 	}
 

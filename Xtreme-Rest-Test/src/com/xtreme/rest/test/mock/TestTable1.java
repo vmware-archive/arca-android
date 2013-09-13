@@ -1,4 +1,4 @@
-package com.xtreme.rest.test.junit.mock.providers;
+package com.xtreme.rest.test.mock;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

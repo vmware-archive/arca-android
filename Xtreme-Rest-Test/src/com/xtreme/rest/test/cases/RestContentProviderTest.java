@@ -1,4 +1,4 @@
-package com.xtreme.rest.test.junit.tests;
+package com.xtreme.rest.test.cases;
 
 import java.util.Map.Entry;
 
@@ -11,10 +11,10 @@ import android.provider.BaseColumns;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
 
-import com.xtreme.rest.test.junit.mock.providers.TestContentProvider;
-import com.xtreme.rest.test.junit.mock.providers.TestTable1;
-import com.xtreme.rest.test.junit.mock.providers.TestTable2;
-import com.xtreme.rest.test.junit.mock.providers.TestView;
+import com.xtreme.rest.test.mock.TestContentProvider;
+import com.xtreme.rest.test.mock.TestTable1;
+import com.xtreme.rest.test.mock.TestTable2;
+import com.xtreme.rest.test.mock.TestView;
 
 public class RestContentProviderTest extends ProviderTestCase2<TestContentProvider> {
 

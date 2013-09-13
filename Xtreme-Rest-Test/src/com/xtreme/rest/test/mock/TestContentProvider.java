@@ -1,4 +1,4 @@
-package com.xtreme.rest.test.junit.mock.providers;
+package com.xtreme.rest.test.mock;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;

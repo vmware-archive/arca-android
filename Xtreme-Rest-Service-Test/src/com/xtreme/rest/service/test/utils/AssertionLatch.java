@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.utils;
+package com.xtreme.rest.service.test.utils;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;

@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.mock;
+package com.xtreme.rest.service.test.mock;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.tests;
+package com.xtreme.rest.service.test.cases;
 
 import android.net.Uri;
 import android.os.Parcel;
@@ -11,12 +11,12 @@ import com.xtreme.rest.service.ProcessingRequest;
 import com.xtreme.rest.service.RequestHandler;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.ServiceException;
-import com.xtreme.rest.service.test.junit.mock.TestOperation;
-import com.xtreme.rest.service.test.junit.mock.TestOperationFactory;
-import com.xtreme.rest.service.test.junit.mock.TestRequestHandler;
-import com.xtreme.rest.service.test.junit.mock.TestTask;
-import com.xtreme.rest.service.test.junit.mock.TestTaskFactory;
-import com.xtreme.rest.service.test.junit.utils.AssertionLatch;
+import com.xtreme.rest.service.test.mock.TestOperation;
+import com.xtreme.rest.service.test.mock.TestOperationFactory;
+import com.xtreme.rest.service.test.mock.TestRequestHandler;
+import com.xtreme.rest.service.test.mock.TestTask;
+import com.xtreme.rest.service.test.mock.TestTaskFactory;
+import com.xtreme.rest.service.test.utils.AssertionLatch;
 
 public class OperationTest extends AndroidTestCase {
 

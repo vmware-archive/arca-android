@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.mock;
+package com.xtreme.rest.service.test.mock;
 
 import com.xtreme.rest.service.ProcessingPrioritizable;
 import com.xtreme.rest.service.ProcessingRequest;

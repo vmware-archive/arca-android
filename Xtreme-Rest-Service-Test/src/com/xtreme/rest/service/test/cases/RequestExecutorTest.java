@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.tests;
+package com.xtreme.rest.service.test.cases;
 
 
 import android.test.AndroidTestCase;
@@ -6,12 +6,12 @@ import android.test.AndroidTestCase;
 import com.xtreme.rest.service.NetworkRequest;
 import com.xtreme.rest.service.ProcessingRequest;
 import com.xtreme.rest.service.RequestExecutor;
-import com.xtreme.rest.service.test.junit.mock.TestNetworkPrioritizable;
-import com.xtreme.rest.service.test.junit.mock.TestNetworkRequest;
-import com.xtreme.rest.service.test.junit.mock.TestProcessingPrioritizable;
-import com.xtreme.rest.service.test.junit.mock.TestProcessingRequest;
-import com.xtreme.rest.service.test.junit.mock.TestRequestExecutor;
-import com.xtreme.rest.service.test.junit.utils.AssertionLatch;
+import com.xtreme.rest.service.test.mock.TestNetworkPrioritizable;
+import com.xtreme.rest.service.test.mock.TestNetworkRequest;
+import com.xtreme.rest.service.test.mock.TestProcessingPrioritizable;
+import com.xtreme.rest.service.test.mock.TestProcessingRequest;
+import com.xtreme.rest.service.test.mock.TestRequestExecutor;
+import com.xtreme.rest.service.test.utils.AssertionLatch;
 
 public class RequestExecutorTest extends AndroidTestCase {
 

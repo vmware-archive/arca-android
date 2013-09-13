@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.tests;
+package com.xtreme.rest.service.test.cases;
 
 import java.util.List;
 
@@ -11,10 +11,10 @@ import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.ServiceException;
 import com.xtreme.rest.service.Task;
 import com.xtreme.rest.service.TaskObserver;
-import com.xtreme.rest.service.test.junit.mock.TestRequestHandler;
-import com.xtreme.rest.service.test.junit.mock.TestTask;
-import com.xtreme.rest.service.test.junit.mock.TestTaskFactory;
-import com.xtreme.rest.service.test.junit.utils.AssertionLatch;
+import com.xtreme.rest.service.test.mock.TestRequestHandler;
+import com.xtreme.rest.service.test.mock.TestTask;
+import com.xtreme.rest.service.test.mock.TestTaskFactory;
+import com.xtreme.rest.service.test.utils.AssertionLatch;
 import com.xtreme.threading.RequestIdentifier;
 
 public class TaskTest extends AndroidTestCase {

@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.tests;
+package com.xtreme.rest.service.test.cases;
 
 import android.test.AndroidTestCase;
 

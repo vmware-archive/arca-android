@@ -1,4 +1,4 @@
-package com.xtreme.rest.service.test.junit.tests;
+package com.xtreme.rest.service.test.cases;
 
 import android.content.ComponentName;
 import android.content.ContextWrapper;
@@ -7,10 +7,10 @@ import android.test.ServiceTestCase;
 
 import com.xtreme.rest.service.RestService;
 import com.xtreme.rest.service.RestService.Action;
-import com.xtreme.rest.service.test.junit.mock.TestOperation;
-import com.xtreme.rest.service.test.junit.mock.TestOperationFactory;
-import com.xtreme.rest.service.test.junit.mock.TestRestService;
-import com.xtreme.rest.service.test.junit.utils.AssertionLatch;
+import com.xtreme.rest.service.test.mock.TestOperation;
+import com.xtreme.rest.service.test.mock.TestOperationFactory;
+import com.xtreme.rest.service.test.mock.TestRestService;
+import com.xtreme.rest.service.test.utils.AssertionLatch;
 
 public class RestServiceTest2 extends ServiceTestCase<TestRestService> {
 

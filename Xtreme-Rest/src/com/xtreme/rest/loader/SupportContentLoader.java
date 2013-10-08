@@ -17,12 +17,17 @@ class SupportContentLoader extends BaseContentLoader implements LoaderCallbacks<
 		mLoaderManager = loaderManager;
 	}
 	
+	private void initLoader(final ContentRequest request) {
+		final Bundle bundle = createRequestBundle(request);
+		mLoaderManager.initLoader(ID, bundle, this);
+	}
+	
 	@Override
-	protected void startLoader() {
+	protected void startLoader(final ContentRequest request) {
 		if (mLoader == null) {
-			mLoaderManager.initLoader(ID, null, this);
+			initLoader(request);
 		} else {
-			mLoader.setRequest(mRequest);
+			mLoader.setRequest(request);
 			mLoader.forceLoad();
 		}
 	}
@@ -40,19 +45,20 @@ class SupportContentLoader extends BaseContentLoader implements LoaderCallbacks<
 	}
 
 	@Override
-	public final Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+		final ContentRequest request = args.getParcelable(Extras.REQUEST);
 		mLoader = new SupportCursorLoader(getContext());
-		mLoader.setRequest(mRequest);
+		mLoader.setRequest(request);
 		return mLoader;
 	}
 	
 	@Override
-	public final void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
+	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
 		notifyLoadFinished(cursor);
 	}
 
 	@Override
-	public final void onLoaderReset(final Loader<Cursor> loader) {
+	public void onLoaderReset(final Loader<Cursor> loader) {
 		notifyLoaderReset();
 	}
 }

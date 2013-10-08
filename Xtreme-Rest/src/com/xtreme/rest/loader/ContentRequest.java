@@ -1,16 +1,18 @@
 package com.xtreme.rest.loader;
 
-import com.xtreme.rest.providers.RestContentProvider;
-
 import android.content.CursorLoader;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.xtreme.rest.providers.RestContentProvider;
 
 /**
  * Defines a single request for content. To be used with a {@link ContentLoader}. It contains the {@link Uri},
  * projections, where clause & args, sort order, and the force update flag. All arguments are used up by the
  * {@link RestContentProvider} and sent through a {@link CursorLoader}.
  */
-public class ContentRequest {
+public class ContentRequest implements Parcelable {
 	
 	public static final class Params {
 		public static final String FORCE_UPDATE = "force_update";
@@ -28,6 +30,30 @@ public class ContentRequest {
 			throw new IllegalArgumentException("The URI must not be null.");
 		}
 		mContentUri = uri;
+	}
+	
+	public ContentRequest(final Parcel in) {
+		mContentUri = in.readParcelable(Uri.class.getClassLoader());
+		mProjection = in.createStringArray();
+		mWhereClause = in.readString();
+		mWhereArgs = in.createStringArray();
+		mSortOrder = in.readString();
+		mForceUpdate = in.readInt() == 1;
+	}
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeParcelable(mContentUri, flags);
+		dest.writeStringArray(mProjection);
+		dest.writeString(mWhereClause);
+		dest.writeStringArray(mWhereArgs);
+		dest.writeString(mSortOrder);
+		dest.writeInt(mForceUpdate ? 1 : 0);
 	}
 
 	public void setProjection(final String[] projection) {
@@ -71,9 +97,6 @@ public class ContentRequest {
 		return mForceUpdate;
 	}
 	
-	/**
-	 * @return The {@link Uri} with the force update query parameter appended.
-	 */
 	public Uri getForceUpdateContentUri() {
 		if (mForceUpdate) { 
 			mForceUpdate = false;
@@ -84,4 +107,17 @@ public class ContentRequest {
 			return getContentUri();
 		}
 	}
+	
+	public static final Parcelable.Creator<ContentRequest> CREATOR = new Parcelable.Creator<ContentRequest>() {
+		@Override
+		public ContentRequest createFromParcel(final Parcel in) {
+			return new ContentRequest(in);
+		}
+
+		@Override
+		public ContentRequest[] newArray(final int size) {
+			return new ContentRequest[size];
+		}
+	};
+	
 }

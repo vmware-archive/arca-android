@@ -3,8 +3,13 @@ package com.xtreme.rest.loader;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 
 abstract class BaseContentLoader implements ContentLoader {
+	
+	protected static final class Extras {
+		public static final String REQUEST = "request";
+	}
 	
 	private static int sId = 0;
 	protected final int ID = ++sId;
@@ -13,9 +18,7 @@ abstract class BaseContentLoader implements ContentLoader {
 	private final ContentLoaderListener mListener;
 	private final ContentErrorReceiver mReceiver;
 	
-	protected ContentRequest mRequest;
-
-	protected abstract void startLoader();
+	protected abstract void startLoader(final ContentRequest request);
 	protected abstract void destroyLoader();
 	protected abstract void cancelLoader();
 
@@ -25,45 +28,44 @@ abstract class BaseContentLoader implements ContentLoader {
 		mContext = context;
 	}
 
-	@Override
-	public synchronized final void execute(final ContentRequest request) {
-		if (request == null) {
-			throw new IllegalArgumentException("ContentRequest must not be null.");
-		}
-
-		final Uri uri = request.getContentUri();
-		
-		mReceiver.update(uri);
-		mRequest = request;
-		
-		startLoader();
-	}
-	
-	@Override
-	public synchronized final void cancel() {
-		cancelLoader();
-	}
-	
-	public final Context getContext() {
+	public Context getContext() {
 		return mContext;
 	}
-
-	void notifyLoadFinished(final Cursor cursor) {
-		if (mListener != null) {
-			final ContentResponse response = new ContentResponse(cursor);
-			mListener.onLoaderFinished(response);
-		}
+	
+	@Override
+	public final void execute(final ContentRequest request) {
+		final Uri uri = request.getContentUri();
+		mReceiver.update(uri);
+		startLoader(request);
 	}
 	
-	void notifyLoaderReset() {
-		if (mListener != null) {
-			mListener.onLoaderReset();
-		}
+	@Override
+	public final void cancel() {
+		cancelLoader();
 	}
 	
 	@Override
 	public final void destroy() {
 		mReceiver.unregister();
 		destroyLoader();
+	}
+
+	protected void notifyLoadFinished(final Cursor cursor) {
+		if (mListener != null) {
+			final ContentResponse response = new ContentResponse(cursor);
+			mListener.onLoaderFinished(response);
+		}
+	}
+	
+	protected void notifyLoaderReset() {
+		if (mListener != null) {
+			mListener.onLoaderReset();
+		}
+	}
+	
+	protected Bundle createRequestBundle(final ContentRequest request) {
+		final Bundle bundle = new Bundle();
+		bundle.putParcelable(Extras.REQUEST, request);
+		return bundle;
 	}
 }

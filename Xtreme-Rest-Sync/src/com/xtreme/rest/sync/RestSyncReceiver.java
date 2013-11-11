@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SyncStats;
 
 import com.xtreme.rest.broadcasts.RestBroadcastReceiver;
-import com.xtreme.rest.broadcasts.RestBroadcaster;
 
 public class RestSyncReceiver extends RestBroadcastReceiver {
 
@@ -17,7 +16,7 @@ public class RestSyncReceiver extends RestBroadcastReceiver {
 	
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		final SyncStats stats = RestBroadcaster.getStats(intent);
+		final SyncStats stats = RestSyncBroadcaster.getSyncStats(intent);
 		if (mListener != null && stats != null) {
 			mListener.onSyncComplete(stats);
 		}

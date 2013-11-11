@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ResourceCursorAdapter;
 
-import com.xtreme.rest.animators.AdapterAnimator;
+import com.xtreme.rest.animators.ViewAnimator;
 import com.xtreme.rest.binders.TextViewBinder;
 import com.xtreme.rest.binders.ViewBinder;
 
@@ -19,7 +19,7 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 	private final CursorAdapterHelper mHelper;
 	
 	private ViewBinder mViewBinder;
-	private AdapterAnimator mAdapterAnimator;
+	private ViewAnimator mViewAnimator;
 
 	private int mCurrentPosition = 0;
 	private int mLastPosition = -1;
@@ -33,8 +33,8 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 		mViewBinder = binder;
 	}
 
-	public void setAdapterAnimator(final AdapterAnimator animator) {
-		mAdapterAnimator = animator;
+	public void setViewAnimator(final ViewAnimator animator) {
+		mViewAnimator = animator;
 	}
 	
 	@Override
@@ -79,14 +79,14 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 	}
 
 	protected void animateView(final View view) {
-		if (mAdapterAnimator == null) {
+		if (mViewAnimator == null) {
 			return;
 		}
 		
 		if (mCurrentPosition >= mLastPosition) { 
-			mAdapterAnimator.animateViewOnForwardScroll(view, mCurrentPosition);
+			mViewAnimator.animateViewOnForwardScroll(view, mCurrentPosition);
 		} else {
-			mAdapterAnimator.animateViewOnBackwardScroll(view, mCurrentPosition);
+			mViewAnimator.animateViewOnBackwardScroll(view, mCurrentPosition);
 		}
 	}
 

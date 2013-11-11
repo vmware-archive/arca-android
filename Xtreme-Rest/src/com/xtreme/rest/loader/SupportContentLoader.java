@@ -7,7 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 
-class SupportContentLoader extends BaseContentLoader implements LoaderCallbacks<Cursor> {
+public class SupportContentLoader extends BaseContentLoader implements LoaderCallbacks<Cursor> {
 
 	private final LoaderManager mLoaderManager;
 	private SupportCursorLoader mLoader;

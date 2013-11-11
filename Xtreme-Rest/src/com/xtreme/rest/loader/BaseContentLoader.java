@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
-abstract class BaseContentLoader implements ContentLoader {
+public abstract class BaseContentLoader implements ContentLoader {
 	
 	protected static final class Extras {
 		public static final String REQUEST = "request";

@@ -10,7 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-class ModernContentLoader extends BaseContentLoader implements LoaderCallbacks<Cursor> {
+public class ModernContentLoader extends BaseContentLoader implements LoaderCallbacks<Cursor> {
 
 	private final LoaderManager mLoaderManager;
 	private ModernCursorLoader mLoader;

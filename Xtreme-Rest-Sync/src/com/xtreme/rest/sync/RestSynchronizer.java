@@ -32,15 +32,25 @@ public class RestSynchronizer implements RestSyncListener {
 		mReceiver.register(uri.toString());
 		
 		try {
-			mStats = new SyncStats();
-			mStats.numIoExceptions++;
-			
 			mLatch.await(mTimeout, TimeUnit.SECONDS);
-			
-			return mStats;
+			return getStats();
 		} finally {
 			mReceiver.unregister();
 		}
+	}
+
+	private SyncStats getStats() {
+		if (mStats != null) {
+			return mStats;
+		} else {
+			return failureStats();
+		}
+	}
+
+	private static SyncStats failureStats() {
+		final SyncStats stats = new SyncStats();
+		stats.numIoExceptions++;
+		return stats;
 	}
 
 	@Override

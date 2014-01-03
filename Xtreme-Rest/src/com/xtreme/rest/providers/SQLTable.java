@@ -134,7 +134,9 @@ public abstract class SQLTable extends Dataset {
 		for (final String key : mapping.keySet()) {
 			builder.append(String.format("%s %s,", key, mapping.get(key)));
 		}
-		builder.deleteCharAt(builder.length() -1);
+		if (builder.length() > 0) {
+			builder.deleteCharAt(builder.length() -1);
+		}
 		return builder.toString();
 	}
 	

@@ -29,6 +29,7 @@ public abstract class ContentLoaderFragment extends Fragment implements ContentL
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		
 		mContentLoader = ContentLoaderFactory.generateContentLoader(this, this);
 	}
 	
@@ -46,14 +47,14 @@ public abstract class ContentLoaderFragment extends Fragment implements ContentL
 		super.onStop();
 		
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) { 
-			mContentLoader.destroy();
+			getContentLoader().destroy();
 		}
 	}
 	
 	@Override
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void onDestroyView() {
-		mContentLoader.destroy();
+		getContentLoader().destroy();
 		
 		super.onDestroyView();
 	}
@@ -69,6 +70,6 @@ public abstract class ContentLoaderFragment extends Fragment implements ContentL
 	 * @see ContentLoader#execute(ContentRequest)
 	 */
 	protected final void execute(final ContentRequest request) {
-		mContentLoader.execute(request);
+		getContentLoader().execute(request);
 	}
 }

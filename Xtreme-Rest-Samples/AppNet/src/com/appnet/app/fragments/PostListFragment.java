@@ -1,5 +1,8 @@
 package com.appnet.app.fragments;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,27 +22,22 @@ import com.appnet.app.animators.SimpleAdapterAnimator;
 import com.appnet.app.datasets.PostTable;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
+import com.xtreme.rest.binders.Binding;
+import com.xtreme.rest.binders.ViewBinder;
 import com.xtreme.rest.broadcasts.RestError;
 import com.xtreme.rest.fragments.ContentLoaderAdapterSupportFragment;
 import com.xtreme.rest.loader.ContentRequest;
 import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
-public class PostListFragment extends ContentLoaderAdapterSupportFragment implements OnItemClickListener {
+public class PostListFragment extends ContentLoaderAdapterSupportFragment implements OnItemClickListener, ViewBinder {
 
+	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
+		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT),
+		new Binding(R.id.list_item_post_image, PostTable.Columns.IMAGE_URL),
+		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT),
+	});
 	
-	private static final String[] COLUMN_NAMES = new String[] { 
-		PostTable.Columns.TEXT,
-		PostTable.Columns.IMAGE_URL,
-		PostTable.Columns.CREATED_AT,
-	};
-
-	private static final int[] VIEW_IDS = new int[] { 
-        R.id.list_item_post_text,
-        R.id.list_item_post_image,
-        R.id.list_item_post_created_at,
-	};
-
 	private ImageLoader mImageLoader;
 	
 	@Override
@@ -51,9 +49,9 @@ public class PostListFragment extends ContentLoaderAdapterSupportFragment implem
 	}
 	
 	@Override
-	public CursorAdapter onCreateAdapter(int itemResourceId, int[] viewIds, String[] columnNames) {
-		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), itemResourceId, columnNames, viewIds);
-		adapter.setAdapterAnimator(new SimpleAdapterAnimator());
+	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView) {
+		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), R.layout.list_item_post, BINDINGS);
+		adapter.setViewAnimator(new SimpleAdapterAnimator());
 		adapter.setViewBinder(this);
 		return adapter;
 	}
@@ -65,30 +63,15 @@ public class PostListFragment extends ContentLoaderAdapterSupportFragment implem
 	}
 	
 	@Override
-	public void onStart() {
-		super.onStart();
-		
-		loadPosts();
-	}
-	
-	@Override
-	public String[] getColumnNames() {
-		return COLUMN_NAMES;
-	}
-	
-	@Override
-	public int[] getViewIds() {
-		return VIEW_IDS;
-	}
-	
-	@Override
 	protected int getAdapterViewId() {
 		return R.id.post_list;
 	}
 	
 	@Override
-	protected int getAdapterItemResourceId() {
-		return R.layout.list_item_post;
+	public void onStart() {
+		super.onStart();
+		
+		loadPosts();
 	}
 	
 	private void loadPosts() {
@@ -130,15 +113,16 @@ public class PostListFragment extends ContentLoaderAdapterSupportFragment implem
 	}
 
 	@Override
-	public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {
+	public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
+	
 		switch (view.getId()) {
 		case R.id.list_item_post_image:
-		    final String url = cursor.getString(columnIndex);
+		    final String url = cursor.getString(binding.getColumnIndex());
 		    mImageLoader.loadImage((ImageView) view, url);
 		    return true;
 
 		default:
-		    return super.setViewValue(view, cursor, columnIndex);
+		    return false;
 		}
 	}
 }

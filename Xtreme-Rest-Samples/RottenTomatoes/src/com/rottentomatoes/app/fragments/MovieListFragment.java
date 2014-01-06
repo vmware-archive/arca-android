@@ -1,5 +1,8 @@
 package com.rottentomatoes.app.fragments;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,7 +10,6 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -20,23 +22,20 @@ import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
+import com.xtreme.rest.binders.Binding;
+import com.xtreme.rest.binders.ViewBinder;
 import com.xtreme.rest.broadcasts.RestError;
 import com.xtreme.rest.fragments.ContentLoaderAdapterSupportFragment;
 import com.xtreme.rest.loader.ContentRequest;
 import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
-public class MovieListFragment extends ContentLoaderAdapterSupportFragment implements OnItemClickListener {
+public class MovieListFragment extends ContentLoaderAdapterSupportFragment implements OnItemClickListener, ViewBinder {
 	
-	private static final String[] COLUMN_NAMES = new String[] { 
-		MovieTypeView.Columns.TITLE,
-		MovieTypeView.Columns.IMAGE_URL,
-	};
-
-	private static final int[] VIEW_IDS = new int[] { 
-        R.id.list_item_movie_title,
-        R.id.list_item_movie_image,
-	};
+	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
+		new Binding(R.id.list_item_movie_title, MovieTypeView.Columns.TITLE),
+		new Binding(R.id.list_item_movie_image, MovieTypeView.Columns.IMAGE_URL),
+	});
 
 	private String mType;
 	private ImageLoader mImageLoader;
@@ -44,17 +43,22 @@ public class MovieListFragment extends ContentLoaderAdapterSupportFragment imple
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
-		((AbsListView) view.findViewById(R.id.movie_list)).setOnItemClickListener(this);
 		mImageLoader = ImageLoader.buildImageLoaderForSupportFragment(this);
 		return view;
 	}
 	
 	@Override
-	public CursorAdapter onCreateAdapter(final int itemResourceId, final int[] viewIds, final String[] columnNames) {
-		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), itemResourceId, columnNames, viewIds);
-		adapter.setAdapterAnimator(new SimpleAdapterAnimator());
+	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView) {
+		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), R.layout.list_item_movie, BINDINGS);
+		adapter.setViewAnimator(new SimpleAdapterAnimator());
 		adapter.setViewBinder(this);
 		return adapter;
+	}
+	
+	@Override
+	public void onViewCreated(final View view, final Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		getAdapterView().setOnItemClickListener(this);
 	}
 	
 	@Override
@@ -70,28 +74,12 @@ public class MovieListFragment extends ContentLoaderAdapterSupportFragment imple
 	}
 	
 	private void scrollToTop() {
-		final AbsListView adapterView = (AbsListView) getAdapterView();
-		adapterView.smoothScrollToPosition(0);
-	}
-
-	@Override
-	public String[] getColumnNames() {
-		return COLUMN_NAMES;
-	}
-	
-	@Override
-	public int[] getViewIds() {
-		return VIEW_IDS;
+		//((AbsListView) getAdapterView()).smoothScrollToPosition(0);
 	}
 	
 	@Override
 	protected int getAdapterViewId() {
 		return R.id.movie_list;
-	}
-	
-	@Override
-	protected int getAdapterItemResourceId() {
-		return R.layout.list_item_movie;
 	}
 	
 	private void loadMovies() {
@@ -147,15 +135,15 @@ public class MovieListFragment extends ContentLoaderAdapterSupportFragment imple
 	}
 
 	@Override
-	public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {
+	public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
 		switch (view.getId()) {
 		case R.id.list_item_movie_image:
-		    final String url = cursor.getString(columnIndex);
+		    final String url = cursor.getString(binding.getColumnIndex());
 		    mImageLoader.loadImage((ImageView) view, url);
 		    return true;
 
 		default:
-		    return super.setViewValue(view, cursor, columnIndex);
+		    return false;
 		}
 	}
 }

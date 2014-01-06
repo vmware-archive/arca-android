@@ -1,17 +1,20 @@
 package com.xtreme.rest.adapters;
 
-import com.xtreme.rest.binders.TextViewBinder;
+import java.util.Collection;
+import java.util.List;
+
+import com.xtreme.rest.binders.Binding;
+import com.xtreme.rest.binders.DefaultViewBinder;
 import com.xtreme.rest.binders.ViewBinder;
 
 import android.database.Cursor;
 import android.view.View;
 
-/**
- * A wrapper around a {@link Cursor} with a single row that uses the {@link ViewBinder} interface.
- */
 public class ItemCursorAdapter {
 
-	private final TextViewBinder mDefaultBinder = new TextViewBinder();
+	private static final int TYPE = 0;
+	
+	private final DefaultViewBinder mDefaultBinder;
 	private final CursorAdapterHelper mHelper;
 	
 	private ViewBinder mViewBinder;
@@ -19,9 +22,9 @@ public class ItemCursorAdapter {
 	private final View mView;
 	private Cursor mCursor;
 	
-	public ItemCursorAdapter(final View view, final String[] columnNames, final int[] viewIds) {
-		mHelper = new CursorAdapterHelper(columnNames, viewIds);
-		mHelper.findViews(view);
+	public ItemCursorAdapter(final View view, final Collection<Binding> bindings) {
+		mHelper = new CursorAdapterHelper(bindings);
+		mDefaultBinder = new DefaultViewBinder();
 		mView = view;
 	}
 	
@@ -29,16 +32,12 @@ public class ItemCursorAdapter {
 		mViewBinder = viewBinder;
 	}
 	
-	/**
-	 * @return <code>true</code> if the cursor is non-null and has at least 1 row, false otherwise
-	 */
 	public boolean hasResults() {
 		return mCursor != null && mCursor.getCount() > 0;
 	}
 	
 	public void swapCursor(final Cursor cursor) {
 		mCursor = cursor;
-		mHelper.findColumns(cursor);
 
 		if (cursor != null && cursor.moveToPosition(0)) {
 			bindView(mView, cursor);
@@ -50,27 +49,28 @@ public class ItemCursorAdapter {
 	}
 	
 	protected void bindView(final View container, final Cursor cursor) {
+		final List<Binding> bindings = mHelper.getBindings(TYPE, cursor); 
 		
-		final int count = mHelper.getViewCount();
+		for (final Binding binding : bindings) {
+			bindView(container, cursor, binding);
+		}
+	}
+	
+	private void bindView(final View container, final Cursor cursor, final Binding binding) {
+		final View view = mHelper.getView(container, binding);
 
-		for (int i = 0; i < count; i++) {
-			
-			final int columnIndex = mHelper.getColumnIndex(i);
-			final View view = mHelper.getView(container, i);
-			
-			boolean bound = false;
-			
-			if (mViewBinder != null) {
-				bound = mViewBinder.setViewValue(view, cursor, columnIndex);
-			}
-			
-			if (!bound) {
-				bound = mDefaultBinder.setViewValue(view, cursor, columnIndex);
-			}
-			
-			if (!bound) {
-				throw new IllegalStateException("Connot bind to view: " + view.getClass());
-			}
+		boolean bound = false;
+		
+		if (mViewBinder != null) {
+			bound = mViewBinder.setViewValue(view, cursor, binding);
+		}
+		
+		if (!bound) {
+			bound = mDefaultBinder.setViewValue(view, cursor, binding);
+		}
+		
+		if (!bound) {
+			throw new IllegalStateException("Connot bind to view: " + view.getClass());
 		}
 	}
 	

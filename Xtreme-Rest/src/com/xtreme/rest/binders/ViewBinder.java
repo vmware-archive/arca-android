@@ -4,5 +4,5 @@ import android.database.Cursor;
 import android.view.View;
 
 public interface ViewBinder {
-	public boolean setViewValue(View view, Cursor cursor, int columnIndex);
+	public boolean setViewValue(View view, Cursor cursor, Binding binding);
 }

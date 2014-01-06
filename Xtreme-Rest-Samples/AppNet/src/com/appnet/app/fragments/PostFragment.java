@@ -1,5 +1,8 @@
 package com.appnet.app.fragments;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,26 +15,31 @@ import com.appnet.app.R;
 import com.appnet.app.datasets.PostTable;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
+import com.xtreme.rest.binders.Binding;
+import com.xtreme.rest.binders.ViewBinder;
 import com.xtreme.rest.broadcasts.RestError;
 import com.xtreme.rest.fragments.ContentLoaderItemSupportFragment;
 import com.xtreme.rest.loader.ContentRequest;
 import com.xtreme.rest.loader.ContentResponse;
 
-public class PostFragment extends ContentLoaderItemSupportFragment {
+public class PostFragment extends ContentLoaderItemSupportFragment implements ViewBinder {
 	
-	private static final String[] COLUMN_NAMES = new String[] { 
-        PostTable.Columns.TEXT,
-	};
-
-	private static final int[] VIEW_IDS = new int[] { 
-        R.id.post_text,
-	};
+	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
+		new Binding(R.id.post_text, PostTable.Columns.TEXT),
+	});
 
 	private String mId;
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_post, container, false);
+	}
+	
+	@Override
+	public ItemCursorAdapter onCreateAdapter(final View view) {
+		final ItemCursorAdapter adapter = new ItemCursorAdapter(view, BINDINGS);
+		adapter.setViewBinder(this);
+		return adapter;
 	}
 	
 	@Override
@@ -44,17 +52,7 @@ public class PostFragment extends ContentLoaderItemSupportFragment {
 	public void setId(final String id) {
 		mId = id;
 	}
-
-	@Override
-	public String[] getColumnNames() {
-		return COLUMN_NAMES;
-	}
-
-	@Override
-	public int[] getViewIds() {
-		return VIEW_IDS;
-	}
-
+	
 	private void loadPost(final String id) {
 		final Uri baseUri = AppNetContentProvider.Uris.POSTS_URI;
 		final Uri contentUri = Uri.withAppendedPath(baseUri, id);
@@ -84,9 +82,9 @@ public class PostFragment extends ContentLoaderItemSupportFragment {
 	public void onError(final RestError error) {
 		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
 	}
-	
+
 	@Override
-	public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {
+	public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
 		return false;
 	}
 	

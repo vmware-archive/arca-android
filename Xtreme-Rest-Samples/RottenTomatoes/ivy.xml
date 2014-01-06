@@ -1,8 +1,0 @@
-<ivy-module version="2.0">
-	<info organisation="com.example" module="example-android" revision="0.1" />
-	<dependencies>
-		<dependency org="com.google.code.gson" name="gson" rev="2.2.4" />
-		<dependency org="com.xtremelabs" name="xl-network-android" rev="1.5.0-RELEASE" />
-		<dependency org="com.xtremelabs" name="xl-image-utils-android" rev="1.4.0-RELEASE" />
-	</dependencies>
-</ivy-module>

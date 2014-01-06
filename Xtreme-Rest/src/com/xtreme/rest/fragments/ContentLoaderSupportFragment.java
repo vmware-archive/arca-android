@@ -25,26 +25,27 @@ public abstract class ContentLoaderSupportFragment extends Fragment implements C
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		
 		mContentLoader = ContentLoaderFactory.generateContentLoader(this, this);
 	}
 
 	@Override
 	public void onDestroyView() {
-		mContentLoader.destroy();
+		getContentLoader().destroy();
 		super.onDestroyView();
 	}
 	
 	/**
 	 * @return The {@link ContentLoader} instance used by this fragment.
 	 */
-	protected final ContentLoader getContentLoader() {
+	protected ContentLoader getContentLoader() {
 		return mContentLoader;
 	}
 	
 	/**
 	 * @see ContentLoader#execute(ContentRequest)
 	 */
-	protected final void execute(final ContentRequest request) {
-		mContentLoader.execute(request);
+	protected void execute(final ContentRequest request) {
+		getContentLoader().execute(request);
 	}
 }

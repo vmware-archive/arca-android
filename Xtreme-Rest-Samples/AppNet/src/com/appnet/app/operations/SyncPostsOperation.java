@@ -11,10 +11,10 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.xtreme.rest.broadcasts.RestBroadcaster;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
+import com.xtreme.rest.sync.RestSyncBroadcaster;
 
 public class SyncPostsOperation extends Operation {
 
@@ -43,7 +43,7 @@ public class SyncPostsOperation extends Operation {
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.notifyChange(getUri(), null, false);
 		
-		RestBroadcaster.broadcast(context, getUri(), new SyncStats());
+		RestSyncBroadcaster.broadcast(context, getUri(), new SyncStats());
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class SyncPostsOperation extends Operation {
 		final SyncStats stats = new SyncStats();
 		stats.numIoExceptions++;
 		
-		RestBroadcaster.broadcast(context, getUri(), stats);
+		RestSyncBroadcaster.broadcast(context, getUri(), stats);
 	}
 
 	public static final Parcelable.Creator<SyncPostsOperation> CREATOR = new Parcelable.Creator<SyncPostsOperation>() {

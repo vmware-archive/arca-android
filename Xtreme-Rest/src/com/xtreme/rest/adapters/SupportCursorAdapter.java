@@ -1,29 +1,30 @@
 package com.xtreme.rest.adapters;
 
+import java.util.Collection;
+import java.util.List;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.xtreme.rest.animators.ViewAnimator;
-import com.xtreme.rest.binders.TextViewBinder;
+import com.xtreme.rest.binders.Binding;
+import com.xtreme.rest.binders.DefaultViewBinder;
 import com.xtreme.rest.binders.ViewBinder;
 
 public class SupportCursorAdapter extends ResourceCursorAdapter {
 	
-	private final TextViewBinder mDefaultBinder = new TextViewBinder();
+	private final DefaultViewBinder mDefaultBinder;
 	private final CursorAdapterHelper mHelper;
 	
 	private ViewBinder mViewBinder;
 	private ViewAnimator mViewAnimator;
 	
-	private int mCurrentPosition = 0;
-	private int mLastPosition = -1;
-
-	public SupportCursorAdapter(final Context context, final int layout, final String[] columnNames, final int[] viewIds) {
+	public SupportCursorAdapter(final Context context, final int layout, final Collection<Binding> bindings) {
 		super(context, layout, null, 0);
-		mHelper = new CursorAdapterHelper(columnNames, viewIds);
+		mHelper = new CursorAdapterHelper(bindings);
+		mDefaultBinder = new DefaultViewBinder();
 	}
 	
 	public void setViewBinder(final ViewBinder binder) {
@@ -33,66 +34,50 @@ public class SupportCursorAdapter extends ResourceCursorAdapter {
 	public void setViewAnimator(final ViewAnimator animator) {
 		mViewAnimator = animator;
 	}
-
-	@Override
-	public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-		final View view = super.newView(context, cursor, parent);
-		mHelper.findViews(view);
-		return view;
-	}
-
-	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
-		mLastPosition = mCurrentPosition;
-		mCurrentPosition = position;
-		return super.getView(position, convertView, parent);
+	
+	public boolean hasResults() {
+		final Cursor cursor = getCursor();
+		return cursor != null && cursor.getCount() > 0;
 	}
 	
 	@Override
-	public void bindView(final View containerView, final Context context, final Cursor cursor) {
-		final int count = mHelper.getViewCount();
-
-		for (int i = 0; i < count; i++) {
-			
-			final int columnIndex = mHelper.getColumnIndex(i);
-			final View view = mHelper.getView(containerView, i);
-			
-			boolean bound = false;
-			
-			if (mViewBinder != null) {
-				bound = mViewBinder.setViewValue(view, cursor, columnIndex);
-			}
-			
-			if (!bound) {
-				bound = mDefaultBinder.setViewValue(view, cursor, columnIndex);
-			}
-			
-			if (!bound) {
-				throw new IllegalStateException("Connot bind to view: " + view.getClass());
-			}
+	public void bindView(final View container, final Context context, final Cursor cursor) {
+		final List<Binding> bindings = getBindings(cursor); 
+		
+		for (final Binding binding : bindings) {
+			bindView(container, cursor, binding);
 		}
-
-		animateView(containerView);
+		
+		animateView(container, context, cursor);
 	}
 	
-	protected void animateView(final View view) {
-		if (mViewAnimator == null) {
-			return;
-		}
+	private List<Binding> getBindings(final Cursor cursor) {
+		final int type = getItemViewType(cursor.getPosition());
+		final List<Binding> bindings = mHelper.getBindings(type, cursor);
+		return bindings;
+	}
 
-		if (mCurrentPosition >= mLastPosition) { 
-			mViewAnimator.animateViewOnForwardScroll(view, mCurrentPosition);
-		} else {
-			mViewAnimator.animateViewOnBackwardScroll(view, mCurrentPosition);
+	private void bindView(final View container, final Cursor cursor, final Binding binding) {
+		final View view = mHelper.getView(container, binding);
+
+		boolean bound = false;
+		
+		if (mViewBinder != null) {
+			bound = mViewBinder.setViewValue(view, cursor, binding);
+		}
+		
+		if (!bound) {
+			bound = mDefaultBinder.setViewValue(view, cursor, binding);
+		}
+		
+		if (!bound) {
+			throw new IllegalStateException("Connot bind to view: " + view.getClass());
 		}
 	}
 
-	@Override
-	public Cursor swapCursor(final Cursor cursor) {
-		// super.swapCursor() will notify observers before we have
-		// a valid mapping, make sure we have a mapping before this
-		// happens
-		mHelper.findColumns(cursor);
-		return super.swapCursor(cursor);
+	private void animateView(final View view, final Context context, final Cursor cursor) {
+		if (mViewAnimator != null) {
+			mViewAnimator.animateView(view, context, cursor);
+		}
 	}
 }

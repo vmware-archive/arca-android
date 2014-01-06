@@ -1,5 +1,8 @@
 package com.crunchbase.app.fragments;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,27 +20,24 @@ import com.crunchbase.app.R;
 import com.crunchbase.app.activities.CompanyActivity;
 import com.crunchbase.app.datasets.CompanyTable;
 import com.crunchbase.app.providers.CrunchBaseContentProvider;
+import com.xtreme.rest.adapters.SupportCursorAdapter;
+import com.xtreme.rest.binders.Binding;
+import com.xtreme.rest.binders.ViewBinder;
 import com.xtreme.rest.broadcasts.RestError;
 import com.xtreme.rest.fragments.ContentLoaderAdapterSupportFragment;
 import com.xtreme.rest.loader.ContentRequest;
 import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
-public class CompanyListFragment extends ContentLoaderAdapterSupportFragment implements OnItemClickListener {
+public class CompanyListFragment extends ContentLoaderAdapterSupportFragment implements OnItemClickListener, ViewBinder {
 
 	
-	private static final String[] COLUMN_NAMES = new String[] { 
-		CompanyTable.Columns.NAME,
-		CompanyTable.Columns.OVERVIEW,
-		CompanyTable.Columns.IMAGE_URL,
-	};
+	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
+		new Binding(R.id.list_item_company_name, CompanyTable.Columns.NAME),
+		new Binding(R.id.list_item_company_overview, CompanyTable.Columns.OVERVIEW),
+		new Binding(R.id.list_item_company_image, CompanyTable.Columns.IMAGE_URL),
+	});
 
-	private static final int[] VIEW_IDS = new int[] { 
-        R.id.list_item_company_name,
-        R.id.list_item_company_overview,
-        R.id.list_item_company_image,
-	};
-	
 	private ImageLoader mImageLoader;
 	
 	@Override
@@ -46,9 +46,16 @@ public class CompanyListFragment extends ContentLoaderAdapterSupportFragment imp
 		((ListView) view.findViewById(R.id.company_list)).setOnItemClickListener(this);
 		return view;
 	}
+	
+	@Override
+	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView) {
+		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), R.layout.list_item_company, BINDINGS);
+		adapter.setViewBinder(this);
+		return adapter;
+	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
+	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mImageLoader = ImageLoader.buildImageLoaderForSupportFragment(this);
 	}
@@ -67,23 +74,8 @@ public class CompanyListFragment extends ContentLoaderAdapterSupportFragment imp
 	}
 	
 	@Override
-	public String[] getColumnNames() {
-		return COLUMN_NAMES;
-	}
-	
-	@Override
-	public int[] getViewIds() {
-		return VIEW_IDS;
-	}
-	
-	@Override
 	protected int getAdapterViewId() {
 		return R.id.company_list;
-	}
-	
-	@Override
-	protected int getAdapterItemResourceId() {
-		return R.layout.list_item_company;
 	}
 	
 	private void loadCompanies() {
@@ -125,15 +117,15 @@ public class CompanyListFragment extends ContentLoaderAdapterSupportFragment imp
 	}
 
 	@Override
-	public boolean setViewValue(final View view, final Cursor cursor, final int columnIndex) {
+	public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
 		switch (view.getId()) {
 		case R.id.list_item_company_image:
-		    final String url = cursor.getString(columnIndex);
+		    final String url = cursor.getString(binding.getColumnIndex());
 		    mImageLoader.loadImage((ImageView) view, url);
 		    return true;
 
 		default:
-		    return super.setViewValue(view, cursor, columnIndex);
+		    return false;
 		}
 	}
 }

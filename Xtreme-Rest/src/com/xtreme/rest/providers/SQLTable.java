@@ -30,13 +30,13 @@ public abstract class SQLTable extends SQLDataset {
 		if (mapping == null)
 			throw new IllegalStateException("Please override onCreateColumnMapping and supply a valid SQLite mapping between column name and type.");
 		
-		final String query = SQLUtils.generateTableCreateStatement(getName(), mapping, constraint);
+		final String query = SQLUtils.generateCreateTableStatement(getName(), mapping, constraint);
 		getDatabase().execSQL(query);
 	}
 	
 	@Override
 	public void onDrop() {
-		final String query = SQLUtils.generateTableDropStatement(getName());
+		final String query = SQLUtils.generateDropTableStatement(getName());
 		getDatabase().execSQL(query);
 	}
 

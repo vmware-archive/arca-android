@@ -15,13 +15,13 @@ public abstract class SQLView extends SQLDataset {
 		if (selectStatement == null)
 			throw new IllegalStateException("Please override onCreateSelectStatement and supply a valid SQLite select statement.");
 
-		final String query = SQLUtils.generateViewCreateStatement(getName(), selectStatement);
+		final String query = SQLUtils.generateCreateViewStatement(getName(), selectStatement);
 		getDatabase().execSQL(query);
 	}
 	
 	@Override
 	public void onDrop() {
-		final String query = SQLUtils.generateViewDropStatement(getName());
+		final String query = SQLUtils.generateDropViewStatement(getName());
 		getDatabase().execSQL(query);
 	}
 

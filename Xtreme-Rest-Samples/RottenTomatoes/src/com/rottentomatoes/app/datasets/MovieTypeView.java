@@ -1,7 +1,6 @@
 package com.rottentomatoes.app.datasets;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.xtreme.rest.providers.SQLView;
@@ -35,13 +34,13 @@ public class MovieTypeView extends SQLView {
 	}
 	
 	@Override
-	public Cursor query(final SQLiteDatabase database, final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
+	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
 		if (uri.getPathSegments().size() > 1) { 
 			final String selectionWithType = StringUtils.append(selection, Columns.TYPE + "=?", " AND ");
 			final String[] selectionArgsWithType = ArrayUtils.append(selectionArgs, new String[] { uri.getLastPathSegment() });
-			return super.query(database, uri, projection, selectionWithType, selectionArgsWithType, sortOrder);
+			return super.query(uri, projection, selectionWithType, selectionArgsWithType, sortOrder);
 		} else {
-			return super.query(database, uri, projection, selection, selectionArgs, sortOrder);
+			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
 	}
 	

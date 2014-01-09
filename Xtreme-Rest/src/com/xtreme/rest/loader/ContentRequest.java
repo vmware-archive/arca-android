@@ -5,12 +5,12 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.xtreme.rest.providers.RestContentProvider;
+import com.xtreme.rest.providers.DatasetProvider;
 
 /**
  * Defines a single request for content. To be used with a {@link ContentLoader}. It contains the {@link Uri},
  * projections, where clause & args, sort order, and the force update flag. All arguments are used up by the
- * {@link RestContentProvider} and sent through a {@link CursorLoader}.
+ * {@link DatasetProvider} and sent through a {@link CursorLoader}.
  */
 public class ContentRequest implements Parcelable {
 	

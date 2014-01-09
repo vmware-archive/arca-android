@@ -26,7 +26,7 @@ public interface DatasetValidator {
 
 	/**
 	 * The data in the provided {@link Cursor} needs to be updated. In this method, begin an update process that downloads the new
-	 * data, inserts it into the {@link RestContentProvider}, and then calls {@link ContentResolver#notifyChange(Uri, android.database.ContentObserver)}
+	 * data, inserts it into the {@link DatasetProvider}, and then calls {@link ContentResolver#notifyChange(Uri, android.database.ContentObserver)}
 	 * or {@link ContentResolver#notifyChange(Uri, android.database.ContentObserver, boolean)}.
 	 * </br>
 	 * </br>

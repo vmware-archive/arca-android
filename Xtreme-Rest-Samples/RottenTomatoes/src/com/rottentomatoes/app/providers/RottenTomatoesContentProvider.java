@@ -5,8 +5,6 @@ import android.net.Uri;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
-import com.rottentomatoes.app.operations.MovieListValidator;
-import com.rottentomatoes.app.operations.MovieValidator;
 import com.xtreme.rest.providers.RestContentProvider;
 
 public class RottenTomatoesContentProvider extends RestContentProvider {
@@ -25,10 +23,10 @@ public class RottenTomatoesContentProvider extends RestContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-		registerDataset(AUTHORITY, Paths.MOVIES, MovieTable.class, null);
-		registerDataset(AUTHORITY, Paths.MOVIES + "/*", MovieTable.class, MovieValidator.class);
-		registerDataset(AUTHORITY, Paths.MOVIE_TYPES, MovieTypeTable.class, null);
-		registerDataset(AUTHORITY, Paths.MOVIE_TYPES + "/*", MovieTypeView.class, MovieListValidator.class);
+		registerDataset(AUTHORITY, Paths.MOVIES, MovieTable.class);
+		registerDataset(AUTHORITY, Paths.MOVIES + "/*", MovieTable.class);
+		registerDataset(AUTHORITY, Paths.MOVIE_TYPES, MovieTypeTable.class);
+		registerDataset(AUTHORITY, Paths.MOVIE_TYPES + "/*", MovieTypeView.class);
 		return true;
 	}
 

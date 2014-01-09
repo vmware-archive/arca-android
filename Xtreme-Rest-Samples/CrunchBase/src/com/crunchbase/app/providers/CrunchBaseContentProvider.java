@@ -3,10 +3,6 @@ package com.crunchbase.app.providers;
 import android.net.Uri;
 
 import com.crunchbase.app.datasets.CompanyTable;
-
-import com.crunchbase.app.validators.CompanyListValidator;
-import com.crunchbase.app.validators.CompanyValidator;
-
 import com.xtreme.rest.providers.RestContentProvider;
 
 public class CrunchBaseContentProvider extends RestContentProvider {
@@ -23,8 +19,8 @@ public class CrunchBaseContentProvider extends RestContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-        registerDataset(AUTHORITY, Paths.COMPANIES, CompanyTable.class, CompanyListValidator.class);
-		registerDataset(AUTHORITY, Paths.COMPANIES + "/*", CompanyTable.class, CompanyValidator.class);
+        registerDataset(AUTHORITY, Paths.COMPANIES, CompanyTable.class);
+		registerDataset(AUTHORITY, Paths.COMPANIES + "/*", CompanyTable.class);
 		return true;
 	}
 }

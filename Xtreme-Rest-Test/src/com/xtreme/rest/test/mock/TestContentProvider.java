@@ -1,22 +1,22 @@
 package com.xtreme.rest.test.mock;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import com.xtreme.rest.providers.Configuration;
+import com.xtreme.rest.providers.Configuration.DefaultConfiguration;
 import com.xtreme.rest.providers.RestContentProvider;
-import com.xtreme.rest.providers.Database.Builder;
 
 public class TestContentProvider extends RestContentProvider {
-
-	private static final String DATABASE_NAME = "test.db";
-	private static final int DATABASE_VERSION = 1;
-
+	
 	public static final String AUTHORITY = "com.xtreme.rest.mock.TestContentProvider";
 	
-	public static final Uri TEST_TABLE1_URI = Uri.parse("content://" + AUTHORITY + "/" + Paths.TEST_TABLE1);
-	public static final Uri TEST_TABLE2_URI = Uri.parse("content://" + AUTHORITY + "/" + Paths.TEST_TABLE2);
-	public static final Uri TEST_VIEW_URI = Uri.parse("content://" + AUTHORITY + "/" + Paths.TEST_VIEW);
-
+	public static final class Uris {
+		public static final Uri TEST_TABLE1 = Uri.parse("content://" + AUTHORITY + "/" + Paths.TEST_TABLE1);
+		public static final Uri TEST_TABLE2 = Uri.parse("content://" + AUTHORITY + "/" + Paths.TEST_TABLE2);
+		public static final Uri TEST_VIEW = Uri.parse("content://" + AUTHORITY + "/" + Paths.TEST_VIEW);
+	}
 	
 	private static final class Paths {
 		private static final String TEST_TABLE1 = "test_table1";
@@ -33,14 +33,6 @@ public class TestContentProvider extends RestContentProvider {
 	}
 	
 	@Override
-	protected Builder onCreateDatabaseBuilder() {
-		final Builder builder = super.onCreateDatabaseBuilder();
-		builder.setDatabaseName(DATABASE_NAME);
-		builder.setDatabaseVersion(DATABASE_VERSION);
-		return builder;
-	}
-	
-	@Override
 	public SQLiteDatabase getDatabase() {
 		return super.getDatabase();
 	}
@@ -48,5 +40,30 @@ public class TestContentProvider extends RestContentProvider {
 	@Override
 	public void destroyDatabase() {
 		super.destroyDatabase();
+	}
+	
+	@Override
+	public Configuration onCreateConfiguration() {
+		return new TestConfiguration(getContext());
+	}
+	
+	public static final class TestConfiguration extends DefaultConfiguration {
+
+		private static final String DATABASE_NAME = "test.db";
+		private static final int DATABASE_VERSION = 1;
+		
+		public TestConfiguration(Context context) {
+			super(context);
+		}
+
+		@Override
+		public String getDatabaseName() {
+			return DATABASE_NAME;
+		}
+		
+		@Override
+		public int getDatabaseVersion() {
+			return DATABASE_VERSION;
+		}
 	}
 }

@@ -272,8 +272,8 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 		final ContentValues[] values1 = TestTable1.CONTENT_ARRAY;
 		final ContentValues[] values2 = TestTable2.CONTENT_ARRAY;
 
-		bulkInsertIntoTable(TestContentProvider.TEST_TABLE1_URI, values1);
-		bulkInsertIntoTable(TestContentProvider.TEST_TABLE2_URI, values2);
+		bulkInsertIntoTable(TestContentProvider.Uris.TEST_TABLE1, values1);
+		bulkInsertIntoTable(TestContentProvider.Uris.TEST_TABLE2, values2);
 		
 		final ContentValues[] values = TestView.CONTENT_ARRAY;
 
@@ -358,7 +358,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	}
 
 	private Cursor queryAllItemsFromTable() {
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		final Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 		return cursor;
 	}
@@ -366,19 +366,19 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	private Cursor queryItemFromTable(final long id) {
 		final String where = TestTable1.Columns.ID + " = ?";
 		final String[] whereArgs = new String[] { String.valueOf(id) };
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		final Cursor cursor = getContentResolver().query(uri, null, where, whereArgs, null);
 		return cursor;
 	}
 
 	private Uri insertIntoTable(final ContentValues values) {
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		final Uri inserted = getContentResolver().insert(uri, values);
 		return inserted;
 	}
 
 	private long bulkInsertIntoTable(final ContentValues[] values) {
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		return bulkInsertIntoTable(uri, values);
 	}
 	
@@ -388,7 +388,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	}
 
 	private long updateAllItemsFromTable(final ContentValues values) {
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		final long count = getContentResolver().update(uri, values, null, null);
 		return count;
 	}
@@ -396,13 +396,13 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	private long updateItemFromTable(final ContentValues values, final int id) {
 		final String where = TestTable1.Columns.ID + " = ?";
 		final String[] whereArgs = new String[] { String.valueOf(id) };
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		final long count = getContentResolver().update(uri, values, where, whereArgs);
 		return count;
 	}
 
 	private long deleteAllItemsFromTable() {
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		final long count = getContentResolver().delete(uri, null, null);
 		return count;
 	}
@@ -410,7 +410,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	private long deleteItemFromTable(final int id) {
 		final String where = TestTable1.Columns.ID + " = ?";
 		final String[] whereArgs = new String[] { String.valueOf(id) };
-		final Uri uri = TestContentProvider.TEST_TABLE1_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_TABLE1;
 		final long count = getContentResolver().delete(uri, where, whereArgs);
 		return count;
 	}
@@ -426,7 +426,7 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	}
 
 	private Cursor queryAllItemsFromView() {
-		final Uri uri = TestContentProvider.TEST_VIEW_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_VIEW;
 		final Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 		return cursor;
 	}
@@ -434,31 +434,31 @@ public class RestContentProviderTest extends ProviderTestCase2<TestContentProvid
 	private Cursor queryItemFromView(final int id) {
 		final String where = TestTable1.Columns.ID + " = ?";
 		final String[] whereArgs = new String[] { String.valueOf(id) };
-		final Uri uri = TestContentProvider.TEST_VIEW_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_VIEW;
 		final Cursor cursor = getContentResolver().query(uri, null, where, whereArgs, null);
 		return cursor;
 	}
 
 	private Uri insertContentValuesIntoView() {
-		final Uri uri = TestContentProvider.TEST_VIEW_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_VIEW;
 		final Uri inserted = getContentResolver().insert(uri, null);
 		return inserted;
 	}
 
 	private long bulkInsertContentArrayIntoView() {
-		final Uri uri = TestContentProvider.TEST_VIEW_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_VIEW;
 		final long count = getContentResolver().bulkInsert(uri, null);
 		return count;
 	}
 
 	private long deleteAllItemsFromView() {
-		final Uri uri = TestContentProvider.TEST_VIEW_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_VIEW;
 		final long count = getContentResolver().delete(uri, null, null);
 		return count;
 	}
 
 	private long updateAllItemsFromView() {
-		final Uri uri = TestContentProvider.TEST_VIEW_URI;
+		final Uri uri = TestContentProvider.Uris.TEST_VIEW;
 		final long count = getContentResolver().update(uri, null, null, null);
 		return count;
 	}

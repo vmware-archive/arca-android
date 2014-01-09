@@ -4,7 +4,6 @@ import java.util.Map;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.appnet.app.models.Post;
@@ -47,13 +46,13 @@ public class PostTable extends AbsPostTable {
 	}
 	
 	@Override
-	public Cursor query(final SQLiteDatabase database, final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
+	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
 		if (uri.getPathSegments().size() > 1) { 
 			final String selectionWithId = StringUtils.append(selection, Columns.ID + "=?", " AND ");
 			final String[] selectionArgsWithId = ArrayUtils.append(selectionArgs, new String[] { uri.getLastPathSegment() });
-			return super.query(database, uri, projection, selectionWithId, selectionArgsWithId, sortOrder);
+			return super.query(uri, projection, selectionWithId, selectionArgsWithId, sortOrder);
 		} else {
-			return super.query(database, uri, projection, selection, selectionArgs, sortOrder);
+			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
 	}
 

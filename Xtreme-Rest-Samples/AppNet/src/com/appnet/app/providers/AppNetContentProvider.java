@@ -3,10 +3,6 @@ package com.appnet.app.providers;
 import android.net.Uri;
 
 import com.appnet.app.datasets.PostTable;
-
-import com.appnet.app.validators.PostListValidator;
-import com.appnet.app.validators.PostValidator;
-
 import com.xtreme.rest.providers.RestContentProvider;
 
 public class AppNetContentProvider extends RestContentProvider {
@@ -23,8 +19,8 @@ public class AppNetContentProvider extends RestContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-        registerDataset(AUTHORITY, Paths.POSTS, PostTable.class, PostListValidator.class);
-		registerDataset(AUTHORITY, Paths.POSTS + "/*", PostTable.class, PostValidator.class);
+        registerDataset(AUTHORITY, Paths.POSTS, PostTable.class);
+		registerDataset(AUTHORITY, Paths.POSTS + "/*", PostTable.class);
 		return true;
 	}
 }

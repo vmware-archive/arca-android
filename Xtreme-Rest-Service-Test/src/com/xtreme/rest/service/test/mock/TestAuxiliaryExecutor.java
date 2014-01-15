@@ -25,8 +25,11 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 		final PrioritizableRequest request = (PrioritizableRequest) command;
 		final RequestIdentifier<?> identifier = request.getRequestIdentifier();
 		
-		if (!mIdentifiers.contains(identifier)) {
+		if (identifier == null) {
+			throw new IllegalStateException("RequestIdentifier cannot be null.");
+		}
 		
+		if (!mIdentifiers.contains(identifier)) {
 			mIdentifiers.add(identifier);
 			
 			// Run synchronously

@@ -9,7 +9,7 @@ import com.xtreme.threading.RequestIdentifier;
 public class TestTaskFactory {
 
 	public static TestTask newTask() {
-		return new TestTask(null);
+		return new TestTask(new RequestIdentifier<String>("task"));
 	}
 
 	public static TestTask newTaskWithIdentifier(final RequestIdentifier<String> identifier) {
@@ -17,25 +17,25 @@ public class TestTaskFactory {
 	}
 
 	public static TestTask newTaskWithNetworkResult(final String networkResult) {
-		return new TestTask(null, networkResult);
+		return new TestTask(new RequestIdentifier<String>("task"), networkResult);
 	}
 
 	public static TestTask newTaskThatThrowsNetworkException(final Exception exception) {
-		return new TestTask(null, null, exception, null);
+		return new TestTask(new RequestIdentifier<String>("task"), null, exception, null);
 	}
 
 	public static TestTask newTaskThatThrowsProcessingException(final Exception exception) {
-		return new TestTask(null, null, null, exception);
+		return new TestTask(new RequestIdentifier<String>("task"), null, null, exception);
 	}
 	
 	public static List<Task<?>> newTaskListWithPrerequisites() {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 		
-		final TestTask task1 = TestTaskFactory.newTask();
-		task1.setRequestHandler(handler);
+		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
+		task1.setRequestExecutor(executor);
 		
-		final TestTask task2 = TestTaskFactory.newTask();
-		task2.setRequestHandler(handler);
+		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
+		task2.setRequestExecutor(executor);
 		task2.addPrerequisite(task1);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -46,13 +46,13 @@ public class TestTaskFactory {
 	}
 
 	public static List<Task<?>> newTaskListWithPrerequisitesFirstTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 
 		final TestTask task1 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task1.setRequestHandler(handler);
+		task1.setRequestExecutor(executor);
 		
 		final TestTask task2 = TestTaskFactory.newTask();
-		task2.setRequestHandler(handler);
+		task2.setRequestExecutor(executor);
 		task2.addPrerequisite(task1);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -63,13 +63,13 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithPrerequisitesSecondTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 
-		final TestTask task1 = TestTaskFactory.newTask();
-		task1.setRequestHandler(handler);
+		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
+		task1.setRequestExecutor(executor);
 		
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task2.setRequestHandler(handler);
+		task2.setRequestExecutor(executor);
 		task2.addPrerequisite(task1);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -80,13 +80,13 @@ public class TestTaskFactory {
 	}
 
 	public static List<Task<?>> newTaskListWithPrerequisitesFirstTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 		
 		final TestTask task1 = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task1.setRequestHandler(handler);
+		task1.setRequestExecutor(executor);
 		
 		final TestTask task2 = TestTaskFactory.newTask();
-		task2.setRequestHandler(handler);
+		task2.setRequestExecutor(executor);
 		task2.addPrerequisite(task1);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -97,13 +97,13 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithPrerequisitesSecondTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 		
-		final TestTask task1 = TestTaskFactory.newTask();
-		task1.setRequestHandler(handler);
+		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
+		task1.setRequestExecutor(executor);
 		
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task2.setRequestHandler(handler);
+		task2.setRequestExecutor(executor);
 		task2.addPrerequisite(task1);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -114,13 +114,13 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependants() {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 
-		final TestTask task2 = TestTaskFactory.newTask();
-		task2.setRequestHandler(handler);
+		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
+		task2.setRequestExecutor(executor);
 		
-		final TestTask task1 = TestTaskFactory.newTask();
-		task1.setRequestHandler(handler);
+		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
+		task1.setRequestExecutor(executor);
 		task1.addDependant(task2);
 		
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -131,13 +131,13 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsFirstTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 
-		final TestTask task2 = TestTaskFactory.newTask();
-		task2.setRequestHandler(handler);
+		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
+		task2.setRequestExecutor(executor);
 		
 		final TestTask task1 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task1.setRequestHandler(handler);
+		task1.setRequestExecutor(executor);
 		task1.addDependant(task2);
 		
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -148,13 +148,13 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsSecondTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task2.setRequestHandler(handler);
+		task2.setRequestExecutor(executor);
 		
-		final TestTask task1 = TestTaskFactory.newTask();
-		task1.setRequestHandler(handler);
+		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
+		task1.setRequestExecutor(executor);
 		task1.addDependant(task2);
 		
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -165,13 +165,13 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsFirstTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 
-		final TestTask task2 = TestTaskFactory.newTask();
-		task2.setRequestHandler(handler);
+		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
+		task2.setRequestExecutor(executor);
 		
 		final TestTask task1 = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task1.setRequestHandler(handler);
+		task1.setRequestExecutor(executor);
 		task1.addDependant(task2);
 		
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -182,13 +182,13 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsSecondTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestHandler handler = new TestRequestHandler();
+		final TestRequestExecutor executor = new TestRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task2.setRequestHandler(handler);
+		task2.setRequestExecutor(executor);
 		
-		final TestTask task1 = TestTaskFactory.newTask();
-		task1.setRequestHandler(handler);
+		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
+		task1.setRequestExecutor(executor);
 		task1.addDependant(task2);
 		
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();

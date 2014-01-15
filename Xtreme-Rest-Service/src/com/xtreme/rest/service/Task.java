@@ -25,10 +25,10 @@ import com.xtreme.threading.RequestIdentifier;
  * @param <T> The type downloaded, parsed, and then returned from {@link #onExecuteNetworkRequest(Context)}. In most cases it is a model
  * class, but sometimes it may be a {@link String}.
  */
-public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, ProcessingHandler<T>, ProcessingObserver<T> {
+public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkRequestObserver<T>, ProcessingRequestExecutor<T>, ProcessingRequestObserver<T> {
 
-	public static final class Messages {
-		public static final String NO_HANDLER = "Cannot execute request. No handler found.";
+	protected static class Messages {
+		public static final String NO_EXECUTOR = "Cannot execute request. No request executor found.";
 	}
 	
 	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
@@ -38,7 +38,7 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 			
 	private Priority mPriority = Priority.MEDIUM;
 	private TaskObserver mObserver;
-	private RequestHandler mHandler;
+	private RequestExecutor mExecutor;
 	private RequestIdentifier<?> mIdentifier;
 	private Context mContext;
 	
@@ -59,8 +59,8 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 		mObserver = observer;
 	}
 	
-	public void setRequestHandler(final RequestHandler handler) {
-		mHandler = handler;
+	public void setRequestExecutor(final RequestExecutor executor) {
+		mExecutor = executor;
 	}
 	
 	public void execute() {
@@ -200,12 +200,12 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 	// ======================================================
 
 	private void startNetworkRequest() {
-		if (mHandler != null) {
-			final NetworkPrioritizable<T> prioritzable = new NetworkPrioritizable<T>(this);
+		if (mExecutor != null) {
+			final NetworkRequestPrioritizable<T> prioritzable = new NetworkRequestPrioritizable<T>(this);
 			final NetworkRequest<T> request = new NetworkRequest<T>(prioritzable, mPriority.ordinal(), this);
-			mHandler.executeNetworkRequest(request);
+			mExecutor.executeNetworkRequest(request);
 		} else {
-			notifyFailure(new ServiceError(Messages.NO_HANDLER));
+			notifyFailure(new ServiceError(Messages.NO_EXECUTOR));
 		}
 	}
 
@@ -227,12 +227,12 @@ public abstract class Task<T> implements NetworkHandler<T>, NetworkObserver<T>, 
 	// ======================================================
 
 	private void startProcessingRequest(final T data) {
-		if (mHandler != null) {
-			final ProcessingPrioritizable<T> prioritizable = new ProcessingPrioritizable<T>(this, data);
+		if (mExecutor != null) {
+			final ProcessingRequestPrioritizable<T> prioritizable = new ProcessingRequestPrioritizable<T>(this, data);
 			final ProcessingRequest<T> request = new ProcessingRequest<T>(prioritizable, mPriority.ordinal(), this);
-			mHandler.executeProcessingRequest(request);
+			mExecutor.executeProcessingRequest(request);
 		} else {
-			notifyFailure(new ServiceError(Messages.NO_HANDLER));
+			notifyFailure(new ServiceError(Messages.NO_EXECUTOR));
 		}
 	}
 

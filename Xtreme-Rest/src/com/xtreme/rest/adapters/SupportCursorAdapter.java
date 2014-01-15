@@ -10,8 +10,8 @@ import android.view.View;
 
 import com.xtreme.rest.animators.ViewAnimator;
 import com.xtreme.rest.binders.Binding;
-import com.xtreme.rest.binders.DefaultViewBinder;
 import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.binders.ViewBinder.DefaultViewBinder;
 
 public class SupportCursorAdapter extends ResourceCursorAdapter {
 	

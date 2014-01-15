@@ -65,7 +65,6 @@ class CursorAdapterHelper {
 		}
 
 		private static final class BindingTypes extends SparseArray<List<Binding>> {
-
 			public void add(final Binding binding) {
 				final int type = binding.getType();
 				if (get(type) == null) {
@@ -131,7 +130,6 @@ class CursorAdapterHelper {
 		}
 
 		private static final class ViewHolder extends SparseArray<View> {
-
 			public ViewHolder(final View container) {
 				container.setTag(this);
 			}

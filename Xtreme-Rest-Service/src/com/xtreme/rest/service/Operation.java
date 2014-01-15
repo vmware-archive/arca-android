@@ -13,7 +13,7 @@ import android.os.Parcelable;
 
 /**
  * A collection of {@link Task}s that, when executed, update the data associated with a certain {@link Uri}.
- * When started via the {@link RestService}, an Operation's {@link Task}s begin executing. Dependencies
+ * When started via the {@link OperationService}, an Operation's {@link Task}s begin executing. Dependencies
  * can be set up between tasks in {@link #onCreateTasks()}. When the final {@link Task} finishes executing,
  * the Operation is considered done and then {@link #onSuccess(Context, List)} or
  * {@link #onFailure(Context, ServiceError)} is called.
@@ -30,7 +30,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	private final Uri mUri;
 
 	private OperationObserver mObserver;
-	private RequestHandler mHandler;
+	private RequestExecutor mExecutor;
 	
 	private Context mContext;
 	private ServiceError mError;
@@ -81,8 +81,8 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		mObserver = observer;
 	}
 	
-	public void setRequestHandler(final RequestHandler handler) {
-		mHandler = handler;
+	public void setRequestExecutor(final RequestExecutor executor) {
+		mExecutor = executor;
 	}
 
 	public void execute() {
@@ -115,7 +115,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		task.setContext(mContext);
 		task.setPriority(mPriority);
 		task.setTaskObserver(this);
-		task.setRequestHandler(mHandler);
+		task.setRequestExecutor(mExecutor);
 		task.execute();
 	}
 

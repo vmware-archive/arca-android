@@ -3,12 +3,12 @@ package com.xtreme.rest.adapters;
 import java.util.Collection;
 import java.util.List;
 
-import com.xtreme.rest.binders.Binding;
-import com.xtreme.rest.binders.DefaultViewBinder;
-import com.xtreme.rest.binders.ViewBinder;
-
 import android.database.Cursor;
 import android.view.View;
+
+import com.xtreme.rest.binders.Binding;
+import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.binders.ViewBinder.DefaultViewBinder;
 
 public class ItemCursorAdapter {
 

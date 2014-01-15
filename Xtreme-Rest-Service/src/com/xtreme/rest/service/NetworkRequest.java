@@ -5,9 +5,9 @@ import com.xtreme.threading.PrioritizableRequest;
 
 public class NetworkRequest<T> extends PrioritizableRequest {
 
-	private final NetworkObserver<T> mObserver;
+	private final NetworkRequestObserver<T> mObserver;
 	
-	public NetworkRequest(final Prioritizable prioritizable, final int accessorIndex, final NetworkObserver<T> observer) {
+	public NetworkRequest(final Prioritizable prioritizable, final int accessorIndex, final NetworkRequestObserver<T> observer) {
 		super(prioritizable, accessorIndex);
 		mObserver = observer;
 	}
@@ -22,8 +22,8 @@ public class NetworkRequest<T> extends PrioritizableRequest {
 	}
 
 	@Override
-	public NetworkPrioritizable<?> getPrioritizable() {
-		return (NetworkPrioritizable<?>) super.getPrioritizable();
+	public NetworkRequestPrioritizable<?> getPrioritizable() {
+		return (NetworkRequestPrioritizable<?>) super.getPrioritizable();
 	}
 	
 	public Object getData() {

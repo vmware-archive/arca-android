@@ -1,9 +1,9 @@
 package com.xtreme.rest.service.test.mock;
 
-import com.xtreme.rest.service.ProcessingPrioritizable;
+import com.xtreme.rest.service.ProcessingRequestPrioritizable;
 import com.xtreme.threading.RequestIdentifier;
 
-public class TestProcessingPrioritizable extends ProcessingPrioritizable<String> {
+public class TestProcessingPrioritizable extends ProcessingRequestPrioritizable<String> {
 
 	public TestProcessingPrioritizable() {
 		super(null, null);

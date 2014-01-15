@@ -12,8 +12,8 @@ import android.widget.ResourceCursorAdapter;
 
 import com.xtreme.rest.animators.ViewAnimator;
 import com.xtreme.rest.binders.Binding;
-import com.xtreme.rest.binders.DefaultViewBinder;
 import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.binders.ViewBinder.DefaultViewBinder;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ModernCursorAdapter extends ResourceCursorAdapter {

@@ -5,9 +5,9 @@ import com.xtreme.threading.PrioritizableRequest;
 
 public class ProcessingRequest<T> extends PrioritizableRequest {
 
-	private final ProcessingObserver<T> mObserver;
+	private final ProcessingRequestObserver<T> mObserver;
 	
-	public ProcessingRequest(final Prioritizable prioritizable, final int accessorIndex, final ProcessingObserver<T> observer) {
+	public ProcessingRequest(final Prioritizable prioritizable, final int accessorIndex, final ProcessingRequestObserver<T> observer) {
 		super(prioritizable, accessorIndex);
 		mObserver = observer;
 	}
@@ -21,8 +21,8 @@ public class ProcessingRequest<T> extends PrioritizableRequest {
 	}
 
 	@Override
-	public ProcessingPrioritizable<?> getPrioritizable() {
-		return (ProcessingPrioritizable<?>) super.getPrioritizable();
+	public ProcessingRequestPrioritizable<?> getPrioritizable() {
+		return (ProcessingRequestPrioritizable<?>) super.getPrioritizable();
 	}
 	
 	public Object getData() {

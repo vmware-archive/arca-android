@@ -6,12 +6,12 @@ import android.test.AndroidTestCase;
 
 import com.xtreme.rest.service.NetworkRequest;
 import com.xtreme.rest.service.ProcessingRequest;
-import com.xtreme.rest.service.RequestHandler;
+import com.xtreme.rest.service.RequestExecutor;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.ServiceException;
 import com.xtreme.rest.service.Task;
 import com.xtreme.rest.service.TaskObserver;
-import com.xtreme.rest.service.test.mock.TestRequestHandler;
+import com.xtreme.rest.service.test.mock.TestRequestExecutor;
 import com.xtreme.rest.service.test.mock.TestTask;
 import com.xtreme.rest.service.test.mock.TestTaskFactory;
 import com.xtreme.rest.service.test.utils.AssertionLatch;
@@ -38,8 +38,8 @@ public class TaskTest extends AndroidTestCase {
 	// =============================================
 	
 	public void testTaskMessages() {
-		assertNotNull(new Task.Messages());
-		assertEquals("Cannot execute request. No handler found.", Task.Messages.NO_HANDLER);
+		assertNotNull(new TestTask.Messages());
+		assertEquals("Cannot execute request. No request executor found.", TestTask.Messages.NO_EXECUTOR);
 	}
 	
 	// =============================================
@@ -47,7 +47,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskExecutesNetworkRequest() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -72,7 +72,7 @@ public class TaskTest extends AndroidTestCase {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
 		final TestTask task = TestTaskFactory.newTaskWithIdentifier(identifier);
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -96,7 +96,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskExecutesNetworkRequestWithoutError() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -125,7 +125,7 @@ public class TaskTest extends AndroidTestCase {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final String networkResult = RESULT;
 		final TestTask task = TestTaskFactory.newTaskWithNetworkResult(networkResult);
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -154,7 +154,7 @@ public class TaskTest extends AndroidTestCase {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -184,7 +184,7 @@ public class TaskTest extends AndroidTestCase {
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -212,7 +212,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskExecutesProcessingRequest() {
 		final RequestCounter latch = new RequestCounter(1, 1);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -237,7 +237,7 @@ public class TaskTest extends AndroidTestCase {
 		final RequestCounter latch = new RequestCounter(1, 1);
 		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
 		final TestTask task = TestTaskFactory.newTaskWithIdentifier(identifier);
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -261,7 +261,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskExecutesProcessingRequestWithoutError() {
 		final RequestCounter latch = new RequestCounter(1, 1);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -290,7 +290,7 @@ public class TaskTest extends AndroidTestCase {
 		final RequestCounter latch = new RequestCounter(1, 1);
 		final String networkResult = RESULT;
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -315,7 +315,7 @@ public class TaskTest extends AndroidTestCase {
 		final RequestCounter latch = new RequestCounter(1, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -345,7 +345,7 @@ public class TaskTest extends AndroidTestCase {
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task.setRequestHandler(new RequestHandler() {
+		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
 			public void executeNetworkRequest(final NetworkRequest<?> request) {
@@ -374,10 +374,10 @@ public class TaskTest extends AndroidTestCase {
 	// =============================================
 	
 	
-	public void testTaskFailsWithoutHandlerForNetworkRequest() {
+	public void testTaskFailsWithoutExecutorForNetworkRequest() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(null);
+		task.setRequestExecutor(null);
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -399,17 +399,17 @@ public class TaskTest extends AndroidTestCase {
 				latch.onTaskFailure();
 				
 				assertNotNull(t);
-				assertEquals(Task.Messages.NO_HANDLER, e.getMessage());
+				assertEquals(TestTask.Messages.NO_EXECUTOR, e.getMessage());
 			}
 		});
 		task.execute();
 		latch.assertComplete();
 	}
 	
-	public void testTaskFailsWithoutHandlerForProcessingRequest() {
+	public void testTaskFailsWithoutExecutorForProcessingRequest() {
 		final ObserverCounter latch = new ObserverCounter(0, 0, 1);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(null);
+		task.setRequestExecutor(null);
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -431,7 +431,7 @@ public class TaskTest extends AndroidTestCase {
 				latch.onTaskFailure();
 				
 				assertNotNull(t);
-				assertEquals(Task.Messages.NO_HANDLER, e.getMessage());
+				assertEquals(TestTask.Messages.NO_EXECUTOR, e.getMessage());
 			}
 		});
 		task.onNetworkRequestComplete(null);
@@ -442,7 +442,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskCompleted() {
 		final ObserverCounter latch = new ObserverCounter(1, 1, 0);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestHandler(new TestRequestHandler());
+		task.setRequestExecutor(new TestRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -474,7 +474,7 @@ public class TaskTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task.setRequestHandler(new TestRequestHandler());
+		task.setRequestExecutor(new TestRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -506,7 +506,7 @@ public class TaskTest extends AndroidTestCase {
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task.setRequestHandler(new TestRequestHandler());
+		task.setRequestExecutor(new TestRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -537,7 +537,7 @@ public class TaskTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task.setRequestHandler(new TestRequestHandler());
+		task.setRequestExecutor(new TestRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -569,7 +569,7 @@ public class TaskTest extends AndroidTestCase {
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task.setRequestHandler(new TestRequestHandler());
+		task.setRequestExecutor(new TestRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override

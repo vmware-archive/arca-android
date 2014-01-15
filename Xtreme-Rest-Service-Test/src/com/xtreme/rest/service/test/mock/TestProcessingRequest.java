@@ -1,12 +1,12 @@
 package com.xtreme.rest.service.test.mock;
 
-import com.xtreme.rest.service.ProcessingPrioritizable;
 import com.xtreme.rest.service.ProcessingRequest;
+import com.xtreme.rest.service.ProcessingRequestPrioritizable;
 import com.xtreme.rest.service.ServiceError;
 
 public class TestProcessingRequest extends ProcessingRequest<String> {
 
-	public TestProcessingRequest(final ProcessingPrioritizable<String> prioritizable) {
+	public TestProcessingRequest(final ProcessingRequestPrioritizable<String> prioritizable) {
 		super(prioritizable, 0, null);
 	}
 	

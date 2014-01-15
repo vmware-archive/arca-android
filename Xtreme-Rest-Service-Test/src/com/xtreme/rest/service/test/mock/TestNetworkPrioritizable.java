@@ -1,9 +1,9 @@
 package com.xtreme.rest.service.test.mock;
 
-import com.xtreme.rest.service.NetworkPrioritizable;
+import com.xtreme.rest.service.NetworkRequestPrioritizable;
 import com.xtreme.threading.RequestIdentifier;
 
-public class TestNetworkPrioritizable extends NetworkPrioritizable<String> {
+public class TestNetworkPrioritizable extends NetworkRequestPrioritizable<String> {
 
 	public TestNetworkPrioritizable() {
 		super(null);

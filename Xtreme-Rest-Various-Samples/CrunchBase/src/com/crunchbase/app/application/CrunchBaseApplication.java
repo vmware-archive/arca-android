@@ -9,6 +9,5 @@ public class CrunchBaseApplication extends Application {
 		super.onCreate();
 		
 		com.xtreme.rest.utils.Logger.setup(true, "Xtreme-Rest");
-		com.xtreme.rest.service.Logger.setup(true, "Xtreme-Rest-Service");
 	}
 }

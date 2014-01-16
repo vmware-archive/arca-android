@@ -4,13 +4,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.IBinder;
 
 import com.xtreme.rest.RestService.RestBinder;
 import com.xtreme.rest.provider.DatabaseProvider;
-import com.xtreme.rest.service.Logger;
+import com.xtreme.rest.utils.Logger;
 
 public class RestContentProvider extends DatabaseProvider implements ServiceConnection {
 
@@ -29,22 +27,6 @@ public class RestContentProvider extends DatabaseProvider implements ServiceConn
 	protected RestService getService() {
 		return mService;
 	}
-
-	@Override
-	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
-		final Cursor cursor = super.query(uri, projection, selection, selectionArgs, sortOrder);
-//		final ValidatorState state = validateQuery(uri, cursor);
-		return cursor;
-	}
-
-//	private ValidatorState validateQuery(final Uri uri, final Cursor cursor) {
-//		final RestService service = getService();
-//		if (service != null) {
-//			return service.validateQuery(uri, cursor);
-//		} else {
-//			return ValidatorState.VALID;
-//		}
-//	}
 	
 	
 	// ==================================

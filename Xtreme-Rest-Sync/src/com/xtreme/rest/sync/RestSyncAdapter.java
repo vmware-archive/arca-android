@@ -16,6 +16,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.xtreme.rest.utils.Logger;
+
 public abstract class RestSyncAdapter extends AbstractThreadedSyncAdapter {
 	
 	protected abstract void onSetupSync(final Account account, final Bundle extras, final String authority, final ContentProviderClient provider);

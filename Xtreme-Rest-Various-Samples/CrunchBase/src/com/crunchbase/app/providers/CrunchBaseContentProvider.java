@@ -3,7 +3,7 @@ package com.crunchbase.app.providers;
 import android.net.Uri;
 
 import com.crunchbase.app.datasets.CompanyTable;
-import com.xtreme.rest.providers.RestContentProvider;
+import com.xtreme.rest.RestContentProvider;
 
 public class CrunchBaseContentProvider extends RestContentProvider {
 

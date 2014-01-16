@@ -1,23 +1,25 @@
-package com.xtreme.rest;
+package com.xtreme.rest.loader;
 
 import java.util.Collection;
 
 import android.content.UriMatcher;
 import android.net.Uri;
 
+import com.xtreme.rest.utils.ClassMapping;
+
 public interface ValidatorMatcher {
 	
 	/**
 	 * Register a {@link Validator} for a given authority and path. 
 	 * 
-	 * The result can be retrieved by calling {@link ValidatorMatcher#matchValidator(Uri)} with 
+	 * The result can be retrieved by calling {@link #matchValidator(Uri)} with 
 	 * a {@link Uri} that matches the authority and path provided.
 	 * 
 	 * @param authority
 	 * @param path
 	 * @param datasetClass
 	 */
-	public void register(final String authority, final String path, final Class<? extends Validator> validatorClass);
+	public void register(final String authority, final String path, final Class<? extends Validator> klass);
 	
 	/**
 	 * Matches the given {@link Uri} to a {@link Validator}.
@@ -39,7 +41,7 @@ public interface ValidatorMatcher {
 
 		private int MATCH = 0;
 		private final UriMatcher mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		private final RestMapping<Validator> mValidatorMapping = new RestMapping<Validator>();
+		private final ClassMapping<Validator> mValidatorMapping = new ClassMapping<Validator>();
 
 		@Override
 		public void register(final String authority, final String path, final Class<? extends Validator> klass) {

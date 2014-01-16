@@ -1,5 +1,6 @@
 package com.xtreme.rest.service;
 
+import com.xtreme.rest.utils.Logger;
 import com.xtreme.threading.Prioritizable;
 import com.xtreme.threading.RequestIdentifier;
 

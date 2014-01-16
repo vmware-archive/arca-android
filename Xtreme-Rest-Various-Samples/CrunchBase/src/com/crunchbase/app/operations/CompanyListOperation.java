@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.xtreme.rest.broadcasts.RestBroadcaster;
+import com.xtreme.rest.loader.ContentBroadcaster;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
@@ -60,7 +60,7 @@ public class CompanyListOperation extends Operation {
 	public void onFailure(final Context context, final ServiceError error) {
 		final int errorCode = error.getCode();
 		final String errorMessage = error.getMessage();
-		RestBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
+		ContentBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
 	}
 	
 	public static final Parcelable.Creator<CompanyListOperation> CREATOR = new Parcelable.Creator<CompanyListOperation>() {

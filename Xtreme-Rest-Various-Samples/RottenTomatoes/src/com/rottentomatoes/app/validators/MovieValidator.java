@@ -4,14 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.xtreme.rest.Validator;
-import com.xtreme.rest.ValidatorState;
+import com.xtreme.rest.loader.ContentState;
+import com.xtreme.rest.loader.Validator;
 
 public class MovieValidator implements Validator {
 	
 	@Override
-	public ValidatorState validate(final Uri uri, final Cursor cursor) {
-		return (cursor.getCount() > 0) ? ValidatorState.VALID : ValidatorState.INVALID; 
+	public ContentState validate(final Uri uri, final Cursor cursor) {
+		return (cursor.getCount() > 0) ? ContentState.VALID : ContentState.INVALID; 
 	}
 
 	@Override

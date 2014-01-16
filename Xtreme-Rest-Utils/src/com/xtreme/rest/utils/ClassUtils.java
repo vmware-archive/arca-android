@@ -1,4 +1,4 @@
-package com.xtreme.rest;
+package com.xtreme.rest.utils;
 
 public class ClassUtils {
 

@@ -6,12 +6,12 @@ import java.util.Collection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,8 +24,10 @@ import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
 import com.xtreme.rest.fragments.RestAdapterSupportFragment;
+import com.xtreme.rest.loader.ContentError;
 import com.xtreme.rest.loader.ContentRequest;
 import com.xtreme.rest.loader.ContentResponse;
+import com.xtremelabs.imageutils.ImageLoader;
 
 public class CompanyListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
 

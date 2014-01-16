@@ -4,10 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.xtreme.rest.providers.DatasetValidator;
 import com.xtreme.rest.loader.ContentState;
+import com.xtreme.rest.loader.Validator;
 
-public class CompanyValidator implements DatasetValidator {
+public class CompanyValidator implements Validator {
 	
 	@Override
 	public ContentState validate(final Uri uri, final Cursor cursor) {

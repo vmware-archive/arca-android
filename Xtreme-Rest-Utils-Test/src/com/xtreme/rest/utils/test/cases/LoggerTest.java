@@ -1,9 +1,8 @@
-package com.xtreme.rest.sync.test.cases;
+package com.xtreme.rest.utils.test.cases;
 
 import android.test.AndroidTestCase;
 
-import com.xtreme.rest.sync.Logger;
-
+import com.xtreme.rest.utils.Logger;
 
 public class LoggerTest extends AndroidTestCase {
 

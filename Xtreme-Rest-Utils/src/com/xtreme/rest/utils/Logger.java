@@ -1,4 +1,4 @@
-package com.xtreme.rest.service;
+package com.xtreme.rest.utils;
 
 import java.util.Locale;
 

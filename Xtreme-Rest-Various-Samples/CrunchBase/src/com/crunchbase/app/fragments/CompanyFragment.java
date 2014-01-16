@@ -18,13 +18,13 @@ import com.crunchbase.app.providers.CrunchBaseContentProvider;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
-import com.xtreme.rest.broadcasts.RestError;
-import com.xtreme.rest.fragments.ContentLoaderItemSupportFragment;
+import com.xtreme.rest.fragments.RestItemSupportFragment;
+import com.xtreme.rest.loader.ContentError;
 import com.xtreme.rest.loader.ContentRequest;
 import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
-public class CompanyFragment extends ContentLoaderItemSupportFragment implements ViewBinder {
+public class CompanyFragment extends RestItemSupportFragment implements ViewBinder {
 	
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
 		new Binding(R.id.company_name, CompanyTable.Columns.NAME),
@@ -98,7 +98,7 @@ public class CompanyFragment extends ContentLoaderItemSupportFragment implements
 	}
 	
 	@Override
-	public void onError(final RestError error) {
+	public void onError(final ContentError error) {
 		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
 	}
 	

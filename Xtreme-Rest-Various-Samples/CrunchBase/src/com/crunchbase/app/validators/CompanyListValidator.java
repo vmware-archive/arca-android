@@ -5,11 +5,11 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.crunchbase.app.operations.CompanyListOperation;
+import com.xtreme.rest.RestService;
 import com.xtreme.rest.loader.ContentState;
-import com.xtreme.rest.providers.DatasetValidator;
-import com.xtreme.rest.service.RestService;
+import com.xtreme.rest.loader.Validator;
 
-public class CompanyListValidator implements DatasetValidator {
+public class CompanyListValidator implements Validator {
 
 	@Override
 	public ContentState validate(final Uri uri, final Cursor cursor) {

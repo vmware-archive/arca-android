@@ -9,6 +9,7 @@ import android.os.IBinder;
 import com.xtreme.rest.service.OperationHandler.HandlerState;
 import com.xtreme.rest.service.OperationHandler.OnStateChangeListener;
 import com.xtreme.rest.service.RequestExecutor.DefaultRequestExecutor;
+import com.xtreme.rest.utils.Logger;
 
 /**
  * This class serves as the main entry point to the system, where {@link Operation}s are started, 

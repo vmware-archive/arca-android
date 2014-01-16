@@ -1,4 +1,4 @@
-package com.xtreme.rest;
+package com.xtreme.rest.loader;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 /**
- * A {@link Validator} is used to identify the {@link ValidatorState} of the {@link Cursor}'s content and
+ * A {@link Validator} is used to identify the {@link ContentState} of the {@link Cursor}'s content and
  * fetch new data if necessary.
  */
 public interface Validator {
@@ -17,9 +17,9 @@ public interface Validator {
 	 * 
 	 * @param uri The {@link Uri} used with the {@link ContentRequest} and associated with this {@link Cursor}
 	 * @param cursor The {@link Cursor} providing the data to be validated
-	 * @return The state of the content, see {@link ValidatorState} for more info
+	 * @return The state of the content, see {@link ContentState} for more info
 	 */
-	public ValidatorState validate(Uri uri, Cursor cursor);
+	public ContentState validate(Uri uri, Cursor cursor);
 
 	/**
 	 * The data in the provided {@link Cursor} needs to be updated. In this method, begin an update 

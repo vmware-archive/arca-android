@@ -1,4 +1,4 @@
-package com.xtreme.rest.provider;
+package com.xtreme.rest.utils;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -6,13 +6,13 @@ import java.util.Map;
 
 import android.util.SparseArray;
 
-class RestMapping<T> extends SparseArray<T> {
+public class ClassMapping<T> extends SparseArray<T> {
 
 	private final Map<String, T> mObjects = new LinkedHashMap<String, T>();
 
-	public void append(final int match, final Class<? extends T> klass) {
+	public void append(final int index, final Class<? extends T> klass) {
 		final T instance = getOrCreateFromMap(klass);
-		append(match, instance);
+		append(index, instance);
 	}
 
 	private T getOrCreateFromMap(final Class<? extends T> klass) {

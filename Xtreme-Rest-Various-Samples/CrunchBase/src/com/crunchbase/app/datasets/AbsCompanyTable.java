@@ -8,8 +8,7 @@ import android.content.ContentValues;
 import android.provider.BaseColumns;
 
 import com.crunchbase.app.models.Company;
-
-import com.xtreme.rest.providers.SQLTable;
+import com.xtreme.rest.provider.SQLTable;
 
 public abstract class AbsCompanyTable extends SQLTable {
 	

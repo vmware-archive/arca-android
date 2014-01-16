@@ -5,6 +5,8 @@ import java.util.Collection;
 import android.content.UriMatcher;
 import android.net.Uri;
 
+import com.xtreme.rest.utils.ClassMapping;
+
 public interface DatasetMatcher {
 	
 	/**
@@ -41,7 +43,7 @@ public interface DatasetMatcher {
 
 		private int MATCH = 0;
 		private final UriMatcher mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		private final RestMapping<Dataset> mDatasetMapping = new RestMapping<Dataset>();
+		private final ClassMapping<Dataset> mDatasetMapping = new ClassMapping<Dataset>();
 
 		@Override
 		public void register(final String authority, final String path, final Class<? extends Dataset> klass) {

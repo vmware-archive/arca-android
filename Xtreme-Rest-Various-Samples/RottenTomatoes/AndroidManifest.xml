@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -34,12 +34,12 @@
         <activity android:name=".activities.MovieActivity" />
 
         <service
-            android:name="com.xtreme.rest.service.RestService"
+            android:name="com.xtreme.rest.RestService"
             android:exported="false" />
         
         <service
             android:name="com.rottentomatoes.app.sync.RottenTomatoesSyncService"
-            android:exported="true" tools:ignore="ExportedService">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>

@@ -2,4 +2,6 @@
 
     <string name="app_name">RottenTomatoes</string>
 
+    <string name="movie_poster">Movie Poster</string>
+
 </resources>

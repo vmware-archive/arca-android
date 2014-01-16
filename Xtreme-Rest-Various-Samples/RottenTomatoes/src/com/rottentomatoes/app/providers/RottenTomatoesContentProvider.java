@@ -23,6 +23,7 @@ public class RottenTomatoesContentProvider extends RestContentProvider {
 	
 	@Override
 	public boolean onCreate() {
+		super.onCreate();
 		registerDataset(AUTHORITY, Paths.MOVIES, MovieTable.class);
 		registerDataset(AUTHORITY, Paths.MOVIES + "/*", MovieTable.class);
 		registerDataset(AUTHORITY, Paths.MOVIE_TYPES, MovieTypeTable.class);

@@ -104,7 +104,7 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 		final CursorAdapter adapter = getCursorAdapter();
 		if (adapter.getCount() > 0) {
 			showResults();
-		} else if (!response.isExecutingRemote()) {
+		} else {
 			hideLoading();
 		}
 	}

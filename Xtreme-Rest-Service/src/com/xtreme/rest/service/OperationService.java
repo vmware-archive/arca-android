@@ -120,13 +120,13 @@ public class OperationService extends Service implements OnStateChangeListener {
 	
 	private void handleAction(final Action action, final Operation operation) {
 		if (action == Action.START) {
-			startOperation(operation);
+			handleStart(operation);
 		} else {
 			throw new UnsupportedOperationException("This action has not yet been implemented.");
 		}
 	}
 
-	public void startOperation(final Operation operation) {
+	private void handleStart(final Operation operation) {
 		mHandler.start(operation);
 	}
 	

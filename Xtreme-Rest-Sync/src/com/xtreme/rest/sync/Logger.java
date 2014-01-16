@@ -144,8 +144,19 @@ public enum Logger {
 	 *            the exception to print
 	 */
 	public static void ex(final String message, final Throwable tr) {
-		final String formattedString = formatMessage(message, new Object[] {}) + ": " + Log.getStackTraceString(tr);
+		final String stackTrace = getMessageFromThrowable(tr);
+		final String fromattedMessage = formatMessage(message, new Object[] {});
+		final String formattedString = String.format("%s : %s", fromattedMessage, stackTrace);
 		Log.w(sTagName, formattedString);
+	}
+
+	private static String getMessageFromThrowable(final Throwable tr) {
+		final String stackTrace = Log.getStackTraceString(tr);
+		if (stackTrace == null || stackTrace.length() == 0) {
+			return tr.getLocalizedMessage();
+		} else {
+			return stackTrace;
+		}
 	}
 	
 	public static void exception(final String message, final Throwable tr) {

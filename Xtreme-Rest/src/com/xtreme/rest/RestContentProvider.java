@@ -10,6 +10,7 @@ import android.os.IBinder;
 
 import com.xtreme.rest.RestService.RestBinder;
 import com.xtreme.rest.provider.DatabaseProvider;
+import com.xtreme.rest.service.Logger;
 
 public class RestContentProvider extends DatabaseProvider implements ServiceConnection {
 
@@ -52,11 +53,13 @@ public class RestContentProvider extends DatabaseProvider implements ServiceConn
 	@Override
 	public void onServiceConnected(final ComponentName name, final IBinder service) {
 		final RestBinder binder = (RestBinder) service;
+		Logger.v("onServiceConnected %s", this.getClass());
 		mService = binder.getService();
 	}
 	
 	@Override
 	public void onServiceDisconnected(final ComponentName name) {
+		Logger.v("onServiceDisconnected %s", this.getClass());
 		mService = null;
 	}
 

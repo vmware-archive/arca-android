@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 
-import com.xtreme.rest.loader.ContentResponse;
-
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public abstract class RestAdapterFragment extends RestFragment {
 	

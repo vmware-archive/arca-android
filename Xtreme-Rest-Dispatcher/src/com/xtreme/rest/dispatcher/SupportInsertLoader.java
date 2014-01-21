@@ -2,7 +2,7 @@ package com.xtreme.rest.dispatcher;
 
 import android.content.Context;
 
-public class SupportInsertLoader extends SupportIntegerLoader<InsertResult> {
+public class SupportInsertLoader extends SupportResultLoader<InsertResult> {
 
 	public SupportInsertLoader(final Context context, final RequestExecutor executor, final Insert request) {
 		super(context, executor, request);

@@ -124,7 +124,7 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 
 		@Override
 		public void onLoaderReset(final Loader<T> loader) {
-			mListener.onRequestComplete(null);
+			mListener.onRequestReset();
 		}
 	}
 }

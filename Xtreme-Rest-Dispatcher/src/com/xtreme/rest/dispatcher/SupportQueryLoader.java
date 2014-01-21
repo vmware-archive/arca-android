@@ -2,7 +2,7 @@ package com.xtreme.rest.dispatcher;
 
 import android.content.Context;
 
-public class SupportQueryLoader extends SupportResultLoader<QueryResult> {
+public class SupportQueryLoader extends SupportLoader<QueryResult> {
 	
 	private final ForceLoadContentObserver mObserver;
 	private final QueryResultTracker mTracker;

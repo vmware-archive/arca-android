@@ -2,7 +2,7 @@ package com.xtreme.rest.dispatcher;
 
 import android.content.Context;
 
-public class SupportDeleteLoader extends SupportIntegerLoader<DeleteResult> {
+public class SupportDeleteLoader extends SupportResultLoader<DeleteResult> {
 
 	public SupportDeleteLoader(final Context context, final RequestExecutor executor, final Delete request) {
 		super(context, executor, request);

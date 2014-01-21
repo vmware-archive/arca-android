@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Build;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class ModernQueryLoader extends ModernResultLoader<QueryResult> {
+public class ModernQueryLoader extends ModernLoader<QueryResult> {
 
 	private final ForceLoadContentObserver mObserver;
 	private final QueryResultTracker mTracker;

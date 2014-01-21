@@ -2,7 +2,7 @@ package com.xtreme.rest.dispatcher;
 
 import android.content.Context;
 
-public class ModernDeleteLoader extends ModernIntegerLoader<DeleteResult> {
+public class ModernDeleteLoader extends ModernResultLoader<DeleteResult> {
 
 	public ModernDeleteLoader(final Context context, final RequestExecutor executor, final Delete request) {
 		super(context, executor, request);

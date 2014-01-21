@@ -6,7 +6,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
-
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -45,6 +44,7 @@ public class RequestDispatcherTest extends LoaderTestCase {
 	
 	private static final Uri TEST_URI = Uri.parse("content://" + AUTHORITY);
 
+	
 	public void testSychronousQuery() {
 		final Query query = new Query(TEST_URI);
 		final QueryResult response = getDispatcher().execute(query);
@@ -64,6 +64,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 				assertNotNull(cursor);
 				cursor.close();
 			}
+			
+			@Override
+			public void onRequestReset() {
+				
+			}
 		});
 		latch.assertComplete();
 	}
@@ -74,8 +79,12 @@ public class RequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(query, new QueryListener() {
 			@Override
 			public void onRequestComplete(final QueryResult result) {
+			}
+			
+			@Override
+			public void onRequestReset() {
 				latch.countDown();
-				assertTrue(result.isReset());
+				
 			}
 		});
 		latch.assertComplete();
@@ -89,6 +98,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 			public void onRequestComplete(final QueryResult result) {
 				latch.countDown();
 				assertTrue(result.hasError());
+			}
+			
+			@Override
+			public void onRequestReset() {
+				
 			}
 		});
 		latch.assertComplete();
@@ -114,6 +128,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 				final Integer count = result.getResult();
 				assertEquals(Integer.valueOf(1), count);
 			}
+			
+			@Override
+			public void onRequestReset() {
+				
+			}
 		});
 		latch.assertComplete();
 	}
@@ -125,8 +144,12 @@ public class RequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(insert, new InsertListener() {
 			@Override
 			public void onRequestComplete(final InsertResult result) {
+			
+			}
+			
+			@Override
+			public void onRequestReset() {
 				latch.countDown();
-				assertTrue(result.isReset());
 			}
 		});
 		latch.assertComplete();
@@ -141,6 +164,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 			public void onRequestComplete(final InsertResult result) {
 				latch.countDown();
 				assertTrue(result.hasError());
+			}
+			
+			@Override
+			public void onRequestReset() {
+				
 			}
 		});
 		latch.assertComplete();
@@ -166,6 +194,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 				final Integer count = result.getResult();
 				assertEquals(Integer.valueOf(1), count);
 			}
+			
+			@Override
+			public void onRequestReset() {
+				
+			}
 		});
 		latch.assertComplete();
 	}
@@ -177,8 +210,12 @@ public class RequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(update, new UpdateListener() {
 			@Override
 			public void onRequestComplete(final UpdateResult result) {
+				
+			}
+
+			@Override
+			public void onRequestReset() {
 				latch.countDown();
-				assertTrue(result.isReset());
 			}
 		});
 		latch.assertComplete();
@@ -193,6 +230,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 			public void onRequestComplete(final UpdateResult result) {
 				latch.countDown();
 				assertTrue(result.hasError());
+			}
+			
+			@Override
+			public void onRequestReset() {
+				
 			}
 		});
 		latch.assertComplete();
@@ -216,6 +258,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 				final Integer count = result.getResult();
 				assertEquals(Integer.valueOf(1), count);
 			}
+			
+			@Override
+			public void onRequestReset() {
+				
+			}
 		});
 		latch.assertComplete();
 	}
@@ -226,8 +273,12 @@ public class RequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(delete, new DeleteListener() {
 			@Override
 			public void onRequestComplete(final DeleteResult result) {
-				latch.countDown();
-				assertTrue(result.isReset());
+
+			}
+			
+			@Override
+			public void onRequestReset() {
+				latch.countDown();	
 			}
 		});
 		latch.assertComplete();
@@ -242,6 +293,11 @@ public class RequestDispatcherTest extends LoaderTestCase {
 				latch.countDown();
 				assertTrue(result.hasError());
 			}
+			
+			@Override
+			public void onRequestReset() {
+				
+			}
 		});
 		latch.assertComplete();
 	}
@@ -255,8 +311,8 @@ public class RequestDispatcherTest extends LoaderTestCase {
 	}
 	
 	private RequestDispatcher getResetDispatcher() {
-		final RequestExecutor executor = new ResetRequestExecutor();
-		return new ModernRequestDispatcher(executor, getContext(), mLoaderManager);
+		final RequestExecutor executor = new DefaultRequestExecutor(null);
+		return new ModernRequestDispatcher(executor, getContext(), mResetLoaderManager);
 	}
 	
 	private RequestDispatcher getErrorDispatcher() {
@@ -323,33 +379,35 @@ public class RequestDispatcherTest extends LoaderTestCase {
 		}
 	};
 	
-	public class ResetRequestExecutor implements RequestExecutor {
-
+	private final LoaderManager mResetLoaderManager = new LoaderManager() {
+		
 		@Override
-		public QueryResult execute(final Query request) {
-			final Cursor cursor = null;
-			return new QueryResult(cursor);
+		public <D> Loader<D> restartLoader(final int id, final Bundle bundle, final LoaderCallbacks<D> callbacks) {
+			final Loader<D> loader = callbacks.onCreateLoader(id, bundle);
+			callbacks.onLoaderReset(loader);
+			return loader;
 		}
-
+		
 		@Override
-		public UpdateResult execute(final Update request) {
-			final Integer result = null;
-			return new UpdateResult(result);
+		public <D> Loader<D> initLoader(final int id, final Bundle bundle, final LoaderCallbacks<D> callbacks) {
+			return null;
 		}
-
+		
 		@Override
-		public InsertResult execute(final Insert request) {
-			final Integer result = null;
-			return new InsertResult(result);
+		public <D> Loader<D> getLoader(final int id) {
+			return null;
 		}
-
+		
 		@Override
-		public DeleteResult execute(final Delete request) {
-			final Integer result = null;
-			return new DeleteResult(result);
+		public void destroyLoader(final int id) {
+			
 		}
-
-	}
+		
+		@Override
+		public void dump(final String prefix, final FileDescriptor fd, final PrintWriter writer, final String[] args) {
+			
+		}
+	};
 	
 	public class ErrorRequestExecutor implements RequestExecutor {
 

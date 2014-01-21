@@ -127,7 +127,7 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 
 		@Override
 		public void onLoaderReset(final Loader<T> loader) {
-			mListener.onRequestComplete(null);
+			mListener.onRequestReset();
 		}
 	}
 }

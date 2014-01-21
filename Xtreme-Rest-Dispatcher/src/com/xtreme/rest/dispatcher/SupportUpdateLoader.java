@@ -2,7 +2,7 @@ package com.xtreme.rest.dispatcher;
 
 import android.content.Context;
 
-public class SupportUpdateLoader extends SupportIntegerLoader<UpdateResult> {
+public class SupportUpdateLoader extends SupportResultLoader<UpdateResult> {
 
 	public SupportUpdateLoader(Context context, RequestExecutor executor, Update request) {
 		super(context, executor, request);

@@ -7,10 +7,6 @@ import android.os.Parcelable;
 
 public class Query extends ContentRequest<Cursor> implements Parcelable {
 	
-	public static final class Params {
-		public static final String FORCE_UPDATE = "force_update";
-	}
-	
 	private String[] mProjection;
 	private String mWhereClause;
 	private String[] mWhereArgs;
@@ -75,17 +71,6 @@ public class Query extends ContentRequest<Cursor> implements Parcelable {
 	
 	public String getSortOrder() {
 		return mSortOrder;
-	}
-	
-	public Uri getForceUpdateContentUri() {
-		if (mForceUpdate) { 
-			mForceUpdate = false;
-			final Uri.Builder builder = getUri().buildUpon();
-			builder.appendQueryParameter(Params.FORCE_UPDATE, "true");
-			return builder.build();
-		} else {
-			return getUri();
-		}
 	}
 	
 	public static final Parcelable.Creator<Query> CREATOR = new Parcelable.Creator<Query>() {

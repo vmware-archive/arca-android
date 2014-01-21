@@ -3,13 +3,13 @@ package com.xtreme.rest.dispatcher;
 import android.database.ContentObserver;
 import android.database.Cursor;
 
-public class CursorResult extends ContentResult<Cursor> {
+public class QueryResult extends ContentResult<Cursor> {
 
-	public CursorResult(final Cursor data) {
+	public QueryResult(final Cursor data) {
 		super(data);
 	}
 
-	public CursorResult(final ContentError error) {
+	public QueryResult(final ContentError error) {
 		super(error);
 	}
 

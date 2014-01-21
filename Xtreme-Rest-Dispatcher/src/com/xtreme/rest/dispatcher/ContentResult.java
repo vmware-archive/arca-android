@@ -1,6 +1,6 @@
 package com.xtreme.rest.dispatcher;
 
-public class ContentResult<T> {
+abstract class ContentResult<T> {
 
 	private final T mData;
 	private final ContentError mError;
@@ -25,5 +25,9 @@ public class ContentResult<T> {
 	
 	public boolean hasError() {
 		return mError != null;
+	}
+	
+	public boolean isReset() {
+		return mError == null && mData == null;
 	}
 }

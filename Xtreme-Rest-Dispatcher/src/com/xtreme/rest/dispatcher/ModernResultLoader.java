@@ -6,19 +6,29 @@ import android.content.Context;
 import android.os.Build;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public abstract class ModernResultLoader<T> extends AsyncTaskLoader<T> implements ContentErrorListener {
+abstract class ModernResultLoader<T> extends AsyncTaskLoader<T> implements ContentErrorListener {
 
-	private final ContentErrorReceiver mReceiver = new ContentErrorReceiver(this);
-	
+	private final ContentErrorReceiver mReceiver;
 	private final RequestExecutor mExecutor;
 	private final ContentRequest<?> mRequest;
 	
 	public ModernResultLoader(final Context context, final RequestExecutor executor, final ContentRequest<?> request) {
 		super(context);
+		mReceiver = new ContentErrorReceiver(this);
 		mReceiver.register(request.getUri());
 		mExecutor = executor;
 		mRequest = request;
 	}
+	
+	@Override
+	public abstract T loadInBackground();
+	
+	protected abstract T getErrorResult(final ContentError error);
+	
+	protected abstract T getResult();
+
+	protected abstract void clearResult();
+	
 	
 	public RequestExecutor getRequestExecutor() {
 		return mExecutor;
@@ -26,6 +36,35 @@ public abstract class ModernResultLoader<T> extends AsyncTaskLoader<T> implement
 	
 	public ContentRequest<?> getContentRequest() {
 		return mRequest;
+	}
+	
+	@Override
+	protected void onStartLoading() {
+		final T result = getResult();
+		if (result != null) {
+			deliverResult(result);
+		}
+		if (takeContentChanged() || result == null) {
+			forceLoad();
+		}
+	}
+	
+	@Override
+	protected void onStopLoading() {
+		cancelLoad();
+	}
+	
+	@Override
+	public void onRequestError(final ContentError error) {
+		final T result = getErrorResult(error);
+		deliverResult(result);
+	}
+	
+	@Override
+	protected void onReset() {
+		super.onReset();
+		onStopLoading();
+		clearResult();
 	}
 
 	@Override

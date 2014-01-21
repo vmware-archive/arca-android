@@ -1,0 +1,62 @@
+package com.xtreme.rest.dispatcher;
+
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Build;
+
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+public class ModernQueryLoader extends ModernResultLoader<QueryResult> {
+
+	private final ForceLoadContentObserver mObserver;
+	private final QueryResultTracker mTracker;
+
+	public ModernQueryLoader(final Context context, final RequestExecutor executor, final Query request) {
+		super(context, executor, request);
+		mObserver = new ForceLoadContentObserver();
+		mTracker = new QueryResultTracker();
+	}
+
+	@Override
+	public QueryResult loadInBackground() {
+		final Query request = (Query) getContentRequest();
+		final RequestExecutor executor = getRequestExecutor();
+		return executor.execute(request);
+	}
+
+	@Override
+	public void deliverResult(final QueryResult result) {
+		mTracker.registerObserver(result, mObserver);
+
+		if (isReset()) {
+			mTracker.reset();
+
+		} else if (result.isValid()) {
+			if (isStarted()) {
+				super.deliverResult(result);
+			}
+			mTracker.trackValidResult(result);
+		} else {
+			mTracker.trackInvalidResult(result, mObserver);
+		}
+	}
+
+	@Override
+	protected QueryResult getResult() {
+		return mTracker.getResult();
+	}
+	
+	@Override
+	public QueryResult getErrorResult(final ContentError error) {
+		return new QueryResult(error);
+	}
+	
+	@Override
+	public void onCanceled(final QueryResult result) {
+		mTracker.stopTracking(result);
+	}
+
+	@Override
+	public void clearResult() {
+		mTracker.reset();
+	}
+}

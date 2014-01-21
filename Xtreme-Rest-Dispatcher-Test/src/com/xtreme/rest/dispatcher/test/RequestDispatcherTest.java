@@ -1,69 +1,269 @@
 package com.xtreme.rest.dispatcher.test;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import junit.framework.Assert;
+
 import android.annotation.TargetApi;
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Build;
-import android.test.AndroidTestCase;
+import android.os.Bundle;
+import android.test.LoaderTestCase;
 import android.test.mock.MockContentProvider;
 import android.test.mock.MockContentResolver;
 
-import com.xtreme.rest.dispatcher.ContentResult;
+import com.xtreme.rest.dispatcher.ContentError;
 import com.xtreme.rest.dispatcher.Delete;
+import com.xtreme.rest.dispatcher.DeleteListener;
+import com.xtreme.rest.dispatcher.DeleteResult;
 import com.xtreme.rest.dispatcher.Insert;
+import com.xtreme.rest.dispatcher.InsertListener;
+import com.xtreme.rest.dispatcher.InsertResult;
 import com.xtreme.rest.dispatcher.ModernRequestDispatcher;
 import com.xtreme.rest.dispatcher.Query;
+import com.xtreme.rest.dispatcher.QueryListener;
+import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.dispatcher.RequestDispatcher;
 import com.xtreme.rest.dispatcher.RequestExecutor;
 import com.xtreme.rest.dispatcher.RequestExecutor.DefaultRequestExecutor;
 import com.xtreme.rest.dispatcher.Update;
+import com.xtreme.rest.dispatcher.UpdateListener;
+import com.xtreme.rest.dispatcher.UpdateResult;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class RequestDispatcherTest extends AndroidTestCase {
-	
+public class RequestDispatcherTest extends LoaderTestCase {
+
 	private static final String AUTHORITY = "com.test";
 	
-	private static final Uri TEST_URI = Uri.parse("content://" + AUTHORITY + "/empty");
+	private static final Uri TEST_URI = Uri.parse("content://" + AUTHORITY);
 
 	public void testSychronousQuery() {
 		final Query query = new Query(TEST_URI);
-		final ContentResult<Cursor> response = getDispatcher().execute(query);
+		final QueryResult response = getDispatcher().execute(query);
 		final Cursor result = response.getResult();
 		assertNotNull(result);
 		result.close();
 	}
 	
+	public void testAsynchronousQuery() {
+		final Query query = new Query(TEST_URI);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getDispatcher().execute(query, new QueryListener() {
+			@Override
+			public void onRequestComplete(final QueryResult result) {
+				latch.countDown();
+				final Cursor cursor = result.getResult();
+				assertNotNull(cursor);
+				cursor.close();
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousQueryReset() {
+		final Query query = new Query(TEST_URI);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getResetDispatcher().execute(query, new QueryListener() {
+			@Override
+			public void onRequestComplete(final QueryResult result) {
+				latch.countDown();
+				assertTrue(result.isReset());
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousQueryError() {
+		final Query query = new Query(TEST_URI);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getErrorDispatcher().execute(query, new QueryListener() {
+			@Override
+			public void onRequestComplete(final QueryResult result) {
+				latch.countDown();
+				assertTrue(result.hasError());
+			}
+		});
+		latch.assertComplete();
+	}
+	
+
 	public void testSychronousInsert() {
 		final ContentValues values = new ContentValues();
 		final Insert insert = new Insert(TEST_URI, values);
-		final ContentResult<Integer> response = getDispatcher().execute(insert);
+		final InsertResult response = getDispatcher().execute(insert);
 		final Integer count = response.getResult();
 		assertEquals(Integer.valueOf(1), count);
 	}
+	
+	public void testAsynchronousInsert() {
+		final ContentValues values = new ContentValues();
+		final Insert insert = new Insert(TEST_URI, values);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getDispatcher().execute(insert, new InsertListener() {
+			@Override
+			public void onRequestComplete(final InsertResult result) {
+				latch.countDown();
+				final Integer count = result.getResult();
+				assertEquals(Integer.valueOf(1), count);
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousInsertReset() {
+		final ContentValues values = new ContentValues();
+		final Insert insert = new Insert(TEST_URI, values);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getResetDispatcher().execute(insert, new InsertListener() {
+			@Override
+			public void onRequestComplete(final InsertResult result) {
+				latch.countDown();
+				assertTrue(result.isReset());
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousInsertError() {
+		final ContentValues values = new ContentValues();
+		final Insert insert = new Insert(TEST_URI, values);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getErrorDispatcher().execute(insert, new InsertListener() {
+			@Override
+			public void onRequestComplete(final InsertResult result) {
+				latch.countDown();
+				assertTrue(result.hasError());
+			}
+		});
+		latch.assertComplete();
+	}
+	
 	
 	public void testSychronousUpdate() {
 		final ContentValues values = new ContentValues();
 		final Update update = new Update(TEST_URI, values);
-		final ContentResult<Integer> response = getDispatcher().execute(update);
+		final UpdateResult response = getDispatcher().execute(update);
 		final Integer count = response.getResult();
 		assertEquals(Integer.valueOf(1), count);
 	}
 	
+	public void testAsynchronousUpdate() {
+		final ContentValues values = new ContentValues();
+		final Update update = new Update(TEST_URI, values);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getDispatcher().execute(update, new UpdateListener() {
+			@Override
+			public void onRequestComplete(final UpdateResult result) {
+				latch.countDown();
+				final Integer count = result.getResult();
+				assertEquals(Integer.valueOf(1), count);
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousUpdateReset() {
+		final ContentValues values = new ContentValues();
+		final Update update = new Update(TEST_URI, values);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getResetDispatcher().execute(update, new UpdateListener() {
+			@Override
+			public void onRequestComplete(final UpdateResult result) {
+				latch.countDown();
+				assertTrue(result.isReset());
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousUpdateError() {
+		final ContentValues values = new ContentValues();
+		final Update update = new Update(TEST_URI, values);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getErrorDispatcher().execute(update, new UpdateListener() {
+			@Override
+			public void onRequestComplete(final UpdateResult result) {
+				latch.countDown();
+				assertTrue(result.hasError());
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	
 	public void testSychronousDelete() {
 		final Delete delete = new Delete(TEST_URI);
-		final ContentResult<Integer> response = getDispatcher().execute(delete);
+		final DeleteResult response = getDispatcher().execute(delete);
 		final Integer count = response.getResult();
 		assertEquals(Integer.valueOf(1), count);
 	}
+	
+	public void testAsynchronousDelete() {
+		final Delete delete = new Delete(TEST_URI);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getDispatcher().execute(delete, new DeleteListener() {
+			@Override
+			public void onRequestComplete(final DeleteResult result) {
+				latch.countDown();
+				final Integer count = result.getResult();
+				assertEquals(Integer.valueOf(1), count);
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousDeleteReset() {
+		final Delete delete = new Delete(TEST_URI);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getResetDispatcher().execute(delete, new DeleteListener() {
+			@Override
+			public void onRequestComplete(final DeleteResult result) {
+				latch.countDown();
+				assertTrue(result.isReset());
+			}
+		});
+		latch.assertComplete();
+	}
+	
+	public void testAsynchronousDeleteError() {
+		final Delete delete = new Delete(TEST_URI);
+		final AssertionLatch latch = new AssertionLatch(1);
+		getErrorDispatcher().execute(delete, new DeleteListener() {
+			@Override
+			public void onRequestComplete(final DeleteResult result) {
+				latch.countDown();
+				assertTrue(result.hasError());
+			}
+		});
+		latch.assertComplete();
+	}
+	
 	
 	private RequestDispatcher getDispatcher() {
 		final MockContentResolver resolver = new MockContentResolver();
 		resolver.addProvider(AUTHORITY, mProvider);
 		final RequestExecutor executor = new DefaultRequestExecutor(resolver);
-		return new ModernRequestDispatcher(executor, getContext(), null);
+		return new ModernRequestDispatcher(executor, getContext(), mLoaderManager);
 	}
+	
+	private RequestDispatcher getResetDispatcher() {
+		final RequestExecutor executor = new ResetRequestExecutor();
+		return new ModernRequestDispatcher(executor, getContext(), mLoaderManager);
+	}
+	
+	private RequestDispatcher getErrorDispatcher() {
+		final RequestExecutor executor = new ErrorRequestExecutor();
+		return new ModernRequestDispatcher(executor, getContext(), mLoaderManager);
+	}
+	
 	
 	private final MockContentProvider mProvider = new MockContentProvider(getContext()) {
 		@Override
@@ -82,13 +282,125 @@ public class RequestDispatcherTest extends AndroidTestCase {
 		};
 		
 		@Override
-		public int delete(Uri uri, String selection, String[] selectionArgs) {
+		public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
 			return 1;
 		};
 		
 		@Override
-		public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+		public int update(final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {
 			return 1;
 		};
 	};
+	
+	private final LoaderManager mLoaderManager = new LoaderManager() {
+		
+		@Override
+		public <D> Loader<D> restartLoader(final int id, final Bundle bundle, final LoaderCallbacks<D> callbacks) {
+			final Loader<D> loader = callbacks.onCreateLoader(id, bundle);
+			final D result = getLoaderResultSynchronously(loader);
+			callbacks.onLoadFinished(loader, result);
+			return loader;
+		}
+		
+		@Override
+		public <D> Loader<D> initLoader(final int id, final Bundle bundle, final LoaderCallbacks<D> callbacks) {
+			return null;
+		}
+		
+		@Override
+		public <D> Loader<D> getLoader(final int id) {
+			return null;
+		}
+		
+		@Override
+		public void destroyLoader(final int id) {
+			
+		}
+		
+		@Override
+		public void dump(final String prefix, final FileDescriptor fd, final PrintWriter writer, final String[] args) {
+			
+		}
+	};
+	
+	public class ResetRequestExecutor implements RequestExecutor {
+
+		@Override
+		public QueryResult execute(final Query request) {
+			final Cursor cursor = null;
+			return new QueryResult(cursor);
+		}
+
+		@Override
+		public UpdateResult execute(final Update request) {
+			final Integer result = null;
+			return new UpdateResult(result);
+		}
+
+		@Override
+		public InsertResult execute(final Insert request) {
+			final Integer result = null;
+			return new InsertResult(result);
+		}
+
+		@Override
+		public DeleteResult execute(final Delete request) {
+			final Integer result = null;
+			return new DeleteResult(result);
+		}
+
+	}
+	
+	public class ErrorRequestExecutor implements RequestExecutor {
+
+		@Override
+		public QueryResult execute(final Query request) {
+			final ContentError error = new ContentError(0, null);
+			return new QueryResult(error);
+		}
+
+		@Override
+		public UpdateResult execute(final Update request) {
+			final ContentError error = new ContentError(0, null);
+			return new UpdateResult(error);
+		}
+
+		@Override
+		public InsertResult execute(final Insert request) {
+			final ContentError error = new ContentError(0, null);
+			return new InsertResult(error);
+		}
+
+		@Override
+		public DeleteResult execute(final Delete request) {
+			final ContentError error = new ContentError(0, null);
+			return new DeleteResult(error);
+		}
+
+	}
+	
+	public class AssertionLatch extends CountDownLatch {
+
+		public AssertionLatch(final int count) {
+			super(count);
+		}
+		
+		@Override
+		public void countDown() {
+			final long count = getCount();
+			if (count == 0) {
+				Assert.fail("This latch has already finished.");
+			} else {
+				super.countDown();
+			}
+		}
+		
+		public void assertComplete() {
+			try {
+				Assert.assertTrue(await(0, TimeUnit.SECONDS));
+			} catch (final InterruptedException e) {
+				Assert.fail();
+			}
+		}
+	}
 }

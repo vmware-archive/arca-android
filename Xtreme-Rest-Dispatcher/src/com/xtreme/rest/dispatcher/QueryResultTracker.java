@@ -5,25 +5,25 @@ import java.util.Set;
 
 import android.database.ContentObserver;
 
-final class CursorResultTracker {
+final class QueryResultTracker {
 
-	private final Set<CursorResult> mRegistered = new HashSet<CursorResult>();
+	private final Set<QueryResult> mRegistered = new HashSet<QueryResult>();
 
-	private CursorResult mInvalidResult;
-	private CursorResult mValidResult;
+	private QueryResult mInvalidResult;
+	private QueryResult mValidResult;
 
-	public CursorResult getCursorResult() {
+	public QueryResult getResult() {
 		return mValidResult;
 	}
 
-	public void registerObserver(final CursorResult result, final ContentObserver observer) {
+	public void registerObserver(final QueryResult result, final ContentObserver observer) {
 		if (result != null && !mRegistered.contains(result)) {
 			result.registerContentObserver(observer);
 			mRegistered.add(result);
 		}
 	}
 
-	public void trackValidResult(final CursorResult result) {
+	public void trackValidResult(final QueryResult result) {
 		if (mInvalidResult != result) {
 			stopTracking(mInvalidResult);
 			mInvalidResult = null;
@@ -36,7 +36,7 @@ final class CursorResultTracker {
 		mValidResult = result;
 	}
 
-	public void trackInvalidResult(final CursorResult result, final ContentObserver observer) {
+	public void trackInvalidResult(final QueryResult result, final ContentObserver observer) {
 		if (mValidResult != null && mValidResult != result && mRegistered.contains(mValidResult)) {
 			mValidResult.unregisterContentObserver(observer);
 			mRegistered.remove(mValidResult);
@@ -49,7 +49,7 @@ final class CursorResultTracker {
 		mInvalidResult = result;
 	}
 
-	public void stopTracking(final CursorResult result) {
+	public void stopTracking(final QueryResult result) {
 		if (result != null && !result.isClosed()) {
 			result.close();
 			mRegistered.remove(result);

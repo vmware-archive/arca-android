@@ -5,12 +5,11 @@ import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Loader;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class ModernRequestDispatcher extends AbstractRequestLoaderDispatcher {
+public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 
 	private final Context mContext;
 	private final LoaderManager mLoaderManager;
@@ -22,65 +21,112 @@ public class ModernRequestDispatcher extends AbstractRequestLoaderDispatcher {
 	}
 
 	@Override
-	protected void dispatch(final ContentRequest<?> request, final ContentRequestListener<?> listener) {
+	public void execute(final Query request, final QueryListener listener) {
+		final LoaderCallbacks<?> callbacks = new QueryLoaderCallbacks(listener);
+		execute(request, callbacks);
+	}
+	
+	@Override
+	public void execute(final Update request, final UpdateListener listener) {
+		final LoaderCallbacks<?> callbacks = new UpdateLoaderCallbacks(listener);
+		execute(request, callbacks);
+	}
+
+	@Override
+	public void execute(final Insert request, final InsertListener listener) {
+		final LoaderCallbacks<?> callbacks = new InsertLoaderCallbacks(listener);
+		execute(request, callbacks);
+	}
+
+	@Override
+	public void execute(final Delete request, final DeleteListener listener) {
+		final LoaderCallbacks<?> callbacks = new DeleteLoaderCallbacks(listener);
+		execute(request, callbacks);
+	}
+
+	
+	private void execute(final ContentRequest<?> request, final LoaderCallbacks<?> callbacks) {
 		final int identifier = request.getIdentifier();
 		final Bundle bundle = createRequestBundle(request);
-		final LoaderCallbacks<?> callbacks = createCallbacks(request, listener);
 		mLoaderManager.restartLoader(identifier, bundle, callbacks);
 	}
+	
+	
+	// ========================================
+	
 
-	@SuppressWarnings("unchecked")
-	private LoaderCallbacks<?> createCallbacks(final ContentRequest<?> request, final ContentRequestListener<?> listener) {
-		if (request instanceof Query) {
-			return new CursorLoaderCallbacks((ContentRequestListener<Cursor>) listener);
-		} else {
-			return new IntegerLoaderCallbacks((ContentRequestListener<Integer>) listener);
-		}
-	}
 
-	private class CursorLoaderCallbacks extends NotififierCallbacks<Cursor, CursorResult> {
+	private class QueryLoaderCallbacks extends NotififierCallbacks<QueryResult> {
 		
-		public CursorLoaderCallbacks(final ContentRequestListener<Cursor> listener) {
+		public QueryLoaderCallbacks(final QueryListener listener) {
 			super(listener);
 		}
 
 		@Override
-		public Loader<CursorResult> onCreateLoader(final int id, final Bundle args) {
+		public Loader<QueryResult> onCreateLoader(final int id, final Bundle args) {
 			final RequestExecutor executor = getRequestExecutor();
 			final Query request = args.getParcelable(Extras.REQUEST);
-			return new ModernCursorLoader(mContext, executor, request);
+			return new ModernQueryLoader(mContext, executor, request);
 		}
 	}
 	
-	private class IntegerLoaderCallbacks extends NotififierCallbacks<Integer, ContentResult<Integer>> {
+	private class UpdateLoaderCallbacks extends NotififierCallbacks<UpdateResult> {
 		
-		public IntegerLoaderCallbacks(final ContentRequestListener<Integer> listener) {
+		public UpdateLoaderCallbacks(final UpdateListener listener) {
 			super(listener);
 		}
 
 		@Override
-		public Loader<ContentResult<Integer>> onCreateLoader(final int id, final Bundle args) {
+		public Loader<UpdateResult> onCreateLoader(final int id, final Bundle args) {
 			final RequestExecutor executor = getRequestExecutor();
-			final ContentRequest<?> request = args.getParcelable(Extras.REQUEST);
-			return new ModernIntegerLoader(mContext, executor, request);
+			final Update request = args.getParcelable(Extras.REQUEST);
+			return new ModernUpdateLoader(mContext, executor, request);
 		}
 	}
 	
-	private abstract class NotififierCallbacks<DATA_TYPE, RESULT_TYPE extends ContentResult<DATA_TYPE>> implements LoaderCallbacks<RESULT_TYPE> {
+	private class InsertLoaderCallbacks extends NotififierCallbacks<InsertResult> {
 		
-		protected final ContentRequestListener<DATA_TYPE> mListener;
+		public InsertLoaderCallbacks(final InsertListener listener) {
+			super(listener);
+		}
 
-		public NotififierCallbacks(final ContentRequestListener<DATA_TYPE> listener) {
+		@Override
+		public Loader<InsertResult> onCreateLoader(final int id, final Bundle args) {
+			final RequestExecutor executor = getRequestExecutor();
+			final Insert request = args.getParcelable(Extras.REQUEST);
+			return new ModernInsertLoader(mContext, executor, request);
+		}
+	}
+	
+	private class DeleteLoaderCallbacks extends NotififierCallbacks<DeleteResult> {
+		
+		public DeleteLoaderCallbacks(final DeleteListener listener) {
+			super(listener);
+		}
+
+		@Override
+		public Loader<DeleteResult> onCreateLoader(final int id, final Bundle args) {
+			final RequestExecutor executor = getRequestExecutor();
+			final Delete request = args.getParcelable(Extras.REQUEST);
+			return new ModernDeleteLoader(mContext, executor, request);
+		}
+	}
+	
+	private abstract class NotififierCallbacks<T extends ContentResult<?>> implements LoaderCallbacks<T> {
+		
+		private final ContentRequestListener<T> mListener;
+
+		public NotififierCallbacks(final ContentRequestListener<T> listener) {
 			mListener = listener;
 		}
 
 		@Override
-		public void onLoadFinished(final Loader<RESULT_TYPE> loader, final RESULT_TYPE result) {
+		public void onLoadFinished(final Loader<T> loader, final T result) {
 			mListener.onRequestComplete(result);
 		}
 
 		@Override
-		public void onLoaderReset(final Loader<RESULT_TYPE> loader) {
+		public void onLoaderReset(final Loader<T> loader) {
 			mListener.onRequestComplete(null);
 		}
 	}

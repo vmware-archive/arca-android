@@ -6,16 +6,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
-import android.annotation.TargetApi;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.Loader;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.test.LoaderTestCase;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.test.mock.MockContentProvider;
 import android.test.mock.MockContentResolver;
 
@@ -26,19 +23,19 @@ import com.xtreme.rest.dispatcher.DeleteResult;
 import com.xtreme.rest.dispatcher.Insert;
 import com.xtreme.rest.dispatcher.InsertListener;
 import com.xtreme.rest.dispatcher.InsertResult;
-import com.xtreme.rest.dispatcher.ModernRequestDispatcher;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryListener;
 import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.dispatcher.RequestDispatcher;
 import com.xtreme.rest.dispatcher.RequestExecutor;
 import com.xtreme.rest.dispatcher.RequestExecutor.DefaultRequestExecutor;
+import com.xtreme.rest.dispatcher.SupportRequestDispatcher;
 import com.xtreme.rest.dispatcher.Update;
 import com.xtreme.rest.dispatcher.UpdateListener;
 import com.xtreme.rest.dispatcher.UpdateResult;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class RequestDispatcherTest extends LoaderTestCase {
+
+public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 
 	private static final String AUTHORITY = "com.test";
 	
@@ -307,17 +304,17 @@ public class RequestDispatcherTest extends LoaderTestCase {
 		final MockContentResolver resolver = new MockContentResolver();
 		resolver.addProvider(AUTHORITY, mProvider);
 		final RequestExecutor executor = new DefaultRequestExecutor(resolver);
-		return new ModernRequestDispatcher(executor, getContext(), mLoaderManager);
+		return new SupportRequestDispatcher(executor, getContext(), mLoaderManager);
 	}
 	
 	private RequestDispatcher getResetDispatcher() {
 		final RequestExecutor executor = new DefaultRequestExecutor(null);
-		return new ModernRequestDispatcher(executor, getContext(), mResetLoaderManager);
+		return new SupportRequestDispatcher(executor, getContext(), mResetLoaderManager);
 	}
 	
 	private RequestDispatcher getErrorDispatcher() {
 		final RequestExecutor executor = new ErrorRequestExecutor();
-		return new ModernRequestDispatcher(executor, getContext(), mLoaderManager);
+		return new SupportRequestDispatcher(executor, getContext(), mLoaderManager);
 	}
 	
 	

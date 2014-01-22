@@ -16,7 +16,7 @@ public class SupportUpdateLoader extends SupportResultLoader<UpdateResult> {
 	}
 
 	@Override
-	public UpdateResult getErrorResult(ContentError error) {
+	public UpdateResult getErrorResult(Error error) {
 		return new UpdateResult(error);
 	}
 

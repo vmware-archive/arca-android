@@ -16,7 +16,7 @@ public class SupportInsertLoader extends SupportResultLoader<InsertResult> {
 	}
 
 	@Override
-	public InsertResult getErrorResult(final ContentError error) {
+	public InsertResult getErrorResult(final Error error) {
 		return new InsertResult(error);
 	}
 

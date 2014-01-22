@@ -3,15 +3,15 @@ package com.xtreme.rest.dispatcher;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-abstract class SupportLoader<T> extends AsyncTaskLoader<T> implements ContentErrorListener {
+abstract class SupportLoader<T> extends AsyncTaskLoader<T> implements ErrorListener {
 
-	private final ContentErrorReceiver mReceiver;
+	private final ErrorReceiver mReceiver;
 	private final RequestExecutor mExecutor;
-	private final ContentRequest<?> mRequest;
+	private final Request<?> mRequest;
 	
-	public SupportLoader(final Context context, final RequestExecutor executor, final ContentRequest<?> request) {
+	public SupportLoader(final Context context, final RequestExecutor executor, final Request<?> request) {
 		super(context);
-		mReceiver = new ContentErrorReceiver(this);
+		mReceiver = new ErrorReceiver(this);
 		mReceiver.register(request.getUri());
 		mExecutor = executor;
 		mRequest = request;
@@ -20,7 +20,7 @@ abstract class SupportLoader<T> extends AsyncTaskLoader<T> implements ContentErr
 	@Override
 	public abstract T loadInBackground();
 	
-	protected abstract T getErrorResult(final ContentError error);
+	protected abstract T getErrorResult(final Error error);
 	
 	protected abstract T getResult();
 
@@ -31,7 +31,7 @@ abstract class SupportLoader<T> extends AsyncTaskLoader<T> implements ContentErr
 		return mExecutor;
 	}
 	
-	public ContentRequest<?> getContentRequest() {
+	public Request<?> getContentRequest() {
 		return mRequest;
 	}
 	
@@ -52,7 +52,7 @@ abstract class SupportLoader<T> extends AsyncTaskLoader<T> implements ContentErr
 	}
 	
 	@Override
-	public void onRequestError(final ContentError error) {
+	public void onRequestError(final Error error) {
 		final T result = getErrorResult(error);
 		deliverResult(result);
 	}

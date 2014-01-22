@@ -6,11 +6,11 @@ import android.net.Uri;
 
 import com.xtreme.rest.broadcasts.RestBroadcastReceiver;
 
-class ContentErrorReceiver extends RestBroadcastReceiver {
+class ErrorReceiver extends RestBroadcastReceiver {
 	
-	private final ContentErrorListener mListener;
+	private final ErrorListener mListener;
 	
-	public ContentErrorReceiver(final ContentErrorListener listener) {
+	public ErrorReceiver(final ErrorListener listener) {
 		super();
 		mListener = listener;
 	}
@@ -23,7 +23,7 @@ class ContentErrorReceiver extends RestBroadcastReceiver {
 	
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		final ContentError error = ContentBroadcaster.getError(intent);
+		final Error error = ContentBroadcaster.getError(intent);
 		if (mListener != null && error != null) {
 			mListener.onRequestError(error);
 		}

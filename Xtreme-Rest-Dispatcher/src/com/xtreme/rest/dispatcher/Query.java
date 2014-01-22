@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Query extends ContentRequest<Cursor> implements Parcelable {
+public class Query extends Request<Cursor> implements Parcelable {
 	
 	private String[] mProjection;
 	private String mWhereClause;

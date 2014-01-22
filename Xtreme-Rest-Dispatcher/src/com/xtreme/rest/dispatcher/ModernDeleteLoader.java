@@ -16,7 +16,7 @@ public class ModernDeleteLoader extends ModernResultLoader<DeleteResult> {
 	}
 
 	@Override
-	public DeleteResult getErrorResult(final ContentError error) {
+	public DeleteResult getErrorResult(final Error error) {
 		return new DeleteResult(error);
 	}
 

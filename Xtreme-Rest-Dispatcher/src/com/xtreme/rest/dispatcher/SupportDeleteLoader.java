@@ -16,7 +16,7 @@ public class SupportDeleteLoader extends SupportResultLoader<DeleteResult> {
 	}
 
 	@Override
-	public DeleteResult getErrorResult(final ContentError error) {
+	public DeleteResult getErrorResult(final Error error) {
 		return new DeleteResult(error);
 	}
 

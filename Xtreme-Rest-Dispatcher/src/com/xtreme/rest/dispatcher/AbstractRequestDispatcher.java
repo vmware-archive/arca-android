@@ -38,7 +38,7 @@ abstract class AbstractRequestDispatcher implements RequestDispatcher {
 		return getRequestExecutor().execute(request);
 	}
 	
-	protected static Bundle createRequestBundle(final ContentRequest<?> request) {
+	protected static Bundle createRequestBundle(final Request<?> request) {
 		final Bundle bundle = new Bundle();
 		bundle.putParcelable(Extras.REQUEST, request);
 		return bundle;

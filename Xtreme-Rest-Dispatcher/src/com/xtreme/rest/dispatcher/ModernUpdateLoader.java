@@ -16,7 +16,7 @@ public class ModernUpdateLoader extends ModernResultLoader<UpdateResult> {
 	}
 
 	@Override
-	public UpdateResult getErrorResult(ContentError error) {
+	public UpdateResult getErrorResult(Error error) {
 		return new UpdateResult(error);
 	}
 

@@ -1,13 +1,13 @@
 package com.xtreme.rest.dispatcher;
 
 
-public class InsertResult extends ContentResult<Integer> {
+public class InsertResult extends Result<Integer> {
 
 	public InsertResult(final Integer data) {
 		super(data);
 	}
 
-	public InsertResult(final ContentError error) {
+	public InsertResult(final Error error) {
 		super(error);
 	}
 

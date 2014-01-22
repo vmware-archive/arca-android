@@ -43,7 +43,7 @@ public class SupportQueryLoader extends SupportLoader<QueryResult> {
 	}
 	
 	@Override
-	public QueryResult getErrorResult(final ContentError error) {
+	public QueryResult getErrorResult(final Error error) {
 		return new QueryResult(error);
 	}
 	

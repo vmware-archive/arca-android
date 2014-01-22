@@ -5,20 +5,17 @@ import java.util.Locale;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * A wrapper around the error that occurred while loading data.
- */
-public class ContentError implements Parcelable {
+public class Error implements Parcelable {
 
 	private final int mErrorCode;
 	private final String mErrorMessage;
 	
-	public ContentError(final int errorCode, final String errorMessage) {
+	public Error(final int errorCode, final String errorMessage) {
 		mErrorCode = errorCode;
 		mErrorMessage = errorMessage;
 	}
 
-	public ContentError(final Parcel in) {
+	public Error(final Parcel in) {
 		mErrorCode = in.readInt();
 		mErrorMessage = in.readString();
 	}
@@ -47,15 +44,15 @@ public class ContentError implements Parcelable {
 		return String.format(Locale.getDefault(), "[%d] %s", mErrorCode, mErrorMessage);
 	}
 	
-	public static final Parcelable.Creator<ContentError> CREATOR = new Parcelable.Creator<ContentError>() {
+	public static final Parcelable.Creator<Error> CREATOR = new Parcelable.Creator<Error>() {
 		@Override
-		public ContentError createFromParcel(final Parcel in) {
-			return new ContentError(in);
+		public Error createFromParcel(final Parcel in) {
+			return new Error(in);
 		}
 	
 		@Override
-		public ContentError[] newArray(final int size) {
-			return new ContentError[size];
+		public Error[] newArray(final int size) {
+			return new Error[size];
 		}
 	};
 

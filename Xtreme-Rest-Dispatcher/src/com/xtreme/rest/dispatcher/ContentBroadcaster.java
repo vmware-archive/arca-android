@@ -20,7 +20,7 @@ public class ContentBroadcaster {
 
 	private static Intent buildErrorIntent(final Uri uri, final int code, final String message) {
 		final Intent intent = new Intent(uri.toString());
-		intent.putExtra(Extras.ERROR, new ContentError(code, message));
+		intent.putExtra(Extras.ERROR, new Error(code, message));
 		return intent;
 	}
 	
@@ -28,9 +28,9 @@ public class ContentBroadcaster {
 	// ===============================
 
 	
-	public static ContentError getError(final Intent intent) {
+	public static Error getError(final Intent intent) {
 		if (intent != null) {
-			return (ContentError) intent.getParcelableExtra(Extras.ERROR);
+			return (Error) intent.getParcelableExtra(Extras.ERROR);
 		} else {
 			return null;
 		}

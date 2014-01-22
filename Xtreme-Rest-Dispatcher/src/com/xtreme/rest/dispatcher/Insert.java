@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Insert extends ContentRequest<Integer> {
+public class Insert extends Request<Integer> {
 
 	private final ContentValues[] mValues;
 	

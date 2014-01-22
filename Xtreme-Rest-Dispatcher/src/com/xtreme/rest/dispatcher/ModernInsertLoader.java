@@ -16,7 +16,7 @@ public class ModernInsertLoader extends ModernResultLoader<InsertResult> {
 	}
 
 	@Override
-	public InsertResult getErrorResult(final ContentError error) {
+	public InsertResult getErrorResult(final Error error) {
 		return new InsertResult(error);
 	}
 

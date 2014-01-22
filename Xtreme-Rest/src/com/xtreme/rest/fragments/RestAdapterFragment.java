@@ -1,14 +1,23 @@
 package com.xtreme.rest.fragments;
 
+import com.xtreme.rest.dispatcher.QueryResult;
+import com.xtreme.rest.dispatcher.Error;
+
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
+import android.widget.GridView;
+import android.widget.ListView;
 
+/**
+ * A {@link RestQueryFragment} that adds convenient support for {@link AdapterView}s 
+ * such as {@link ListView} or {@link GridView} by wrapping a {@link CursorAdapter}.
+ */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public abstract class RestAdapterFragment extends RestFragment {
+public abstract class RestAdapterFragment extends RestQueryFragment {
 	
 	protected abstract int getAdapterViewId();
 	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView);
@@ -48,17 +57,22 @@ public abstract class RestAdapterFragment extends RestFragment {
 	}
 	
 	@Override
-	public final void onLoaderFinished(final ContentResponse response) {
-		getCursorAdapter().swapCursor(response.getCursor());
-		onContentChanged(response);
+	public final void onRequestComplete(final QueryResult result) {
+		if (result.hasError()) {
+			onContentError(result.getError());
+		} else {
+			getCursorAdapter().swapCursor(result.getResult());
+			onContentChanged(result);
+		}
 	}
-
+	
 	@Override
-	public final void onLoaderReset() {
+	public final void onRequestReset() {
 		getCursorAdapter().swapCursor(null);
 		onContentReset();
 	}
 	
-	protected void onContentChanged(final ContentResponse response) {}
+	protected void onContentChanged(final QueryResult result) {}
+	protected void onContentError(final Error error) {}
 	protected void onContentReset() {}
 }

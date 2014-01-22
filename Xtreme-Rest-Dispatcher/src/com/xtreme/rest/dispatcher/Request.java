@@ -6,14 +6,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 @SuppressLint("ParcelCreator")
-public abstract class ContentRequest<T> implements Parcelable {
+public abstract class Request<T> implements Parcelable {
 
 	private static int sID = 0;
 	
 	private final int mIdentifier;
 	private final Uri mUri;
 
-	public ContentRequest(final Uri uri, final int identifier) {
+	public Request(final Uri uri, final int identifier) {
 		if (uri == null) {
 			throw new IllegalArgumentException("The uri cannot be null.");
 		}
@@ -21,7 +21,7 @@ public abstract class ContentRequest<T> implements Parcelable {
 		mUri = uri;
 	}
 	
-	public ContentRequest(final Uri uri) {
+	public Request(final Uri uri) {
 		if (uri == null) {
 			throw new IllegalArgumentException("The uri cannot be null.");
 		}
@@ -29,7 +29,7 @@ public abstract class ContentRequest<T> implements Parcelable {
 		mUri = uri;
 	}
 	
-	public ContentRequest(final Parcel in) {
+	public Request(final Parcel in) {
 		mIdentifier = in.readInt();
 		mUri = in.readParcelable(Uri.class.getClassLoader());
 	}

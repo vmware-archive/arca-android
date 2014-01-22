@@ -6,7 +6,7 @@ abstract class ModernResultLoader<T> extends ModernLoader<T> {
 
 	private T mResult;
 	
-	public ModernResultLoader(final Context context, final RequestExecutor executor, final ContentRequest<?> request) {
+	public ModernResultLoader(final Context context, final RequestExecutor executor, final Request<?> request) {
 		super(context, executor, request);
 	}
 

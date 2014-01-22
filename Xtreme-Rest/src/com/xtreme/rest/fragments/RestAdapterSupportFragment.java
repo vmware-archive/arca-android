@@ -7,14 +7,14 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 
-import com.xtreme.rest.loader.ContentLoader;
-import com.xtreme.rest.loader.ContentResponse;
+import com.xtreme.rest.dispatcher.QueryResult;
+import com.xtreme.rest.dispatcher.Error;
 
 /**
- * A {@link RestFragment} that adds convenient support for {@link AdapterView}s such as {@link ListView} or {@link GridView}
- * by wrapping a {@link CursorAdapter}.
+ * A {@link RestQuerySupportFragment} that adds convenient support for {@link AdapterView}s 
+ * such as {@link ListView} or {@link GridView} by wrapping a {@link CursorAdapter}.
  */
-public abstract class RestAdapterSupportFragment extends RestSupportFragment {
+public abstract class RestAdapterSupportFragment extends RestQuerySupportFragment {
 	
 	protected abstract int getAdapterViewId();
 	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView);
@@ -44,28 +44,22 @@ public abstract class RestAdapterSupportFragment extends RestSupportFragment {
 	}
 	
 	@Override
-	public final void onLoaderFinished(final ContentResponse response) {
-		getCursorAdapter().swapCursor(response.getCursor());
-		onContentChanged(response);
+	public final void onRequestComplete(final QueryResult result) {
+		if (result.hasError()) {
+			onContentError(result.getError());
+		} else {
+			getCursorAdapter().swapCursor(result.getResult());
+			onContentChanged(result);
+		}
 	}
-
+	
 	@Override
-	public final void onLoaderReset() {
+	public final void onRequestReset() {
 		getCursorAdapter().swapCursor(null);
 		onContentReset();
 	}
 	
-	/**
-	 * A callback for when the content is changed, usually from a call to {@link #onLoaderFinished(ContentResponse)}.
-	 */
-	protected void onContentChanged(final ContentResponse response) {
-		
-	}
-	
-	/**
-	 * A callback for when the {@link ContentLoader} is reset, usually from a call to {@link #onLoaderReset()}.
-	 */
-	protected void onContentReset() {
-		
-	}
+	protected void onContentChanged(final QueryResult result) {}
+	protected void onContentError(final Error error) {}
+	protected void onContentReset() {}
 }

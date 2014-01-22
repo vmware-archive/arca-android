@@ -42,7 +42,7 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 	}
 
 	
-	private void execute(final ContentRequest<?> request, final LoaderCallbacks<?> callbacks) {
+	private void execute(final Request<?> request, final LoaderCallbacks<?> callbacks) {
 		final int identifier = request.getIdentifier();
 		final Bundle bundle = createRequestBundle(request);
 		mLoaderManager.restartLoader(identifier, bundle, callbacks);
@@ -109,11 +109,11 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 		}
 	}
 	
-	private abstract class NotififierCallbacks<T extends ContentResult<?>> implements LoaderCallbacks<T> {
+	private abstract class NotififierCallbacks<T extends Result<?>> implements LoaderCallbacks<T> {
 		
-		private final ContentRequestListener<T> mListener;
+		private final RequestListener<T> mListener;
 
-		public NotififierCallbacks(final ContentRequestListener<T> listener) {
+		public NotififierCallbacks(final RequestListener<T> listener) {
 			mListener = listener;
 		}
 

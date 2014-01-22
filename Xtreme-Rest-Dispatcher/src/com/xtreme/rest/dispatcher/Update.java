@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Update extends ContentRequest<Integer> {
+public class Update extends Request<Integer> {
 
 	private final ContentValues mValues;
 	

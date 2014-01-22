@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Delete extends ContentRequest<Integer> {
+public class Delete extends Request<Integer> {
 
 	private String mWhereClause;
 	private String[] mWhereArgs;

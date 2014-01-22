@@ -19,10 +19,10 @@ import android.test.LoaderTestCase;
 import android.test.mock.MockContentProvider;
 import android.test.mock.MockContentResolver;
 
-import com.xtreme.rest.dispatcher.ContentError;
 import com.xtreme.rest.dispatcher.Delete;
 import com.xtreme.rest.dispatcher.DeleteListener;
 import com.xtreme.rest.dispatcher.DeleteResult;
+import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Insert;
 import com.xtreme.rest.dispatcher.InsertListener;
 import com.xtreme.rest.dispatcher.InsertResult;
@@ -69,6 +69,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			public void onRequestReset() {
 				
 			}
+
 		});
 		latch.assertComplete();
 	}
@@ -79,6 +80,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(query, new QueryListener() {
 			@Override
 			public void onRequestComplete(final QueryResult result) {
+			
 			}
 			
 			@Override
@@ -97,7 +99,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final QueryResult result) {
 				latch.countDown();
-				assertTrue(result.hasError());
+				assertNotNull(result.getError());
 			}
 			
 			@Override
@@ -163,7 +165,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final InsertResult result) {
 				latch.countDown();
-				assertTrue(result.hasError());
+				assertNotNull(result.getError());
 			}
 			
 			@Override
@@ -229,7 +231,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final UpdateResult result) {
 				latch.countDown();
-				assertTrue(result.hasError());
+				assertNotNull(result.getError());
 			}
 			
 			@Override
@@ -258,7 +260,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 				final Integer count = result.getResult();
 				assertEquals(Integer.valueOf(1), count);
 			}
-			
+
 			@Override
 			public void onRequestReset() {
 				
@@ -291,9 +293,9 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final DeleteResult result) {
 				latch.countDown();
-				assertTrue(result.hasError());
+				assertNotNull(result.getError());
 			}
-			
+
 			@Override
 			public void onRequestReset() {
 				
@@ -413,25 +415,25 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 
 		@Override
 		public QueryResult execute(final Query request) {
-			final ContentError error = new ContentError(0, null);
+			final Error error = new Error(0, null);
 			return new QueryResult(error);
 		}
 
 		@Override
 		public UpdateResult execute(final Update request) {
-			final ContentError error = new ContentError(0, null);
+			final Error error = new Error(0, null);
 			return new UpdateResult(error);
 		}
 
 		@Override
 		public InsertResult execute(final Insert request) {
-			final ContentError error = new ContentError(0, null);
+			final Error error = new Error(0, null);
 			return new InsertResult(error);
 		}
 
 		@Override
 		public DeleteResult execute(final Delete request) {
-			final ContentError error = new ContentError(0, null);
+			final Error error = new Error(0, null);
 			return new DeleteResult(error);
 		}
 

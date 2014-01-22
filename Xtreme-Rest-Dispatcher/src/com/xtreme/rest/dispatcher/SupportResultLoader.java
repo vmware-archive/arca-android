@@ -6,7 +6,7 @@ abstract class SupportResultLoader<T> extends SupportLoader<T> {
 
 	private T mResult;
 	
-	public SupportResultLoader(final Context context, final RequestExecutor executor, final ContentRequest<?> request) {
+	public SupportResultLoader(final Context context, final RequestExecutor executor, final Request<?> request) {
 		super(context, executor, request);
 	}
 

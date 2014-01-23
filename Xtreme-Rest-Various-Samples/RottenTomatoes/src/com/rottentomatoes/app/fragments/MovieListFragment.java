@@ -21,13 +21,15 @@ import com.rottentomatoes.app.animators.SimpleAdapterAnimator;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
+import com.rottentomatoes.app.validators.MovieListValidator;
+import com.xtreme.rest.RestDispatcher;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.Query;
+import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestAdapterSupportFragment;
-import com.xtreme.rest.loader.ContentError;
-import com.xtreme.rest.loader.ContentRequest;
-import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class MovieListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
@@ -42,13 +44,11 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		final View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
-		mImageLoader = ImageLoader.buildImageLoaderForSupportFragment(this);
-		return view;
+		return inflater.inflate(R.layout.fragment_movie_list, container, false);
 	}
 	
 	@Override
-	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView) {
+	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState) {
 		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), R.layout.list_item_movie, BINDINGS);
 		adapter.setViewAnimator(new SimpleAdapterAnimator());
 		adapter.setViewBinder(this);
@@ -59,6 +59,18 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		getAdapterView().setOnItemClickListener(this);
+		mImageLoader = onCreateImageLoader();
+	}
+	
+	@Override
+	protected RestDispatcher onCreateRequestDispatcher() {
+		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
+		dispatcher.addValidator(new MovieListValidator());
+		return dispatcher;
+	}
+
+	private ImageLoader onCreateImageLoader() {
+		return ImageLoader.buildImageLoaderForSupportFragment(this);
 	}
 	
 	@Override
@@ -69,12 +81,7 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	
 	public void setType(final String type) {
 		mType = type;
-		scrollToTop();
 		loadMovies();
-	}
-	
-	private void scrollToTop() {
-		//((AbsListView) getAdapterView()).smoothScrollToPosition(0);
 	}
 	
 	@Override
@@ -86,7 +93,7 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 		final Uri baseUri = RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI;
 		final Uri contentUri = Uri.withAppendedPath(baseUri, mType);
 		
-		final ContentRequest request = new ContentRequest(contentUri);
+		final Query request = new Query(contentUri);
 		request.setSortOrder("title asc");
 		
 		execute(request);
@@ -94,19 +101,24 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	}
 	
 	@Override
-	public void onError(final ContentError error) {
+	public void onContentError(final Error error) {
 		showError(error.getMessage());
 		hideLoading();
 	}
 	
 	@Override
-	public void onContentChanged(final ContentResponse response) {
+	public void onContentChanged(final QueryResult response) {
 		final CursorAdapter adapter = getCursorAdapter();
 		if (adapter.getCount() > 0) {
 			showResults();
 		} else {
 			hideLoading();
 		}
+	}
+	
+	@Override
+	protected void onContentReset() {
+		super.onContentReset();
 	}
 	
 	private void showResults() {

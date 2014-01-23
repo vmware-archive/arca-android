@@ -11,9 +11,4 @@ public class InsertResult extends Result<Integer> {
 		super(error);
 	}
 
-	public boolean isValid() {
-		// TODO this should return the result from the validator?
-		return true;
-	}
-
 }

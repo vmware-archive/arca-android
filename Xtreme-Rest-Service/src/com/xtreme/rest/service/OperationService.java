@@ -3,7 +3,6 @@ package com.xtreme.rest.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 
 import com.xtreme.rest.service.OperationHandler.HandlerState;
@@ -29,7 +28,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 		public static final String ACTION = "action";
 		public static final String OPERATION = "operation";
 	}
-
+	
 	/**
 	 * Starts an {@link Operation}. The {@link Operation} is given a {@link Context}, 
 	 * {@link OperationObserver} and {@link RequestExecutor} before being executed.</br>
@@ -69,8 +68,6 @@ public class OperationService extends Service implements OnStateChangeListener {
 		}
 	}
 
-	private final IBinder mBinder = new ServiceBinder();
-	
 	private OperationHandler mHandler;
 	private int mLatestStartId;
 
@@ -98,8 +95,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 	
 	@Override
 	public IBinder onBind(final Intent intent) {
-		Logger.v("Bound service %s", this.getClass());
-		return mBinder;
+		return null;
 	}
 	
 	@Override
@@ -137,14 +133,5 @@ public class OperationService extends Service implements OnStateChangeListener {
 			stopSelf(mLatestStartId);
 		}
 	}
-	
-	// ====================================
-	
-	public class ServiceBinder extends Binder {
-		
-        public OperationService getService() {
-            return OperationService.this;
-        }
-        
-    }
+
 }

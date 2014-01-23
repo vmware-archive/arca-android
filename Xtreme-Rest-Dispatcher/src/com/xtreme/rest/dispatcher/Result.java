@@ -4,6 +4,9 @@ abstract class Result<T> {
 
 	private final T mData;
 	private final Error mError;
+	
+	private boolean mIsRefreshing;
+	private boolean mIsValid;
 
 	public Result(final T data) {
 		mData = data;
@@ -25,5 +28,21 @@ abstract class Result<T> {
 	
 	public boolean hasError() {
 		return mError != null;
+	}
+	
+	public void setIsRefreshing(final boolean refreshing) {
+		mIsRefreshing = refreshing;
+	}
+	
+	public boolean isRefreshing() {
+		return mIsRefreshing;
+	}
+	
+	public void setIsValid(final boolean valid) {
+		mIsValid = valid;
+	}
+	
+	public boolean isValid() {
+		return mIsValid;
 	}
 }

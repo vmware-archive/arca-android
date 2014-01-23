@@ -2,6 +2,8 @@ package com.xtreme.rest;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Binder;
 import android.os.IBinder;
 
 import com.xtreme.rest.service.Operation;
@@ -9,6 +11,11 @@ import com.xtreme.rest.service.OperationService;
 
 public class RestService extends OperationService {
 
+	public static boolean bind(final Context context, final ServiceConnection connection) {
+		final Intent intent = new Intent(context, RestService.class);
+		return context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+	}
+	
 	public static boolean start(final Context context, final Operation operation) {
 		return startService(context, operation, Action.START);
 	}
@@ -36,8 +43,8 @@ public class RestService extends OperationService {
 		return mBinder;
 	}
 	
-	public class RestBinder extends ServiceBinder {
-        @Override
+	public class RestBinder extends Binder {
+
 		public RestService getService() {
             return RestService.this;
         }

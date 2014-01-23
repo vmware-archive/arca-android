@@ -73,5 +73,4 @@ public class ItemCursorAdapter {
 			throw new IllegalStateException("Connot bind to view: " + view.getClass());
 		}
 	}
-	
 }

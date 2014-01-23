@@ -36,4 +36,8 @@ public class RestSQLCursor extends SQLiteCursor {
     	return mExtras;
     }
     
+    @Override
+    protected void onChange(boolean selfChange) {
+    	super.onChange(selfChange);
+    }
 }

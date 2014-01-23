@@ -3,6 +3,7 @@ package com.rottentomatoes.app.application;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.Locale;
 
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -18,11 +19,12 @@ import com.xtreme.rest.utils.Logger;
 public class RottenTomatoesRequests {
 
 	private static final String API_KEY = RottenTomatoesApi.KEY;
+	
 	private static final String BASE_URL = "http://api.rottentomatoes.com/api/public/v1.0";
 
 
 	public static MoviesResponse getMovieList(final String type, final int limit, final String country) throws ClientProtocolException, IOException {
-		final String url = BASE_URL + "/lists/movies/" + type + ".json?limit=" + limit + "&country=" + country + "&apikey=" + API_KEY;
+		final String url = String.format(Locale.getDefault(), "%s/lists/movies/%s.json?limit=%d&country=%s&apikey=%s", BASE_URL, type, limit, country, API_KEY);
 		return executeRequest(new NetworkRequest(url), new Gson(), MoviesResponse.class);
 	}
 	

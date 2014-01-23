@@ -36,7 +36,7 @@ public class MovieTask extends Task<String> {
 	public void onExecuteProcessingRequest(final Context context, final String data) throws Exception {
 		// TODO parse the response and insert into content provider
 		final Movie item = new Gson().fromJson(data, Movie.class);
-		final ContentValues values = MovieTable.getInstance().getContentValues(item);
+		final ContentValues values = MovieTable.getContentValues(item);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.insert(RottenTomatoesContentProvider.Uris.MOVIES_URI, values);
 	}

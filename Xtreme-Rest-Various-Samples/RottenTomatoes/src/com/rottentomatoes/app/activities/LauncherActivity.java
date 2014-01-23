@@ -44,20 +44,20 @@ public class LauncherActivity extends Activity {
 	}
 	
 	private void setupAccount() {
-		final String authority = RottenTomatoesContentProvider.AUTHORITY;
-		final AccountsManager manager = new AccountsManager(this, RottenTomatoesAuthenticator.ACCOUNT_TYPE);
-		final boolean hasAccount = manager.hasAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
-		
-		if (!hasAccount) {
-			final Account account = manager.createAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
-			ContentResolver.setIsSyncable(account, authority, 1);
-			ContentResolver.setSyncAutomatically(account, authority, true);
-			manager.addAccount(account, null);
-			
-		} else {
-			final Account account = manager.getAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
-			ContentResolver.requestSync(account, authority, new Bundle());
-		}
+//		final String authority = RottenTomatoesContentProvider.AUTHORITY;
+//		final AccountsManager manager = new AccountsManager(this, RottenTomatoesAuthenticator.ACCOUNT_TYPE);
+//		final boolean hasAccount = manager.hasAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
+//		
+//		if (!hasAccount) {
+//			final Account account = manager.createAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
+//			ContentResolver.setIsSyncable(account, authority, 1);
+//			ContentResolver.setSyncAutomatically(account, authority, true);
+//			manager.addAccount(account, null);
+//			
+//		} else {
+//			final Account account = manager.getAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
+//			ContentResolver.requestSync(account, authority, new Bundle());
+//		}
 	}
 	
 	private static final class LaunchHandler extends Handler {

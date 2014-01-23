@@ -18,10 +18,10 @@ import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.Query;
+import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestItemSupportFragment;
-import com.xtreme.rest.loader.ContentError;
-import com.xtreme.rest.loader.ContentRequest;
-import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class MovieFragment extends RestItemSupportFragment implements ViewBinder {
@@ -47,10 +47,21 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 	}
 	
 	@Override
-	public ItemCursorAdapter onCreateAdapter(final View view) {
+	public ItemCursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState) {
 		final ItemCursorAdapter adapter = new ItemCursorAdapter(getView(), BINDINGS);
 		adapter.setViewBinder(this);
 		return adapter;
+	}
+	
+	@Override
+	public void onViewCreated(final View view, final Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		
+		final Uri baseUri = RottenTomatoesContentProvider.Uris.MOVIES_URI;
+		final Uri contentUri = Uri.withAppendedPath(baseUri, mId);
+		final Query query = new Query(contentUri);
+		
+		execute(query);
 	}
 	
 	@Override
@@ -59,25 +70,18 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 		super.onDestroyView();
 	}
 	
-	@Override
-	public void onStart() {
-		super.onStart();
-		
-		loadMovie(mId);
-	}
-	
 	public void setId(final String id) {
 		mId = id;
 	}
-
-	private void loadMovie(final String id) {
-		final Uri baseUri = RottenTomatoesContentProvider.Uris.MOVIES_URI;
-		final Uri contentUri = Uri.withAppendedPath(baseUri, id);
-		execute(new ContentRequest(contentUri));
+	
+	@Override
+	protected void onContentError(final Error error) {
+		final String message = error.getMessage();
+		Toast.makeText(getActivity(), "ERROR: " + message, Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override
-	public void onContentChanged(final ContentResponse response) {
+	protected void onContentChanged(final QueryResult result) {
 		final ItemCursorAdapter adapter = getItemAdapter();
 		if (adapter.hasResults()) {
 			showResults();
@@ -93,11 +97,6 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 	
 	private void hideLoading() {
 		getView().findViewById(R.id.loading).setVisibility(View.INVISIBLE);
-	}
-	
-	@Override
-	public void onError(final ContentError error) {
-		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override

@@ -30,7 +30,9 @@ public class MovieTypeView extends SQLView {
 	
 	@Override
 	protected String onCreateSelectStatement() {
-		return MovieTable.TABLE_NAME + " LEFT JOIN " + MovieTypeTable.TABLE_NAME + " ON " + MovieTable.TABLE_NAME + "." + MovieTable.Columns.ID + " = " + MovieTypeTable.TABLE_NAME + "." + MovieTable.Columns.ID;
+		final String movieTableId = String.format("%s.%s", MovieTable.TABLE_NAME, MovieTable.Columns.ID);
+		final String movieTypeTableId = String.format("%s.%s", MovieTypeTable.TABLE_NAME, MovieTable.Columns.ID);
+		return String.format("%s LEFT JOIN %s ON %s = %s", MovieTable.TABLE_NAME, MovieTypeTable.TABLE_NAME, movieTableId, movieTypeTableId);
 	}
 	
 	@Override

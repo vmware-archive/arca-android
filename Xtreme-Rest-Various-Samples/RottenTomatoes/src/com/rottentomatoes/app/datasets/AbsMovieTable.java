@@ -43,7 +43,7 @@ public abstract class AbsMovieTable extends SQLTable {
 		return map;
 	}
 	
-	public ContentValues[] getContentValues(final List<Movie> list) {
+	public static ContentValues[] getContentValues(final List<Movie> list) {
 		final ContentValues[] values = new ContentValues[list.size()];
 		for (int i = 0; i < values.length; i++) {
 			values[i] = getContentValues(list.get(i));
@@ -51,7 +51,7 @@ public abstract class AbsMovieTable extends SQLTable {
 		return values;
     }
 	
-	public ContentValues getContentValues(final Movie item) {
+	public static ContentValues getContentValues(final Movie item) {
 		final ContentValues value = new ContentValues();
         value.put(Columns.ID, item.getId());
         value.put(Columns.TITLE, item.getTitle());

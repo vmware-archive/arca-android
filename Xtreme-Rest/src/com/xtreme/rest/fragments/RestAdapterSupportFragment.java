@@ -7,8 +7,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 
-import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.QueryResult;
 
 /**
  * A {@link RestQuerySupportFragment} that adds convenient support for {@link AdapterView}s 
@@ -17,7 +17,8 @@ import com.xtreme.rest.dispatcher.Error;
 public abstract class RestAdapterSupportFragment extends RestQuerySupportFragment {
 	
 	protected abstract int getAdapterViewId();
-	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView);
+	
+	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState);
 	
 	private AdapterView<CursorAdapter> mAdapterView;
 	
@@ -25,14 +26,14 @@ public abstract class RestAdapterSupportFragment extends RestQuerySupportFragmen
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		
-		setupAdapterView(view);
+		setupAdapterView(view, savedInstanceState);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void setupAdapterView(final View view) {
+	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
 		final int adapterViewId = getAdapterViewId();		
 		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(adapterViewId);
-		mAdapterView.setAdapter(onCreateAdapter(mAdapterView));
+		mAdapterView.setAdapter(onCreateAdapter(mAdapterView, savedInstanceState));
 	}
 	
 	public AdapterView<CursorAdapter> getAdapterView() {
@@ -40,7 +41,12 @@ public abstract class RestAdapterSupportFragment extends RestQuerySupportFragmen
 	}
 	
 	public CursorAdapter getCursorAdapter() {
-		return getAdapterView().getAdapter();
+		final AdapterView<CursorAdapter> adapterView = getAdapterView();
+		if (adapterView != null) {
+			return adapterView.getAdapter();
+		} else {
+			return null;
+		}
 	}
 	
 	@Override

@@ -20,7 +20,8 @@ import android.widget.ListView;
 public abstract class RestAdapterFragment extends RestQueryFragment {
 	
 	protected abstract int getAdapterViewId();
-	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView);
+	
+	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState);
 	
 	private AdapterView<CursorAdapter> mAdapterView;
 	
@@ -29,7 +30,7 @@ public abstract class RestAdapterFragment extends RestQueryFragment {
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		
-		setupAdapterView(view);
+		setupAdapterView(view, savedInstanceState);
 	}
 	
 	@Override
@@ -37,15 +38,15 @@ public abstract class RestAdapterFragment extends RestQueryFragment {
 		super.onStart();
 		
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
-			setupAdapterView(getView());
+			setupAdapterView(getView(), null);
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void setupAdapterView(final View view) {
-		final int adapterViewId = getAdapterViewId();		
+	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
+		final int adapterViewId = getAdapterViewId();	
 		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(adapterViewId);
-		mAdapterView.setAdapter(onCreateAdapter(mAdapterView));
+		mAdapterView.setAdapter(onCreateAdapter(mAdapterView, savedInstanceState));
 	}
 	
 	public AdapterView<CursorAdapter> getAdapterView() {
@@ -53,7 +54,12 @@ public abstract class RestAdapterFragment extends RestQueryFragment {
 	}
 	
 	public CursorAdapter getCursorAdapter() {
-		return getAdapterView().getAdapter();
+		final AdapterView<CursorAdapter> adapterView = getAdapterView();
+		if (adapterView != null) {
+			return adapterView.getAdapter();
+		} else {
+			return null;
+		}
 	}
 	
 	@Override

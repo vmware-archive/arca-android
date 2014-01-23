@@ -9,5 +9,6 @@ public class RottenTomatoesApplication extends Application {
 		super.onCreate();
 		
 		com.xtreme.rest.utils.Logger.setup(true, "Xtreme-Rest");
+		
 	}
 }

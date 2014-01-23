@@ -12,20 +12,10 @@ import com.xtreme.rest.utils.StringUtils;
 
 public class MovieTable extends AbsMovieTable {
 	
-	private static final class Holder { 
-        public static final MovieTable INSTANCE = new MovieTable();
-	}
-	
-	public static synchronized MovieTable getInstance() {
-	    return Holder.INSTANCE;
-	}
-	
 	public static final class Columns extends AbsMovieTable.Columns {
 		public static final String IMAGE_URL = "image_url";
 	}
 
-	private MovieTable() {}
-	
 	@Override
 	protected Map<String, String> onCreateColumnMapping() {
 	    final Map<String, String> map = super.onCreateColumnMapping();
@@ -33,9 +23,8 @@ public class MovieTable extends AbsMovieTable {
 	    return map;
 	}
 
-	@Override
-	public ContentValues getContentValues(final Movie item) {
-	    final ContentValues value = super.getContentValues(item);
+	public static ContentValues getContentValues(final Movie item) {
+	    final ContentValues value = AbsMovieTable.getContentValues(item);
 	    value.put(Columns.IMAGE_URL, item.getImageUrl());
 	    return value;
 	}

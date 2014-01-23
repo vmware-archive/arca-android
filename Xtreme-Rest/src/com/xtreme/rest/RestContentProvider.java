@@ -1,8 +1,6 @@
 package com.xtreme.rest;
 
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
@@ -20,12 +18,15 @@ public class RestContentProvider extends DatabaseProvider implements ServiceConn
 	}
 
 	private boolean bindService() {
-		final Intent intent = new Intent(getContext(), RestService.class);
-		return getContext().bindService(intent, this, Context.BIND_AUTO_CREATE);
+		return RestService.bind(getContext(), this);
 	}
 	
 	protected RestService getService() {
 		return mService;
+	}
+	
+	protected boolean isServiceConnected() {
+		return mService != null;
 	}
 	
 	

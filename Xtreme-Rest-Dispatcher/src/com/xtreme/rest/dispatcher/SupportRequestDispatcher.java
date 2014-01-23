@@ -119,12 +119,16 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 
 		@Override
 		public void onLoadFinished(final Loader<T> loader, final T result) {
-			mListener.onRequestComplete(result);
+			if (mListener != null) {
+				mListener.onRequestComplete(result);
+			}
 		}
 
 		@Override
 		public void onLoaderReset(final Loader<T> loader) {
-			mListener.onRequestReset();
+			if (mListener != null) {
+				mListener.onRequestReset();
+			}
 		}
 	}
 }

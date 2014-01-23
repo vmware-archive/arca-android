@@ -40,14 +40,14 @@ public class MovieListTask extends Task<List<Movie>> {
 	public void onExecuteProcessingRequest(final Context context, final List<Movie> data) throws Exception {
 		final ContentResolver resolver = context.getContentResolver();
 		
-		final ContentValues[] movieValues = MovieTable.getInstance().getContentValues(data);
+		final ContentValues[] movieValues = MovieTable.getContentValues(data);
 		resolver.bulkInsert(RottenTomatoesContentProvider.Uris.MOVIES_URI, movieValues);
 		
 		final String whereClause = MovieTypeTable.Columns.TYPE + "=?";
 		final String[] whereArgs = new String[] { mType };
 		resolver.delete(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, whereClause, whereArgs);
 
-		final ContentValues[] movieTypeValues = MovieTypeTable.getInstance().getContentValues(data, mType);
+		final ContentValues[] movieTypeValues = MovieTypeTable.getContentValues(data, mType);
 		resolver.bulkInsert(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, movieTypeValues);
 		
 		RottenTomatoesUriCache.add(Uri.withAppendedPath(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, mType));

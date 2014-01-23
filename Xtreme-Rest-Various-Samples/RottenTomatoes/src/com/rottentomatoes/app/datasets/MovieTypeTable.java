@@ -12,22 +12,12 @@ import com.xtreme.rest.provider.SQLTable;
 
 public class MovieTypeTable extends SQLTable {
 	
-	private static final class Holder { 
-        public static final MovieTypeTable INSTANCE = new MovieTypeTable();
-	}
-	
-	public static synchronized MovieTypeTable getInstance() {
-	    return Holder.INSTANCE;
-	}
-	
 	public static final String TABLE_NAME = "movie_types";
 	
 	public static final class Columns {
         public static final String ID = "id";
         public static final String TYPE = "type";
 	}
-	
-	private MovieTypeTable() {}
 	
 	@Override
 	public String getName() {
@@ -43,7 +33,12 @@ public class MovieTypeTable extends SQLTable {
 		return map;
 	}
 	
-	public ContentValues[] getContentValues(final List<Movie> list, final String type) {
+	@Override
+	protected String onCreateUniqueConstraint() {
+		return "UNIQUE (" + Columns.ID + "," + Columns.TYPE + ") ON CONFLICT REPLACE";
+	}
+	
+	public static ContentValues[] getContentValues(final List<Movie> list, final String type) {
 		final ContentValues[] values = new ContentValues[list.size()];
 		for (int i = 0; i < values.length; i++) {
 			values[i] = getContentValues(list.get(i), type);
@@ -51,17 +46,11 @@ public class MovieTypeTable extends SQLTable {
 		return values;
     }
 	
-	public ContentValues getContentValues(final Movie item, final String type) {
+	public static ContentValues getContentValues(final Movie item, final String type) {
 		final ContentValues value = new ContentValues();
         value.put(Columns.ID, item.getId());
         value.put(Columns.TYPE, type);
         return value;
     }
-	
-	@Override
-	protected String onCreateUniqueConstraint() {
-		return "UNIQUE (" + Columns.ID + "," + Columns.TYPE + ") ON CONFLICT REPLACE";
-	}
-
 }
 

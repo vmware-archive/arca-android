@@ -1,10 +1,10 @@
 package com.xtreme.rest.service.test.cases;
 
 import android.content.Intent;
+import android.os.IBinder;
 import android.test.ServiceTestCase;
 
 import com.xtreme.rest.service.OperationService;
-import com.xtreme.rest.service.OperationService.ServiceBinder;
 
 public class OperationServiceTest extends ServiceTestCase<OperationService> {
 
@@ -45,10 +45,10 @@ public class OperationServiceTest extends ServiceTestCase<OperationService> {
 		startService(intent);
 	}
 	
-    public void testOperationServiceBindable() {
+    public void testOperationServiceNotBindable() {
         final Intent intent = new Intent(getContext(), OperationService.class);
-		final ServiceBinder binder = (ServiceBinder) bindService(intent);
-        assertNotNull(binder.getService());
+		final IBinder binder = bindService(intent);
+        assertNull(binder);
     }
     
     

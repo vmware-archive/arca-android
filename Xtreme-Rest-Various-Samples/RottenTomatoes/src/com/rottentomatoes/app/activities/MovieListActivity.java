@@ -4,12 +4,16 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import com.rottentomatoes.app.R;
 import com.rottentomatoes.app.fragments.MovieListFragment;
@@ -51,11 +55,29 @@ public class MovieListActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_movie_list);
 		
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TITLES);
-		
 		final FragmentManager manager = getSupportFragmentManager();
 		mFragment = (MovieListFragment) manager.findFragmentById(R.id.fragment_movie_list);
 		
+		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, TITLES) {
+			
+			@Override
+			public View getView(final int position, final View convertView, final ViewGroup parent) {
+				final View view = super.getView(position, convertView, parent);
+				final TextView textView = (TextView) view.findViewById(android.R.id.text1);
+				textView.setTextColor(Color.WHITE);
+				return view;
+			};
+			
+			@Override
+			public View getDropDownView(final int position, final View convertView, final ViewGroup parent) {
+				final View view = super.getDropDownView(position, convertView, parent);
+				final TextView textView = (TextView) view.findViewById(android.R.id.text1);
+				textView.setTextColor(Color.WHITE);
+				return view;
+			}
+			
+		};
+
 		setupActionBar();
 	}
 	
@@ -75,7 +97,7 @@ public class MovieListActivity extends FragmentActivity {
 	private final OnNavigationListener mNavigationListener = new OnNavigationListener() {
 
         @Override
-        public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        public boolean onNavigationItemSelected(final int itemPosition, final long itemId) {
         	mFragment.setType(TYPES[itemPosition]);
         	return true;
         }

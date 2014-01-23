@@ -3,10 +3,11 @@ package com.xtreme.rest.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.xtreme.rest.DispatcherFactory;
+import com.xtreme.rest.RestDispatcher;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryListener;
 import com.xtreme.rest.dispatcher.RequestDispatcher;
-import com.xtreme.rest.dispatcher.RequestDispatcherFactory;
 
 /**
  * This class provides a basic implementation of a single {@link RequestDispatcher} 
@@ -15,26 +16,31 @@ import com.xtreme.rest.dispatcher.RequestDispatcherFactory;
  */
 public abstract class RestQuerySupportFragment extends Fragment implements QueryListener {
 	
-	private RequestDispatcher mDispatcher;
+	private RestDispatcher mDispatcher;
 	
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		mDispatcher = RequestDispatcherFactory.generateRequestDispatcher(this);
+		mDispatcher = onCreateRequestDispatcher();
+	}
+	
+	protected RestDispatcher onCreateRequestDispatcher() {
+		return DispatcherFactory.generateRequestDispatcher(this);
 	}
 	
 	/**
 	 * @return The {@link RequestDispatcher} instance used by this fragment.
 	 */
-	protected final RequestDispatcher getRequestDispatcher() {
+	protected RestDispatcher getRequestDispatcher() {
 		return mDispatcher;
 	}
 	
 	/**
 	 * @see {@link RequestDispatcher#execute(Query, QueryListener)}
 	 */
-	protected final void execute(final Query query) {
-		getRequestDispatcher().execute(query, this);
+	protected void execute(final Query query) {
+		final RestDispatcher dispatcher = getRequestDispatcher();
+		dispatcher.execute(query, this);
 	}
 }

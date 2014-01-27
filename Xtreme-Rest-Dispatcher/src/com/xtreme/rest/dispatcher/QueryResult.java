@@ -1,7 +1,9 @@
 package com.xtreme.rest.dispatcher;
 
+import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 
 public class QueryResult extends Result<Cursor> {
 
@@ -11,6 +13,13 @@ public class QueryResult extends Result<Cursor> {
 
 	public QueryResult(final Error error) {
 		super(error);
+	}
+	
+	public void setNotificationUri(final ContentResolver resolver, final Uri uri) {
+		final Cursor cursor = getResult();
+		if (cursor != null) {
+			cursor.setNotificationUri(resolver, uri);
+		}
 	}
 
 	public void registerContentObserver(final ContentObserver observer) {

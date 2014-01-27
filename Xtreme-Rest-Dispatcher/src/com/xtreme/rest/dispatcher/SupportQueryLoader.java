@@ -1,5 +1,6 @@
 package com.xtreme.rest.dispatcher;
 
+import android.content.ContentResolver;
 import android.content.Context;
 
 public class SupportQueryLoader extends SupportLoader<QueryResult> {
@@ -17,7 +18,10 @@ public class SupportQueryLoader extends SupportLoader<QueryResult> {
 	public QueryResult loadInBackground() {
 		final Query request = (Query) getContentRequest();
 		final RequestExecutor executor = getRequestExecutor();
-		return executor.execute(request);
+		final QueryResult result = executor.execute(request);
+		final ContentResolver resolver = getContext().getContentResolver();
+		result.setNotificationUri(resolver, request.getUri());
+		return result;
 	}
 
 	@Override

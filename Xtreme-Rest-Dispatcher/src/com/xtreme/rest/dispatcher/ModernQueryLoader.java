@@ -1,6 +1,7 @@
 package com.xtreme.rest.dispatcher;
 
 import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
 
@@ -20,7 +21,10 @@ public class ModernQueryLoader extends ModernLoader<QueryResult> {
 	public QueryResult loadInBackground() {
 		final Query request = (Query) getContentRequest();
 		final RequestExecutor executor = getRequestExecutor();
-		return executor.execute(request);
+		final QueryResult result = executor.execute(request);
+		final ContentResolver resolver = getContext().getContentResolver();
+		result.setNotificationUri(resolver, request.getUri());
+		return result;
 	}
 
 	@Override

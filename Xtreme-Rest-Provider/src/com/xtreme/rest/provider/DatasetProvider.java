@@ -83,7 +83,6 @@ public abstract class DatasetProvider extends ContentProvider {
 	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
 		final Dataset dataset = getDatasetOrThrowException(uri);
 		final Cursor cursor = dataset.query(uri, projection, selection, selectionArgs, sortOrder);
-		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 		return cursor;
 	}
 	

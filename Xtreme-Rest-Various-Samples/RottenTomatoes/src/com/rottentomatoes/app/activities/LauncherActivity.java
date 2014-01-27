@@ -1,16 +1,11 @@
 package com.rottentomatoes.app.activities;
 
-import android.accounts.Account;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 import com.rottentomatoes.app.R;
-import com.rottentomatoes.app.accounts.AccountsManager;
-import com.rottentomatoes.app.accounts.RottenTomatoesAuthenticator;
-import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
 
 public class LauncherActivity extends Activity {
 

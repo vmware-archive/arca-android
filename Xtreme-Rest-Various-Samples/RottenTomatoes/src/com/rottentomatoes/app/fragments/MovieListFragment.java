@@ -107,18 +107,13 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	}
 	
 	@Override
-	public void onContentChanged(final QueryResult response) {
+	public void onContentChanged(final QueryResult result) {
 		final CursorAdapter adapter = getCursorAdapter();
 		if (adapter.getCount() > 0) {
 			showResults();
-		} else {
+		} else if (!result.isRefreshing()) {
 			hideLoading();
 		}
-	}
-	
-	@Override
-	protected void onContentReset() {
-		super.onContentReset();
 	}
 	
 	private void showResults() {

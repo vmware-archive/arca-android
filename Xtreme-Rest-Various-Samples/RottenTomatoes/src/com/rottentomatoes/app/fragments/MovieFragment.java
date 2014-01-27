@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.rottentomatoes.app.R;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
+import com.rottentomatoes.app.validators.MovieValidator;
+import com.xtreme.rest.RestDispatcher;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
@@ -54,9 +56,20 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 	}
 	
 	@Override
+	protected RestDispatcher onCreateRequestDispatcher() {
+		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
+		dispatcher.addValidator(new MovieValidator());
+		return dispatcher;
+	}
+	
+	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		
+		reload();
+	}
+
+	private void reload() {
 		final Uri baseUri = RottenTomatoesContentProvider.Uris.MOVIES_URI;
 		final Uri contentUri = Uri.withAppendedPath(baseUri, mId);
 		final Query query = new Query(contentUri);
@@ -72,6 +85,7 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 	
 	public void setId(final String id) {
 		mId = id;
+		reload();
 	}
 	
 	@Override
@@ -85,7 +99,7 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 		final ItemCursorAdapter adapter = getItemAdapter();
 		if (adapter.hasResults()) {
 			showResults();
-		} else {
+		} else if (!result.isRefreshing()) {
 			hideLoading();
 		}
 	}

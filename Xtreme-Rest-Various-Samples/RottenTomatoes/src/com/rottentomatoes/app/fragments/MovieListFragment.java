@@ -35,8 +35,8 @@ import com.xtremelabs.imageutils.ImageLoader;
 public class MovieListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
 	
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-		new Binding(R.id.list_item_movie_title, MovieTypeView.Columns.TITLE),
-		new Binding(R.id.list_item_movie_image, MovieTypeView.Columns.IMAGE_URL),
+		new Binding(R.id.list_item_movie_title, MovieTypeView.Columns.TITLE.name),
+		new Binding(R.id.list_item_movie_image, MovieTypeView.Columns.IMAGE_URL.name),
 	});
 
 	private String mType;
@@ -137,7 +137,7 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	@Override
 	public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
 		final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-		final String itemId = cursor.getString(cursor.getColumnIndex(MovieTable.Columns.ID));
+		final String itemId = cursor.getString(cursor.getColumnIndex(MovieTable.Columns.ID.name));
 		MovieActivity.newInstance(getActivity(), itemId);
 	}
 

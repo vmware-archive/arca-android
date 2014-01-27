@@ -12,7 +12,7 @@ public class Binding {
 	public Binding(final int viewId, final String columnName) {
 		this(0, viewId, columnName);
 	}
-
+	
 	public Binding(final int type, final int viewId, final String columnName) {
 		mType = type;
 		mViewId = viewId;
@@ -41,7 +41,7 @@ public class Binding {
 	
 	public void findColumnIndex(final Cursor cursor) {
 		if (mColumnIndex < 0) {
-			mColumnIndex = cursor.getColumnIndexOrThrow(mColumnName);
+			mColumnIndex = cursor.getColumnIndexOrThrow(getColumnName());
 		}
 	}
 }

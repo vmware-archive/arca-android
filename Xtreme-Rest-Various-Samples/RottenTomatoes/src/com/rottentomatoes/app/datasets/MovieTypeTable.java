@@ -1,41 +1,33 @@
 package com.rottentomatoes.app.datasets;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.content.ContentValues;
-import android.provider.BaseColumns;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.rottentomatoes.app.models.Movie;
+import com.xtreme.rest.provider.Column;
+import com.xtreme.rest.provider.Column.Type;
+import com.xtreme.rest.provider.ColumnUtils;
 import com.xtreme.rest.provider.SQLTable;
 
 public class MovieTypeTable extends SQLTable {
 	
-	public static final String TABLE_NAME = "movie_types";
-	
-	public static final class Columns {
-        public static final String ID = "id";
-        public static final String TYPE = "type";
+	public static interface Columns extends SQLTable.Columns {
+		public static final Column ID = new Column("id", Type.TEXT);
+        public static final Column TYPE = new Column("type", Type.TEXT);
 	}
 	
 	@Override
-	public String getName() {
-		return TABLE_NAME;
-	}
-
-	@Override
-	protected Map<String, String> onCreateColumnMapping() {
-		final Map<String, String> map = new LinkedHashMap<String, String>();
-		map.put(BaseColumns._ID, "INTEGER PRIMARY KEY AUTOINCREMENT");
-        map.put(Columns.ID, "TEXT");
-        map.put(Columns.TYPE, "TEXT");
-		return map;
+	public void onCreate(final SQLiteDatabase db) {
+		final String columns = ColumnUtils.toString(Columns.class);
+		final String constraint = "UNIQUE (" + Columns.ID + "," + Columns.TYPE + ") ON CONFLICT REPLACE";
+		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, constraint));
 	}
 	
 	@Override
-	protected String onCreateUniqueConstraint() {
-		return "UNIQUE (" + Columns.ID + "," + Columns.TYPE + ") ON CONFLICT REPLACE";
+	public void onDrop(final SQLiteDatabase db) {
+		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
 	}
 	
 	public static ContentValues[] getContentValues(final List<Movie> list, final String type) {
@@ -48,8 +40,8 @@ public class MovieTypeTable extends SQLTable {
 	
 	public static ContentValues getContentValues(final Movie item, final String type) {
 		final ContentValues value = new ContentValues();
-        value.put(Columns.ID, item.getId());
-        value.put(Columns.TYPE, type);
+        value.put(Columns.ID.name, item.getId());
+        value.put(Columns.TYPE.name, type);
         return value;
     }
 }

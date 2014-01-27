@@ -1,24 +1,33 @@
 package com.xtreme.rest.provider;
 
+import com.xtreme.rest.provider.Column.Type;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public abstract class SQLDataset implements Dataset {
 
-	public abstract String getName();
+	protected static interface Columns {
+		public static final Column _ID = new Column("_id", Type._ID);
+	}
+	
 	public abstract void onCreate(final SQLiteDatabase db);
 	public abstract void onDrop(final SQLiteDatabase db);
 	
-	
 	private SQLiteDatabase mDatabase;
 
+	
 	protected SQLiteDatabase getDatabase() {
 		return mDatabase;
 	}
 	
 	void setDatabase(final SQLiteDatabase db) {
 		mDatabase = db;
+	}
+	
+	public String getName() {
+		return getClass().getSimpleName();
 	}
 	
 	/**

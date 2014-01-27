@@ -1,8 +1,5 @@
 package com.xtreme.rest.provider.test.cases;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -99,17 +96,15 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 	public static class TestTable1 extends SQLTable {
 
 		@Override
-		protected Map<String, String> onCreateColumnMapping() {
-			final Map<String, String> mapping = new HashMap<String, String>();
-			mapping.put("id", "TEXT");
-			return mapping;
+		public void onCreate(final SQLiteDatabase db) {
+			db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (id TEXT);", getName()));
 		}
 		
 		@Override
-		public String getName() {
-			return "test1";
+		public void onDrop(final SQLiteDatabase db) {
+			db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
 		}
-		
+
 		@Override
 		public SQLiteDatabase getDatabase() {
 			return super.getDatabase();

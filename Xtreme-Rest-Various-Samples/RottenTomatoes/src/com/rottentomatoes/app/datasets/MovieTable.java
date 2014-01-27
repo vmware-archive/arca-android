@@ -1,57 +1,43 @@
 package com.rottentomatoes.app.datasets;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.provider.BaseColumns;
 
 import com.rottentomatoes.app.models.Movie;
+import com.xtreme.rest.provider.Column;
+import com.xtreme.rest.provider.Column.Type;
+import com.xtreme.rest.provider.ColumnUtils;
 import com.xtreme.rest.provider.SQLTable;
 import com.xtreme.rest.utils.ArrayUtils;
 import com.xtreme.rest.utils.StringUtils;
 
 public class MovieTable extends SQLTable {
 	
-	public static final String TABLE_NAME = "movies";
+	public static interface Columns extends SQLTable.Columns {
+        public static final Column ID = new Column("id", Type.TEXT);
+        public static final Column TITLE = new Column("title", Type.TEXT);
+        public static final Column YEAR = new Column("year", Type.TEXT);
+        public static final Column MPAA_RATING = new Column("mpaa_rating", Type.TEXT);
+        public static final Column RUNTIME = new Column("runtime", Type.TEXT);
+        public static final Column CRITICS_CONSENSUS = new Column("critics_consensus", Type.TEXT);
+        public static final Column SYNOPSIS = new Column("synopsis", Type.TEXT);
+        public static final Column IMAGE_URL = new Column("image_url", Type.TEXT);
+	};
 	
-	public static class Columns {
-        public static final String ID = Movie.Fields.ID;
-        public static final String TITLE = Movie.Fields.TITLE;
-        public static final String YEAR = Movie.Fields.YEAR;
-        public static final String MPAA_RATING = Movie.Fields.MPAA_RATING;
-        public static final String RUNTIME = Movie.Fields.RUNTIME;
-        public static final String CRITICS_CONSENSUS = Movie.Fields.CRITICS_CONSENSUS;
-        public static final String SYNOPSIS = Movie.Fields.SYNOPSIS;
-        public static final String IMAGE_URL = "image_url";
+	@Override
+	public void onCreate(final SQLiteDatabase db) {
+		final String columns = ColumnUtils.toString(Columns.class);
+		final String constraint = "UNIQUE (" + Columns.ID + ") ON CONFLICT REPLACE";
+		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, constraint));
 	}
 	
 	@Override
-	public String getName() {
-		return TABLE_NAME;
-	}
-
-	@Override
-	protected Map<String, String> onCreateColumnMapping() {
-		final Map<String, String> map = new LinkedHashMap<String, String>();
-		map.put(BaseColumns._ID, "INTEGER PRIMARY KEY AUTOINCREMENT");
-        map.put(Columns.ID, "TEXT");
-        map.put(Columns.TITLE, "TEXT");
-        map.put(Columns.YEAR, "TEXT");
-        map.put(Columns.MPAA_RATING, "TEXT");
-        map.put(Columns.RUNTIME, "TEXT");
-        map.put(Columns.CRITICS_CONSENSUS, "TEXT");
-        map.put(Columns.SYNOPSIS, "TEXT");
-        map.put(Columns.IMAGE_URL, "TEXT");
-		return map;
-	}
-	
-	@Override
-	protected String onCreateUniqueConstraint() {
-		return "UNIQUE (" + Columns.ID + ") ON CONFLICT REPLACE";
+	public void onDrop(final SQLiteDatabase db) {
+		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
 	}
 	
 	@Override
@@ -75,14 +61,14 @@ public class MovieTable extends SQLTable {
 	
 	public static ContentValues getContentValues(final Movie item) {
 		final ContentValues value = new ContentValues();
-        value.put(Columns.ID, item.getId());
-        value.put(Columns.TITLE, item.getTitle());
-        value.put(Columns.YEAR, item.getYear());
-        value.put(Columns.MPAA_RATING, item.getMpaaRating());
-        value.put(Columns.RUNTIME, item.getRuntime());
-        value.put(Columns.CRITICS_CONSENSUS, item.getCriticsConsensus());
-        value.put(Columns.SYNOPSIS, item.getSynopsis());
-        value.put(Columns.IMAGE_URL, item.getImageUrl());
+        value.put(Columns.ID.name, item.getId());
+        value.put(Columns.TITLE.name, item.getTitle());
+        value.put(Columns.YEAR.name, item.getYear());
+        value.put(Columns.MPAA_RATING.name, item.getMpaaRating());
+        value.put(Columns.RUNTIME.name, item.getRuntime());
+        value.put(Columns.CRITICS_CONSENSUS.name, item.getCriticsConsensus());
+        value.put(Columns.SYNOPSIS.name, item.getSynopsis());
+        value.put(Columns.IMAGE_URL.name, item.getImageUrl());
         return value;
     }
 }

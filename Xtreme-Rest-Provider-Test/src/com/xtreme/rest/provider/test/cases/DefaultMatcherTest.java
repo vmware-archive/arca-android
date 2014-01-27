@@ -1,5 +1,6 @@
 package com.xtreme.rest.provider.test.cases;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
@@ -61,20 +62,22 @@ public class DefaultMatcherTest extends AndroidTestCase {
 	}
 	
 	public static class TestTable1 extends SQLTable {
-
+		
 		@Override
-		public String getName() {
-			return "test1";
-		}
+		public void onCreate(final SQLiteDatabase db) {}
+		
+		@Override
+		public void onDrop(final SQLiteDatabase db) {}
 
 	}
 	
 	public static class TestTable2 extends SQLTable {
-
+		
 		@Override
-		public String getName() {
-			return "test2";
-		}
+		public void onCreate(final SQLiteDatabase db) {}
+		
+		@Override
+		public void onDrop(final SQLiteDatabase db) {}
 
 	}
 	

@@ -29,13 +29,13 @@ import com.xtremelabs.imageutils.ImageLoader;
 public class MovieFragment extends RestItemSupportFragment implements ViewBinder {
 	
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-		new Binding(R.id.movie_title, MovieTable.Columns.TITLE),
-		new Binding(R.id.movie_year, MovieTable.Columns.YEAR),
-		new Binding(R.id.movie_mpaa_rating, MovieTable.Columns.MPAA_RATING),
-		new Binding(R.id.movie_runtime, MovieTable.Columns.RUNTIME),
-		new Binding(R.id.movie_critics_consensus, MovieTable.Columns.CRITICS_CONSENSUS),
-		new Binding(R.id.movie_synopsis, MovieTable.Columns.SYNOPSIS),
-		new Binding(R.id.movie_image, MovieTable.Columns.IMAGE_URL),
+		new Binding(R.id.movie_title, MovieTable.Columns.TITLE.name),
+		new Binding(R.id.movie_year, MovieTable.Columns.YEAR.name),
+		new Binding(R.id.movie_mpaa_rating, MovieTable.Columns.MPAA_RATING.name),
+		new Binding(R.id.movie_runtime, MovieTable.Columns.RUNTIME.name),
+		new Binding(R.id.movie_critics_consensus, MovieTable.Columns.CRITICS_CONSENSUS.name),
+		new Binding(R.id.movie_synopsis, MovieTable.Columns.SYNOPSIS.name),
+		new Binding(R.id.movie_image, MovieTable.Columns.IMAGE_URL.name),
 	});
 
 	private String mId;

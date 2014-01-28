@@ -5,8 +5,8 @@ abstract class Result<T> {
 	private final T mData;
 	private final Error mError;
 	
-	private boolean mIsRefreshing;
-	private boolean mIsValid;
+	private boolean mIsRefreshing = false;
+	private boolean mIsValid = true;
 
 	public Result(final T data) {
 		mData = data;

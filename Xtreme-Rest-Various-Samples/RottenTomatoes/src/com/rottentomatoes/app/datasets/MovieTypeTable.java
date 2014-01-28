@@ -14,8 +14,8 @@ import com.xtreme.rest.provider.SQLTable;
 public class MovieTypeTable extends SQLTable {
 	
 	public static interface Columns extends SQLTable.Columns {
-		public static final Column ID = new Column("id", Type.TEXT);
-        public static final Column TYPE = new Column("type", Type.TEXT);
+		public static final Column ID = Type.TEXT.newColumn("id");
+        public static final Column TYPE = Type.TEXT.newColumn("type");
 	}
 	
 	@Override

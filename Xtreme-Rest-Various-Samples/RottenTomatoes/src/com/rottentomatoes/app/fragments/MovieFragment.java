@@ -61,31 +61,30 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 		dispatcher.addValidator(new MovieValidator());
 		return dispatcher;
 	}
-	
-	@Override
-	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		
-		reload();
-	}
 
-	private void reload() {
+	private void loadMovie(final String id) {
 		final Uri baseUri = RottenTomatoesContentProvider.Uris.MOVIES_URI;
-		final Uri contentUri = Uri.withAppendedPath(baseUri, mId);
+		final Uri contentUri = Uri.withAppendedPath(baseUri, id);
 		final Query query = new Query(contentUri);
 		
 		execute(query);
+	}
+	
+	public void setId(final String id) {
+		mId = id;
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		
+		loadMovie(mId);
 	}
 	
 	@Override
 	public void onDestroyView() {
 		mImageLoader.destroy();
 		super.onDestroyView();
-	}
-	
-	public void setId(final String id) {
-		mId = id;
-		reload();
 	}
 	
 	@Override

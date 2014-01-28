@@ -3,52 +3,37 @@ package com.rottentomatoes.app.datasets;
 import java.util.List;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 import com.rottentomatoes.app.models.Movie;
 import com.xtreme.rest.provider.Column;
 import com.xtreme.rest.provider.Column.Type;
 import com.xtreme.rest.provider.ColumnUtils;
 import com.xtreme.rest.provider.SQLTable;
-import com.xtreme.rest.utils.ArrayUtils;
-import com.xtreme.rest.utils.StringUtils;
 
 public class MovieTable extends SQLTable {
 	
 	public static interface Columns extends SQLTable.Columns {
-        public static final Column ID = new Column("id", Type.TEXT);
-        public static final Column TITLE = new Column("title", Type.TEXT);
-        public static final Column YEAR = new Column("year", Type.TEXT);
-        public static final Column MPAA_RATING = new Column("mpaa_rating", Type.TEXT);
-        public static final Column RUNTIME = new Column("runtime", Type.TEXT);
-        public static final Column CRITICS_CONSENSUS = new Column("critics_consensus", Type.TEXT);
-        public static final Column SYNOPSIS = new Column("synopsis", Type.TEXT);
-        public static final Column IMAGE_URL = new Column("image_url", Type.TEXT);
+        public static final Column ID = Type.TEXT.newColumn("id");
+        public static final Column TITLE = Type.TEXT.newColumn("title");
+        public static final Column YEAR = Type.TEXT.newColumn("year");
+        public static final Column MPAA_RATING = Type.TEXT.newColumn("mpaa_rating");
+        public static final Column RUNTIME = Type.TEXT.newColumn("runtime");
+        public static final Column CRITICS_CONSENSUS = Type.TEXT.newColumn("critics_consensus");
+        public static final Column SYNOPSIS = Type.TEXT.newColumn("synopsis");
+        public static final Column IMAGE_URL = Type.TEXT.newColumn("image_url");
 	};
 	
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
 		final String columns = ColumnUtils.toString(Columns.class);
-		final String constraint = "UNIQUE (" + Columns.ID + ") ON CONFLICT REPLACE";
-		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, constraint));
+		final String unique = String.format("UNIQUE (%s) ON CONFLICT REPLACE", Columns.ID);
+		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, unique));
 	}
 	
 	@Override
 	public void onDrop(final SQLiteDatabase db) {
 		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
-	}
-	
-	@Override
-	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
-		if (uri.getPathSegments().size() > 1) { 
-			final String selectionWithId = StringUtils.append(selection, Columns.ID + "=?", " AND ");
-			final String[] selectionArgsWithId = ArrayUtils.append(selectionArgs, new String[] { uri.getLastPathSegment() });
-			return super.query(uri, projection, selectionWithId, selectionArgsWithId, sortOrder);
-		} else {
-			return super.query(uri, projection, selection, selectionArgs, sortOrder);
-		}
 	}
 	
 	public static ContentValues[] getContentValues(final List<Movie> list) {

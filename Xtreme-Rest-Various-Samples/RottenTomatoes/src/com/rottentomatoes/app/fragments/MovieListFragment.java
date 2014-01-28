@@ -56,21 +56,17 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	}
 	
 	@Override
-	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		getAdapterView().setOnItemClickListener(this);
-		mImageLoader = onCreateImageLoader();
-	}
-	
-	@Override
 	protected RestDispatcher onCreateRequestDispatcher() {
 		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
 		dispatcher.addValidator(new MovieListValidator());
 		return dispatcher;
 	}
-
-	private ImageLoader onCreateImageLoader() {
-		return ImageLoader.buildImageLoaderForSupportFragment(this);
+	
+	@Override
+	public void onViewCreated(final View view, final Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		getAdapterView().setOnItemClickListener(this);
+		mImageLoader = ImageLoader.buildImageLoaderForSupportFragment(this);
 	}
 	
 	@Override
@@ -102,7 +98,7 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	
 	@Override
 	public void onContentError(final Error error) {
-		showError(error.getMessage());
+		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
 		hideLoading();
 	}
 	
@@ -128,10 +124,6 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	
 	private void hideLoading() {
 		getView().findViewById(R.id.loading).setVisibility(View.INVISIBLE);
-	}
-	
-	private void showError(final String message) {
-		Toast.makeText(getActivity(), "ERROR: " + message, Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override

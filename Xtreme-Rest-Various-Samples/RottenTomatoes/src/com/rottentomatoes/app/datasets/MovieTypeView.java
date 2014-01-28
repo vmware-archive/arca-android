@@ -16,7 +16,7 @@ public class MovieTypeView extends SQLView {
 	public void onCreate(final SQLiteDatabase db) {
 		final String movieTableId = String.format("%s.%s", MovieTable.class.getSimpleName(), MovieTable.Columns.ID);
 		final String movieTypeTableId = String.format("%s.%s", MovieTypeTable.class.getSimpleName(), MovieTable.Columns.ID);
-		final String create = String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM (%s LEFT JOIN %s ON %s = %s)", getName(), MovieTable.class.getSimpleName(), MovieTypeTable.class.getSimpleName(), movieTableId, movieTypeTableId);
+		final String create = String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM (%s LEFT JOIN %s ON %s = %s);", getName(), MovieTable.class.getSimpleName(), MovieTypeTable.class.getSimpleName(), movieTableId, movieTypeTableId);
 		db.execSQL(create);
 	}
 	

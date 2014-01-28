@@ -5,7 +5,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -34,7 +34,7 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog"/>
 
         <service
-            android:name="com.xtreme.rest.service.RestService"
+            android:name="com.xtreme.rest.RestService"
             android:exported="false" />
 
         <service

@@ -3,6 +3,7 @@ package com.appnet.app.activities;
 import android.accounts.Account;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,7 +26,8 @@ public class LauncherActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
-		setupAccount();
+		
+		setupAccount(this);
 	}
 	
 	@Override
@@ -45,9 +47,9 @@ public class LauncherActivity extends Activity {
 		finish();
 	}
 	
-	private void setupAccount() {
+	private static void setupAccount(final Context context) {
 		final String authority = AppNetContentProvider.AUTHORITY;
-		final AccountsManager manager = new AccountsManager(this, AppNetAuthenticator.ACCOUNT_TYPE);
+		final AccountsManager manager = new AccountsManager(context, AppNetAuthenticator.ACCOUNT_TYPE);
 		final boolean hasAccount = manager.hasAccount(AppNetAuthenticator.ACCOUNT_NAME);
 		
 		if (!hasAccount) {

@@ -21,21 +21,23 @@ import com.appnet.app.activities.PostActivity;
 import com.appnet.app.animators.SimpleAdapterAnimator;
 import com.appnet.app.datasets.PostTable;
 import com.appnet.app.providers.AppNetContentProvider;
+import com.appnet.app.validators.PostListValidator;
+import com.xtreme.rest.RestDispatcher;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.Query;
+import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestAdapterSupportFragment;
-import com.xtreme.rest.loader.ContentError;
-import com.xtreme.rest.loader.ContentRequest;
-import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class PostListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
 
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT),
-		new Binding(R.id.list_item_post_image, PostTable.Columns.IMAGE_URL),
-		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT),
+		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT.name),
+		new Binding(R.id.list_item_post_image, PostTable.Columns.IMAGE_URL.name),
+		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT.name),
 	});
 	
 	private ImageLoader mImageLoader;
@@ -44,16 +46,28 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_post_list, container, false);
 		((AbsListView) view.findViewById(R.id.post_list)).setOnItemClickListener(this);
-		mImageLoader = ImageLoader.buildImageLoaderForSupportFragment(this);
 		return view;
 	}
 	
 	@Override
-	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView) {
+	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState) {
 		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), R.layout.list_item_post, BINDINGS);
 		adapter.setViewAnimator(new SimpleAdapterAnimator());
 		adapter.setViewBinder(this);
 		return adapter;
+	}
+	
+	@Override
+	protected RestDispatcher onCreateRequestDispatcher() {
+		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
+		dispatcher.addValidator(new PostListValidator());
+		return dispatcher;
+	}
+	
+	@Override
+	public void onViewCreated(final View view, final Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		mImageLoader = ImageLoader.buildImageLoaderForSupportFragment(this);
 	}
 	
 	@Override
@@ -76,17 +90,22 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 	
 	private void loadPosts() {
 		final Uri contentUri = AppNetContentProvider.Uris.POSTS_URI;
-		final ContentRequest request = new ContentRequest(contentUri);
+		final Query request = new Query(contentUri);
 		request.setSortOrder(PostTable.Columns.CREATED_AT + " desc");
 		execute(request);
 	}
 	
 	@Override
-	public void onContentChanged(final ContentResponse response) {
+	public void onContentError(final Error error) {
+		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+	}
+	
+	@Override
+	public void onContentChanged(final QueryResult result) {
 		final CursorAdapter adapter = getCursorAdapter();
 		if (adapter.getCount() > 0) {
 			showResults();
-		} else {
+		} else if (!result.isRefreshing()) {
 			hideLoading();
 		}
 	}
@@ -101,14 +120,9 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 	}
 	
 	@Override
-	public void onError(final ContentError error) {
-		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-	}
-	
-	@Override
 	public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
 		final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-		final String itemId = cursor.getString(cursor.getColumnIndex(PostTable.Columns.ID));
+		final String itemId = cursor.getString(cursor.getColumnIndex(PostTable.Columns.ID.name));
 		PostActivity.newInstance(getActivity(), itemId);
 	}
 

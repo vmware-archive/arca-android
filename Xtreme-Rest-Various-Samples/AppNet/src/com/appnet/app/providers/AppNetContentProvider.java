@@ -19,6 +19,7 @@ public class AppNetContentProvider extends RestContentProvider {
 	
 	@Override
 	public boolean onCreate() {
+		super.onCreate();
         registerDataset(AUTHORITY, Paths.POSTS, PostTable.class);
 		registerDataset(AUTHORITY, Paths.POSTS + "/*", PostTable.class);
 		return true;

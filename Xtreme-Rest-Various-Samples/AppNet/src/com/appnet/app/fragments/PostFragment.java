@@ -17,15 +17,15 @@ import com.appnet.app.providers.AppNetContentProvider;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.dispatcher.Query;
+import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestItemSupportFragment;
-import com.xtreme.rest.loader.ContentError;
-import com.xtreme.rest.loader.ContentRequest;
-import com.xtreme.rest.loader.ContentResponse;
 
 public class PostFragment extends RestItemSupportFragment implements ViewBinder {
 	
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-		new Binding(R.id.post_text, PostTable.Columns.TEXT),
+		new Binding(R.id.post_text, PostTable.Columns.TEXT.name),
 	});
 
 	private String mId;
@@ -36,31 +36,30 @@ public class PostFragment extends RestItemSupportFragment implements ViewBinder 
 	}
 	
 	@Override
-	public ItemCursorAdapter onCreateAdapter(final View view) {
+	public ItemCursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState) {
 		final ItemCursorAdapter adapter = new ItemCursorAdapter(view, BINDINGS);
 		adapter.setViewBinder(this);
 		return adapter;
 	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		
-		loadPost(mId);
-	}
-	
+
 	public void setId(final String id) {
 		mId = id;
+		loadPost(mId);
 	}
 	
 	private void loadPost(final String id) {
 		final Uri baseUri = AppNetContentProvider.Uris.POSTS_URI;
 		final Uri contentUri = Uri.withAppendedPath(baseUri, id);
-		execute(new ContentRequest(contentUri));
+		execute(new Query(contentUri));
 	}
 	
 	@Override
-	public void onContentChanged(final ContentResponse response) {
+	public void onContentError(final Error error) {
+		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+	}
+	
+	@Override
+	public void onContentChanged(final QueryResult result) {
 		final ItemCursorAdapter adapter = getItemAdapter();
 		if (adapter.hasResults()) {
 			showResults();
@@ -76,11 +75,6 @@ public class PostFragment extends RestItemSupportFragment implements ViewBinder 
 	
 	private void hideLoading() {
 		getView().findViewById(R.id.loading).setVisibility(View.INVISIBLE);
-	}
-	
-	@Override
-	public void onError(final ContentError error) {
-		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class PostListTask extends Task<List<Post>> {
 
 	@Override
 	public void onExecuteProcessingRequest(final Context context, final List<Post> data) throws Exception {
-		final ContentValues[] values = PostTable.getInstance().getContentValues(data);
+		final ContentValues[] values = PostTable.getContentValues(data);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.bulkInsert(AppNetContentProvider.Uris.POSTS_URI, values);
 	}

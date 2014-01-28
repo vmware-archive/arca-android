@@ -11,7 +11,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.appnet.app.providers.AppNetUriCache;
-import com.xtreme.rest.loader.ContentBroadcaster;
+import com.xtreme.rest.dispatcher.ContentBroadcaster;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;

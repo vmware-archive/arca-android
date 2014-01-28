@@ -38,7 +38,7 @@ public class CompanyListTask extends Task<List<Company>> {
 
 	@Override
 	public void onExecuteProcessingRequest(final Context context, final List<Company> data) throws Exception {
-		final ContentValues[] values = CompanyTable.getInstance().getContentValues(data);
+		final ContentValues[] values = CompanyTable.getContentValues(data);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.bulkInsert(CrunchBaseContentProvider.Uris.COMPANIES_URI, values);
 	}

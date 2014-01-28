@@ -19,6 +19,7 @@ public class CrunchBaseContentProvider extends RestContentProvider {
 	
 	@Override
 	public boolean onCreate() {
+		super.onCreate();
         registerDataset(AUTHORITY, Paths.COMPANIES, CompanyTable.class);
 		registerDataset(AUTHORITY, Paths.COMPANIES + "/*", CompanyTable.class);
 		return true;

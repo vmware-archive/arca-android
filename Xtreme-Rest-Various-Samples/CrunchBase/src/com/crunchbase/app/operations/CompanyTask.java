@@ -36,7 +36,7 @@ public class CompanyTask extends Task<String> {
 	public void onExecuteProcessingRequest(final Context context, final String data) throws Exception {
 		// TODO parse the response and insert into content provider
 		final Company item = new Gson().fromJson(data, Company.class);
-		final ContentValues values = CompanyTable.getInstance().getContentValues(item);
+		final ContentValues values = CompanyTable.getContentValues(item);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.insert(CrunchBaseContentProvider.Uris.COMPANIES_URI, values);
 	}

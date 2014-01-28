@@ -18,20 +18,20 @@ import com.crunchbase.app.providers.CrunchBaseContentProvider;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
+import com.xtreme.rest.dispatcher.Query;
+import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestItemSupportFragment;
-import com.xtreme.rest.loader.ContentError;
-import com.xtreme.rest.loader.ContentRequest;
-import com.xtreme.rest.loader.ContentResponse;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class CompanyFragment extends RestItemSupportFragment implements ViewBinder {
 	
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-		new Binding(R.id.company_name, CompanyTable.Columns.NAME),
-		new Binding(R.id.company_category_code, CompanyTable.Columns.CATEGORY_CODE),
-		new Binding(R.id.company_description, CompanyTable.Columns.DESCRIPTION),
-		new Binding(R.id.company_overview, CompanyTable.Columns.OVERVIEW),
-		new Binding(R.id.company_image, CompanyTable.Columns.IMAGE_URL),
+		new Binding(R.id.company_name, CompanyTable.Columns.NAME.name),
+		new Binding(R.id.company_category_code, CompanyTable.Columns.CATEGORY_CODE.name),
+		new Binding(R.id.company_description, CompanyTable.Columns.DESCRIPTION.name),
+		new Binding(R.id.company_overview, CompanyTable.Columns.OVERVIEW.name),
+		new Binding(R.id.company_image, CompanyTable.Columns.IMAGE_URL.name),
 	});
 
 	private String mId;
@@ -43,7 +43,7 @@ public class CompanyFragment extends RestItemSupportFragment implements ViewBind
 	}
 	
 	@Override
-	public ItemCursorAdapter onCreateAdapter(final View view) {
+	public ItemCursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState) {
 		final ItemCursorAdapter adapter = new ItemCursorAdapter(view, BINDINGS);
 		adapter.setViewBinder(this);
 		return adapter;
@@ -75,11 +75,16 @@ public class CompanyFragment extends RestItemSupportFragment implements ViewBind
 	private void loadCompany(final String id) {
 		final Uri baseUri = CrunchBaseContentProvider.Uris.COMPANIES_URI;
 		final Uri contentUri = Uri.withAppendedPath(baseUri, id);
-		execute(new ContentRequest(contentUri));
+		execute(new Query(contentUri));
 	}
 	
 	@Override
-	public void onContentChanged(final ContentResponse response) {
+	public void onContentError(final Error error) {
+		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+	}
+	
+	@Override
+	public void onContentChanged(final QueryResult result) {
 		final ItemCursorAdapter adapter = getItemAdapter();
 		if (adapter.hasResults()) {
 			showResults();
@@ -96,12 +101,7 @@ public class CompanyFragment extends RestItemSupportFragment implements ViewBind
 	private void hideLoading() {
 		getView().findViewById(R.id.loading).setVisibility(View.INVISIBLE);
 	}
-	
-	@Override
-	public void onError(final ContentError error) {
-		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-	}
-	
+
 	@Override
 	public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
 		switch (view.getId()) {

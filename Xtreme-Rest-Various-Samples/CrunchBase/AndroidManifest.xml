@@ -5,7 +5,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -26,7 +26,7 @@
         <activity android:name=".activities.CompanyActivity" />
 
         <service
-            android:name="com.xtreme.rest.service.RestService"
+            android:name="com.xtreme.rest.RestService"
             android:exported="false" />
 
         <provider

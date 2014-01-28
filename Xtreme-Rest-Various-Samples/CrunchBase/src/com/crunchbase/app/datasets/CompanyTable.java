@@ -1,48 +1,44 @@
 package com.crunchbase.app.datasets;
 
-import java.util.Map;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.crunchbase.app.models.Company;
+import com.xtreme.rest.provider.Column;
+import com.xtreme.rest.provider.Column.Type;
+import com.xtreme.rest.provider.ColumnUtils;
+import com.xtreme.rest.provider.SQLTable;
 import com.xtreme.rest.utils.ArrayUtils;
 import com.xtreme.rest.utils.StringUtils;
 
-public class CompanyTable extends AbsCompanyTable {
+public class CompanyTable extends SQLTable {
 	
-	private static final class Holder { 
-        public static final CompanyTable INSTANCE = new CompanyTable();
-	}
-	
-	public static synchronized CompanyTable getInstance() {
-	    return Holder.INSTANCE;
-	}
-	
-	public static final class Columns extends AbsCompanyTable.Columns {
-		public static final String IMAGE_URL = "image_url";
-	}
-	
-	private CompanyTable() {}
-
-	@Override
-	protected Map<String, String> onCreateColumnMapping() {
-	    final Map<String, String> map = super.onCreateColumnMapping();
-	    map.put(Columns.IMAGE_URL, "TEXT");
-	    return map;
-	}
-
-	@Override
-	public ContentValues getContentValues(final Company item) {
-	    final ContentValues value = super.getContentValues(item);
-	    value.put(Columns.IMAGE_URL, item.getImageUrl());
-	    return value;
+	public static interface Columns extends SQLTable.Columns {
+        public static final Column NAME = Type.TEXT.newColumn("name");
+        public static final Column CATEGORY_CODE = Type.TEXT.newColumn("categpry_code");
+        public static final Column DESCRIPTION = Type.TEXT.newColumn("descrption");
+        public static final Column PERMALINK = Type.TEXT.newColumn("permalink");
+        public static final Column CRUNCHBASE_URL = Type.TEXT.newColumn("crunchbase_url");
+        public static final Column HOMEPAGE_URL = Type.TEXT.newColumn("homepage_url");
+        public static final Column NAMESPACE = Type.TEXT.newColumn("namespace");
+        public static final Column OVERVIEW = Type.TEXT.newColumn("overview");
+        public static final Column IMAGE_URL = Type.TEXT.newColumn("image_url");
 	}
 	
 	@Override
-	protected String onCreateUniqueConstraint() {
-		return "UNIQUE (" + Columns.NAME + ") ON CONFLICT REPLACE";
+	public void onCreate(final SQLiteDatabase db) {
+		final String columns = ColumnUtils.toString(Columns.class);
+		final String constraint = "UNIQUE (" + Columns.NAME + ") ON CONFLICT REPLACE";
+		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, constraint));
+	}
+	
+	@Override
+	public void onDrop(final SQLiteDatabase db) {
+		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
 	}
 	
 	@Override
@@ -55,6 +51,27 @@ public class CompanyTable extends AbsCompanyTable {
 			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
 	}
+	
+	public static ContentValues[] getContentValues(final List<Company> list) {
+		final ContentValues[] values = new ContentValues[list.size()];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = getContentValues(list.get(i));
+		}
+		return values;
+    }
+	
+	public static ContentValues getContentValues(final Company item) {
+		final ContentValues value = new ContentValues();
+        value.put(Columns.NAME.name, item.getName());
+        value.put(Columns.CATEGORY_CODE.name, item.getCategoryCode());
+        value.put(Columns.DESCRIPTION.name, item.getDescription());
+        value.put(Columns.PERMALINK.name, item.getPermalink());
+        value.put(Columns.CRUNCHBASE_URL.name, item.getCrunchbaseUrl());
+        value.put(Columns.HOMEPAGE_URL.name, item.getHomepageUrl());
+        value.put(Columns.NAMESPACE.name, item.getNamespace());
+        value.put(Columns.OVERVIEW.name, item.getOverview());
+        return value;
+    }
 
 }
 

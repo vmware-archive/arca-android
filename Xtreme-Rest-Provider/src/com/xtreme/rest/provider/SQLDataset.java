@@ -9,7 +9,8 @@ import android.net.Uri;
 public abstract class SQLDataset implements Dataset {
 
 	protected static interface Columns {
-		public static final Column _ID = new Column("_id", Type._ID);
+		public static final Column _ID = Type._ID.newColumn("_id");
+		public static final Column _STATE = Type._STATE.newColumn("_state");
 	}
 	
 	public abstract void onCreate(final SQLiteDatabase db);

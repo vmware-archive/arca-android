@@ -1,19 +1,31 @@
 package com.xtreme.rest.provider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Column {
 
 	public static enum Type {
-		NULL, INTEGER, REAL, TEXT, BLOB, _ID;
+		INTEGER, REAL, TEXT, BLOB, _ID, _STATE;
+		
+		private static final Map<Type, String> TYPE_MAPPING;
+		
+		static {
+			TYPE_MAPPING = new HashMap<Type, String>();
+			TYPE_MAPPING.put(_ID, "INTEGER PRIMARY KEY AUTOINCREMENT");
+			TYPE_MAPPING.put(_STATE, "INTEGER DEFAULT 0");
+		}
 		
 		@Override
 		public String toString() {
-			if (this == _ID) {
-				return "INTEGER PRIMARY KEY AUTOINCREMENT";
-			} else {
-				return name();
-			}
+			final String value = TYPE_MAPPING.get(this);
+			return value != null ? value : name();
 		};
+		
+		public Column newColumn(final String name) {
+			return new Column(name, this);
+		}
 	}
 
 	public final String name;

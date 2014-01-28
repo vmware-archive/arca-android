@@ -7,7 +7,7 @@ import java.util.List;
 public class ColumnUtils {
 
 	public static String toString(final Class<?> klass) {
-		final Column[] columns = all(klass);
+		final Column[] columns = allColumns(klass);
 		final StringBuilder builder = new StringBuilder();
 		for (final Column column : columns) {
 			builder.append(String.format("%s %s,", column.name, column.type));
@@ -18,7 +18,7 @@ public class ColumnUtils {
 		return builder.toString();
 	}
 	
-	public static Column[] all(final Class<?> klass) {
+	private static Column[] allColumns(final Class<?> klass) {
 		try {
 			final Field[] fields = klass.getFields();
 			return filter(fields);

@@ -4,7 +4,7 @@ import android.content.Context;
 
 public class SupportUpdateLoader extends SupportResultLoader<UpdateResult> {
 
-	public SupportUpdateLoader(Context context, RequestExecutor executor, Update request) {
+	public SupportUpdateLoader(final Context context, final RequestExecutor executor, final Update request) {
 		super(context, executor, request);
 	}
 
@@ -16,7 +16,7 @@ public class SupportUpdateLoader extends SupportResultLoader<UpdateResult> {
 	}
 
 	@Override
-	public UpdateResult getErrorResult(Error error) {
+	public UpdateResult getErrorResult(final Error error) {
 		return new UpdateResult(error);
 	}
 

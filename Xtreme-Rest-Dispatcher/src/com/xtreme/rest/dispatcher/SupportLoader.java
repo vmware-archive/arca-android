@@ -12,10 +12,17 @@ abstract class SupportLoader<T> extends AsyncTaskLoader<T> implements ErrorListe
 	public SupportLoader(final Context context, final RequestExecutor executor, final Request<?> request) {
 		super(context);
 		mReceiver = new ErrorReceiver(this);
-		mReceiver.register(request.getUri());
 		mExecutor = executor;
 		mRequest = request;
+		register(request);
 	}
+
+	private void register(final Request<?> request) {
+		if (request != null) {
+			mReceiver.register(request.getUri());
+		}
+	}
+	
 	
 	@Override
 	public abstract T loadInBackground();

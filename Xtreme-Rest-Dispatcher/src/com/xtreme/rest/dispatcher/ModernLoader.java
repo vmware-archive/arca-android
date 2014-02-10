@@ -15,9 +15,15 @@ abstract class ModernLoader<T> extends AsyncTaskLoader<T> implements ErrorListen
 	public ModernLoader(final Context context, final RequestExecutor executor, final Request<?> request) {
 		super(context);
 		mReceiver = new ErrorReceiver(this);
-		mReceiver.register(request.getUri());
 		mExecutor = executor;
 		mRequest = request;
+		register(request);
+	}
+
+	private void register(final Request<?> request) {
+		if (request != null) {
+			mReceiver.register(request.getUri());
+		}
 	}
 	
 	@Override

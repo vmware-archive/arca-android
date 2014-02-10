@@ -6,7 +6,7 @@ import android.net.Uri;
 
 import com.xtreme.rest.broadcasts.RestBroadcastManager;
 
-public class ContentBroadcaster {
+public class ErrorBroadcaster {
 
 	
 	private static final class Extras {

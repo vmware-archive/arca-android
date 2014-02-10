@@ -35,7 +35,7 @@ public class Error implements Parcelable {
 		return mErrorMessage;
 	}
 
-	public int getErrorCode() {
+	public int getCode() {
 		return mErrorCode;
 	}
 	

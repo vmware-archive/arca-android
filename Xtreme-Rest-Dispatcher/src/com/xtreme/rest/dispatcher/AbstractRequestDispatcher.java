@@ -2,9 +2,9 @@ package com.xtreme.rest.dispatcher;
 
 import android.os.Bundle;
 
-abstract class AbstractRequestDispatcher implements RequestDispatcher {
+public abstract class AbstractRequestDispatcher implements RequestDispatcher {
 	
-	protected static final class Extras {
+	protected static class Extras {
 		public static final String REQUEST = "request";
 	}
 	

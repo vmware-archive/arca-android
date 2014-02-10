@@ -56,7 +56,7 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 	
 
 
-	private class QueryLoaderCallbacks extends NotififierCallbacks<QueryResult> {
+	private class QueryLoaderCallbacks extends NotifierCallbacks<QueryResult> {
 		
 		public QueryLoaderCallbacks(final QueryListener listener) {
 			super(listener);
@@ -70,7 +70,7 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 		}
 	}
 	
-	private class UpdateLoaderCallbacks extends NotififierCallbacks<UpdateResult> {
+	private class UpdateLoaderCallbacks extends NotifierCallbacks<UpdateResult> {
 		
 		public UpdateLoaderCallbacks(final UpdateListener listener) {
 			super(listener);
@@ -84,7 +84,7 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 		}
 	}
 	
-	private class InsertLoaderCallbacks extends NotififierCallbacks<InsertResult> {
+	private class InsertLoaderCallbacks extends NotifierCallbacks<InsertResult> {
 		
 		public InsertLoaderCallbacks(final InsertListener listener) {
 			super(listener);
@@ -98,7 +98,7 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 		}
 	}
 	
-	private class DeleteLoaderCallbacks extends NotififierCallbacks<DeleteResult> {
+	private class DeleteLoaderCallbacks extends NotifierCallbacks<DeleteResult> {
 		
 		public DeleteLoaderCallbacks(final DeleteListener listener) {
 			super(listener);
@@ -112,11 +112,11 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 		}
 	}
 	
-	private abstract class NotififierCallbacks<T extends Result<?>> implements LoaderCallbacks<T> {
+	private abstract class NotifierCallbacks<T extends Result<?>> implements LoaderCallbacks<T> {
 		
 		private final RequestListener<T> mListener;
 
-		public NotififierCallbacks(final RequestListener<T> listener) {
+		public NotifierCallbacks(final RequestListener<T> listener) {
 			mListener = listener;
 		}
 

@@ -37,13 +37,7 @@ abstract class SupportLoader<T> extends AsyncTaskLoader<T> implements ErrorListe
 	
 	@Override
 	protected void onStartLoading() {
-		final T result = getResult();
-		if (result != null) {
-			deliverResult(result);
-		}
-		if (takeContentChanged() || result == null) {
-			forceLoad();
-		}
+		forceLoad();
 	}
 	
 	@Override

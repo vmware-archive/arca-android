@@ -86,7 +86,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestReset() {
 				latch.countDown();
-				
 			}
 		});
 		latch.assertComplete();

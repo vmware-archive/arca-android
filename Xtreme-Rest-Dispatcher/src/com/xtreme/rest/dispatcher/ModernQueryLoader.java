@@ -18,6 +18,17 @@ public class ModernQueryLoader extends ModernLoader<QueryResult> {
 	}
 
 	@Override
+	protected void onStartLoading() {
+		final QueryResult result = getResult();
+		if (result != null) {
+			deliverResult(result);
+		}
+		if (takeContentChanged() || result == null) {
+			forceLoad();
+		}
+	}
+	
+	@Override
 	public QueryResult loadInBackground() {
 		final Query request = (Query) getContentRequest();
 		final RequestExecutor executor = getRequestExecutor();

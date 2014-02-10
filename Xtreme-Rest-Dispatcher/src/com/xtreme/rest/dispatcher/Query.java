@@ -17,6 +17,10 @@ public class Query extends Request<Cursor> implements Parcelable {
 		super(uri);
 	}
 	
+	public Query(final Uri uri, final int identifier) {
+		super(uri, identifier);
+	}
+	
 	public Query(final Parcel in) {
 		super(in);
 		mProjection = in.createStringArray();

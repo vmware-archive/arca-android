@@ -82,7 +82,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 			@Override
 			public void onRequestReset() {
 				latch.countDown();
-				
 			}
 		});
 		latch.assertComplete();

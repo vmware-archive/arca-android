@@ -17,6 +17,11 @@ public abstract class Request<T> implements Parcelable {
 		if (uri == null) {
 			throw new IllegalArgumentException("The uri cannot be null.");
 		}
+		
+		if (identifier < 1000) {
+			throw new IllegalArgumentException("Custom identifiers must be greater than 1000.");
+		}
+		
 		mIdentifier = identifier;
 		mUri = uri;
 	}

@@ -40,13 +40,7 @@ abstract class ModernLoader<T> extends AsyncTaskLoader<T> implements ErrorListen
 	
 	@Override
 	protected void onStartLoading() {
-		final T result = getResult();
-		if (result != null) {
-			deliverResult(result);
-		}
-		if (takeContentChanged() || result == null) {
-			forceLoad();
-		}
+		forceLoad();
 	}
 	
 	@Override

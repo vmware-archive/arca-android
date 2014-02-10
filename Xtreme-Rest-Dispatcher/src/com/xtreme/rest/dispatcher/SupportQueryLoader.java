@@ -13,6 +13,17 @@ public class SupportQueryLoader extends SupportLoader<QueryResult> {
 		mObserver = new ForceLoadContentObserver();
 		mTracker = new QueryResultTracker();
 	}
+	
+	@Override
+	protected void onStartLoading() {
+		final QueryResult result = getResult();
+		if (result != null) {
+			deliverResult(result);
+		}
+		if (takeContentChanged() || result == null) {
+			forceLoad();
+		}
+	}
 
 	@Override
 	public QueryResult loadInBackground() {

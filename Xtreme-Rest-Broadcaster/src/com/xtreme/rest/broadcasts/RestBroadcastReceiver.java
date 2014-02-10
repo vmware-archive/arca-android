@@ -20,7 +20,7 @@ public abstract class RestBroadcastReceiver extends BroadcastReceiver {
 		}
 	}
 
-	protected synchronized boolean isRegistered() {
+	public synchronized boolean isRegistered() {
 		return mIsRegistered;
 	}
 }

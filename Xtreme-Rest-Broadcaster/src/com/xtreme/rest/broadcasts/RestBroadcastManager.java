@@ -16,13 +16,12 @@ import android.os.Message;
 
 public class RestBroadcastManager {
 
-	private static final int SEND_BROADCAST = 100;
+	private static final int MSG_SEND_BROADCAST = 100;
 
 	private static final Map<BroadcastReceiver, Set<String>> RECEIVERS = new HashMap<BroadcastReceiver, Set<String>>();
 	private static final Map<String, Set<BroadcastReceiver>> ACTIONS = new HashMap<String, Set<BroadcastReceiver>>();
 	
 	private static final List<Broadcast> BROADCASTS = new ArrayList<Broadcast>();
-	private static final Object LOCK = new Object();
 
 	private static Context sContext;
 	private static Handler sHandler;
@@ -30,6 +29,14 @@ public class RestBroadcastManager {
 	
 	// ====================================================
 	
+	public static void initializeHandler(final Context context) {
+		initializeHandler(context, new BroadcastHandler(context.getMainLooper()));
+	}
+	
+	public static void initializeHandler(final Context context, final BroadcastHandler handler) {
+		sContext = context.getApplicationContext();
+		sHandler = handler;
+	}
 
 	public static synchronized void registerReceiver(final BroadcastReceiver receiver, final String action) {
 		addToActions(receiver, action);
@@ -63,7 +70,7 @@ public class RestBroadcastManager {
 		receivers.add(receiver);
 	}
 
-	private static synchronized void removeReceiverFromActions(final BroadcastReceiver receiver, final Set<String> actions) {
+	private static void removeReceiverFromActions(final BroadcastReceiver receiver, final Set<String> actions) {
 		for (final String action : actions) {
 			final Set<BroadcastReceiver> receivers = ACTIONS.get(action);
 			if (receivers != null) {
@@ -93,17 +100,14 @@ public class RestBroadcastManager {
 	}
 	
 	private static void notifyMessageHandler(final Context context) {
-		synchronized (LOCK) {
-			if (sHandler == null) {
-				sHandler = new BroadcastHandler(context.getMainLooper());
-				sContext = context.getApplicationContext();
-			}
-			if (!sHandler.hasMessages(SEND_BROADCAST)) {
-				sHandler.sendEmptyMessage(SEND_BROADCAST);
-			}
+		if (sHandler == null) {
+			initializeHandler(context);
+		}
+		if (!sHandler.hasMessages(MSG_SEND_BROADCAST)) {
+			sHandler.sendEmptyMessage(MSG_SEND_BROADCAST);
 		}
 	}
-	
+
 	private static synchronized void sendAndClearBroadcasts() {
 		for (final Broadcast broadcast : BROADCASTS) {
 			broadcast.getReceiver().onReceive(sContext, broadcast.getIntent());
@@ -115,18 +119,16 @@ public class RestBroadcastManager {
 	// ====================================================
 
 	
-	private static final class BroadcastHandler extends Handler {
+	public static class BroadcastHandler extends Handler {
 		
-		private BroadcastHandler(final Looper looper) {
+		public BroadcastHandler(final Looper looper) {
 			super(looper);
 		}
 
 		@Override
 		public void handleMessage(final Message msg) {
-			switch (msg.what) {
-			case SEND_BROADCAST:
+			if (msg.what == MSG_SEND_BROADCAST) {
 				sendAndClearBroadcasts();
-				break;
 			}
 		}
 	}

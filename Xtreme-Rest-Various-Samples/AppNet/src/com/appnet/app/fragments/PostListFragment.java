@@ -60,7 +60,7 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 	@Override
 	protected RestDispatcher onCreateRequestDispatcher() {
 		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
-		dispatcher.addValidator(new PostListValidator());
+		dispatcher.setValidator(new PostListValidator());
 		return dispatcher;
 	}
 	

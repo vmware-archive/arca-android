@@ -7,7 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 public class AccountsManager {
-
+	
 	private final String mAccountType;
 	private final AccountManager mAccountManager;
 

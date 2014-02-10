@@ -21,8 +21,6 @@ import com.rottentomatoes.app.animators.SimpleAdapterAnimator;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
-import com.rottentomatoes.app.validators.MovieListValidator;
-import com.xtreme.rest.RestDispatcher;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
@@ -30,6 +28,7 @@ import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestAdapterSupportFragment;
+import com.xtreme.rest.utils.Logger;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class MovieListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
@@ -56,13 +55,6 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	}
 	
 	@Override
-	protected RestDispatcher onCreateRequestDispatcher() {
-		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
-		dispatcher.addValidator(new MovieListValidator());
-		return dispatcher;
-	}
-	
-	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		getAdapterView().setOnItemClickListener(this);
@@ -75,25 +67,30 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 		super.onDestroyView();
 	}
 	
-	public void setType(final String type) {
-		mType = type;
-		loadMovies();
-	}
-	
 	@Override
 	protected int getAdapterViewId() {
 		return R.id.movie_list;
 	}
 	
-	private void loadMovies() {
+	public void setType(final String type) {
+		mType = type;
+		refreshList();
+	}
+
+	private void refreshList() {
+		getAdapterView().setSelection(0);
+		refresh();
+	}
+	
+	private void refresh() {
+		showLoading();
+
 		final Uri baseUri = RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI;
 		final Uri contentUri = Uri.withAppendedPath(baseUri, mType);
 		
 		final Query request = new Query(contentUri);
 		request.setSortOrder("title asc");
-		
 		execute(request);
-		showLoading();
 	}
 	
 	@Override
@@ -105,6 +102,7 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	@Override
 	public void onContentChanged(final QueryResult result) {
 		final CursorAdapter adapter = getCursorAdapter();
+		Logger.v("cursor %s", result.getResult());
 		if (adapter.getCount() > 0) {
 			showResults();
 		} else if (!result.isRefreshing()) {

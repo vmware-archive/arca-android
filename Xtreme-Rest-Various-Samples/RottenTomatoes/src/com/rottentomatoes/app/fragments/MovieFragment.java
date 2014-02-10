@@ -15,8 +15,6 @@ import android.widget.Toast;
 import com.rottentomatoes.app.R;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
-import com.rottentomatoes.app.validators.MovieValidator;
-import com.xtreme.rest.RestDispatcher;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.binders.Binding;
 import com.xtreme.rest.binders.ViewBinder;
@@ -53,13 +51,6 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 		final ItemCursorAdapter adapter = new ItemCursorAdapter(getView(), BINDINGS);
 		adapter.setViewBinder(this);
 		return adapter;
-	}
-	
-	@Override
-	protected RestDispatcher onCreateRequestDispatcher() {
-		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
-		dispatcher.addValidator(new MovieValidator());
-		return dispatcher;
 	}
 
 	private void loadMovie(final String id) {

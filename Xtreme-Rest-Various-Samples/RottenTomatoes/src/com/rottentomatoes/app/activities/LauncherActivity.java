@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.rottentomatoes.app.R;
+import com.rottentomatoes.app.accounts.AccountsUtil;
 
 public class LauncherActivity extends Activity {
 
@@ -18,7 +19,8 @@ public class LauncherActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
-		setupAccount();
+		
+		AccountsUtil.setupAccount(this);
 	}
 	
 	@Override
@@ -36,23 +38,6 @@ public class LauncherActivity extends Activity {
 	public void launch() {
 		MovieListActivity.newInstance(this);
 		finish();
-	}
-	
-	private void setupAccount() {
-//		final String authority = RottenTomatoesContentProvider.AUTHORITY;
-//		final AccountsManager manager = new AccountsManager(this, RottenTomatoesAuthenticator.ACCOUNT_TYPE);
-//		final boolean hasAccount = manager.hasAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
-//		
-//		if (!hasAccount) {
-//			final Account account = manager.createAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
-//			ContentResolver.setIsSyncable(account, authority, 1);
-//			ContentResolver.setSyncAutomatically(account, authority, true);
-//			manager.addAccount(account, null);
-//			
-//		} else {
-//			final Account account = manager.getAccount(RottenTomatoesAuthenticator.ACCOUNT_NAME);
-//			ContentResolver.requestSync(account, authority, new Bundle());
-//		}
 	}
 	
 	private static final class LaunchHandler extends Handler {

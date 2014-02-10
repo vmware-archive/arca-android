@@ -13,9 +13,9 @@ public class RestModernDispatcher extends ModernRequestDispatcher implements Res
 	}
 
 	@Override
-	public void addValidator(final QueryValidator validator) {
+	public void setValidator(final QueryValidator validator) {
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
-		executor.addValidator(validator);
+		executor.setValidator(validator);
 	}
 
 }

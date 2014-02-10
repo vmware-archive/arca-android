@@ -1,6 +1,9 @@
 package com.rottentomatoes.app.application;
 
 import android.app.Application;
+import android.support.v4.app.LoaderManager;
+
+import com.xtreme.rest.utils.Logger;
 
 public class RottenTomatoesApplication extends Application {
 	
@@ -8,7 +11,8 @@ public class RottenTomatoesApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		
-		com.xtreme.rest.utils.Logger.setup(true, "Xtreme-Rest");
+		Logger.setup(true, "Xtreme-Rest");
 		
+		LoaderManager.enableDebugLogging(true);
 	}
 }

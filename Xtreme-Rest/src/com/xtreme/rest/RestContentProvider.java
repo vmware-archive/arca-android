@@ -42,7 +42,7 @@ public class RestContentProvider extends DatabaseProvider implements ServiceConn
 	
 	@Override
 	public void onServiceDisconnected(final ComponentName name) {
-		Logger.v("onServiceDisconnected %s", this.getClass());
+		Logger.v("onServiceDisconnected %s", this.getClass()); 
 		mService = null;
 	}
 

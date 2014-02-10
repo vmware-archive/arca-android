@@ -58,7 +58,7 @@ public class CompanyListFragment extends RestAdapterSupportFragment implements O
 	@Override
 	protected RestDispatcher onCreateRequestDispatcher() {
 		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
-		dispatcher.addValidator(new CompanyListValidator());
+		dispatcher.setValidator(new CompanyListValidator());
 		return dispatcher;
 	}
 	

@@ -15,6 +15,7 @@ import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
 import com.xtreme.rest.sync.RestSyncBroadcaster;
+import com.xtreme.rest.utils.Logger;
 
 public class SyncMoviesOperation extends Operation {
 
@@ -41,6 +42,7 @@ public class SyncMoviesOperation extends Operation {
 
 	@Override
 	public void onSuccess(final Context context, final List<Task<?>> completed) {
+		Logger.v("notifyChange : %s", getUri());
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.notifyChange(getUri(), null, false);
 		

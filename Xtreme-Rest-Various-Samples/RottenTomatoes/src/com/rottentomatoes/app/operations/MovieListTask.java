@@ -5,7 +5,6 @@ import java.util.List;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.net.Uri;
 
 import com.rottentomatoes.app.application.RottenTomatoesRequests;
 import com.rottentomatoes.app.datasets.MovieTable;
@@ -13,7 +12,6 @@ import com.rottentomatoes.app.datasets.MovieTypeTable;
 import com.rottentomatoes.app.models.Movie;
 import com.rottentomatoes.app.models.MoviesResponse;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
-import com.rottentomatoes.app.providers.RottenTomatoesUriCache;
 import com.xtreme.rest.service.Task;
 import com.xtreme.threading.RequestIdentifier;
 
@@ -32,7 +30,7 @@ public class MovieListTask extends Task<List<Movie>> {
 	
 	@Override
 	public List<Movie> onExecuteNetworkRequest(final Context context) throws Exception {
-		final MoviesResponse response = RottenTomatoesRequests.getMovieList(mType, 30, "ca");
+		final MoviesResponse response = RottenTomatoesRequests.getMovieList(mType, 50, "ca");
 		return response.getMovies();
 	}
 
@@ -49,7 +47,5 @@ public class MovieListTask extends Task<List<Movie>> {
 
 		final ContentValues[] movieTypeValues = MovieTypeTable.getContentValues(data, mType);
 		resolver.bulkInsert(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, movieTypeValues);
-		
-		RottenTomatoesUriCache.add(Uri.withAppendedPath(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, mType));
 	}
 }

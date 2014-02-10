@@ -10,7 +10,7 @@ import com.xtreme.rest.validator.ContentState;
 import com.xtreme.rest.validator.QueryValidator;
 
 public interface RestExecutor extends RequestExecutor {
-	public void addValidator(final QueryValidator validator);
+	public void setValidator(final QueryValidator validator);
 	
 	public static class DefaultRestExecutor extends DefaultRequestExecutor implements RestExecutor {
 
@@ -23,7 +23,7 @@ public interface RestExecutor extends RequestExecutor {
 		}
 		
 		@Override
-		public void addValidator(final QueryValidator validator) {
+		public void setValidator(final QueryValidator validator) {
 			mValidator = validator;
 		}
 		

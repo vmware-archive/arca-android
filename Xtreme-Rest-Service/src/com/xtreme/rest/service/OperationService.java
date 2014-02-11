@@ -24,7 +24,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 		START, CANCEL;
 	}
 	
-	protected static class Extras {
+	protected static interface Extras {
 		public static final String ACTION = "action";
 		public static final String OPERATION = "operation";
 	}

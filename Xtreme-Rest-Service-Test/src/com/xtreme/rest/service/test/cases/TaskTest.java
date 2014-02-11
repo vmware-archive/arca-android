@@ -38,7 +38,6 @@ public class TaskTest extends AndroidTestCase {
 	// =============================================
 	
 	public void testTaskMessages() {
-		assertNotNull(new TestTask.Messages());
 		assertEquals("Cannot execute request. No request executor found.", TestTask.Messages.NO_EXECUTOR);
 	}
 	

@@ -8,9 +8,8 @@ import com.xtreme.rest.broadcasts.RestBroadcastManager;
 
 public class ErrorBroadcaster {
 
-	
-	private static final class Extras {
-		private static final String ERROR = "error";
+	public static interface Extras {
+		public static final String ERROR = "error";
 	}
 	
 	public static void broadcast(final Context context, final Uri uri, final int errorCode, final String errorMessage) {

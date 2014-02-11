@@ -4,7 +4,6 @@ import com.xtreme.rest.service.OperationService;
 
 public class TestOperationService extends OperationService {
 	
-	public static class Extras extends OperationService.Extras {}
-
+	public static interface Extras extends OperationService.Extras {}
 	
 }

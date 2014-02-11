@@ -27,7 +27,7 @@ import com.xtreme.threading.RequestIdentifier;
  */
 public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkRequestObserver<T>, ProcessingRequestExecutor<T>, ProcessingRequestObserver<T> {
 
-	protected static class Messages {
+	protected static interface Messages {
 		public static final String NO_EXECUTOR = "Cannot execute request. No request executor found.";
 	}
 	

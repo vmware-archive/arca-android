@@ -9,9 +9,8 @@ import com.xtreme.rest.broadcasts.RestBroadcastManager;
 
 public class RestSyncBroadcaster {
 
-	
-	private static final class Extras {
-		private static final String SYNC_STATS = "sync_stats";
+	private static interface Extras {
+		public static final String SYNC_STATS = "sync_stats";
 	}
 	
 	public static void broadcast(final Context context, final Uri uri, final SyncStats stats) {

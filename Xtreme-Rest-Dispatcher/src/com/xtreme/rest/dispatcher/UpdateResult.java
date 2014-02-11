@@ -1,6 +1,5 @@
 package com.xtreme.rest.dispatcher;
 
-
 public class UpdateResult extends Result<Integer> {
 
 	public UpdateResult(final Integer data) {

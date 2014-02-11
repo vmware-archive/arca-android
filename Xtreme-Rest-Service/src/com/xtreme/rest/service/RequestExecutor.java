@@ -14,7 +14,7 @@ public interface RequestExecutor {
 	
 	public static class DefaultRequestExecutor implements AuxiliaryExecutorObserver, RequestExecutor, RequestObserver {
 		
-		public static final class Config {
+		public static interface Config {
 			public static final int NUM_NETWORK_THREADS = 2;
 			public static final int NUM_PROCESSING_THREADS = 1;
 			public static final long THREAD_KEEP_ALIVE_TIME = 15;

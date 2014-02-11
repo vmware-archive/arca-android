@@ -27,17 +27,19 @@ public class RestBroadcastManager {
 	private static Handler sHandler;
 	
 	
-	// ====================================================
-	
-	public static void initializeHandler(final Context context) {
-		initializeHandler(context, new BroadcastHandler(context.getMainLooper()));
-	}
-	
-	public static void initializeHandler(final Context context, final BroadcastHandler handler) {
+	public static void initialize(final Context context, final BroadcastHandler handler) {
 		sContext = context.getApplicationContext();
 		sHandler = handler;
 	}
+	
+	private static void initializeDefaultHandler(final Context context) {
+		initialize(context, new BroadcastHandler(context.getMainLooper()));
+	}
 
+	
+	// ====================================================
+	
+	
 	public static synchronized void registerReceiver(final BroadcastReceiver receiver, final String action) {
 		addToActions(receiver, action);
 		addToReceivers(receiver, action);
@@ -101,7 +103,7 @@ public class RestBroadcastManager {
 	
 	private static void notifyMessageHandler(final Context context) {
 		if (sHandler == null) {
-			initializeHandler(context);
+			initializeDefaultHandler(context);
 		}
 		if (!sHandler.hasMessages(MSG_SEND_BROADCAST)) {
 			sHandler.sendEmptyMessage(MSG_SEND_BROADCAST);

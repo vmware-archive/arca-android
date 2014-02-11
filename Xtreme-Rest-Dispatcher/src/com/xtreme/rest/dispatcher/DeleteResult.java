@@ -1,6 +1,5 @@
 package com.xtreme.rest.dispatcher;
 
-
 public class DeleteResult extends Result<Integer> {
 
 	public DeleteResult(final Integer data) {

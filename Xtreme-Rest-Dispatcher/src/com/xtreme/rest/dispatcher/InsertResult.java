@@ -1,6 +1,5 @@
 package com.xtreme.rest.dispatcher;
 
-
 public class InsertResult extends Result<Integer> {
 
 	public InsertResult(final Integer data) {

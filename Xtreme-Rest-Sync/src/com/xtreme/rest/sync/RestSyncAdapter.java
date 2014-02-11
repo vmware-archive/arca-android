@@ -23,7 +23,7 @@ public abstract class RestSyncAdapter extends AbstractThreadedSyncAdapter {
 	protected abstract void onSetupSync(final Account account, final Bundle extras, final String authority, final ContentProviderClient provider);
 	protected abstract boolean onPerformSync(final Uri uri, final Account account, final Bundle extras, final String authority, final ContentProviderClient provider);
 	
-	public static final class Extras {
+	public static interface Extras {
 		public static final String URI = "uri";
 	}
 	

@@ -28,12 +28,10 @@ public class ServiceErrorTest extends AndroidTestCase {
 	}
 	
 	public void testServiceErrorCodes() {
-		assertNotNull(new ServiceError.Codes());
 		assertEquals(100, ServiceError.Codes.UNKNOWN);
 	}
 	
 	public void testServiceErrorMessages() {
-		assertNotNull(new ServiceError.Messages());
 		assertEquals("An unknown error occured.", ServiceError.Messages.UNKNOWN);
 	}
 	

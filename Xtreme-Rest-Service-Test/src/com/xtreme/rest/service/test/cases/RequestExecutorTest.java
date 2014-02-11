@@ -31,7 +31,6 @@ public class RequestExecutorTest extends AndroidTestCase {
 	}
 	
 	public void testRequestExecutorConfig() {
-		assertNotNull(new DefaultRequestExecutor.Config());
 		assertEquals(2, DefaultRequestExecutor.Config.NUM_NETWORK_THREADS);
 		assertEquals(1, DefaultRequestExecutor.Config.NUM_PROCESSING_THREADS);
 		assertEquals(15, DefaultRequestExecutor.Config.THREAD_KEEP_ALIVE_TIME);

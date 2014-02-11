@@ -23,11 +23,10 @@ public class RestBroadcastManagerTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		final Context context = getContext();
-		final Looper looper = context.getMainLooper();
+		final Looper looper = getContext().getMainLooper();
 		final TestBroadcastHandler handler = new TestBroadcastHandler(looper);
 		
-		RestBroadcastManager.initializeHandler(context, handler);
+		RestBroadcastManager.initialize(getContext(), handler);
 	}
 	
 	public void testSendBroadcast() {

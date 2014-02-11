@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 public abstract class AbstractRequestDispatcher implements RequestDispatcher {
 	
-	protected static class Extras {
+	protected static interface Extras {
 		public static final String REQUEST = "request";
 	}
 	

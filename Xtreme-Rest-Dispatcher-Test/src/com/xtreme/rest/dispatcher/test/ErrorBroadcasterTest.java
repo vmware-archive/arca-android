@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
-import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Looper;
 import android.os.Message;
@@ -28,17 +28,16 @@ public class ErrorBroadcasterTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		final Context context = getContext();
-		final Looper looper = context.getMainLooper();
+		final Looper looper = getContext().getMainLooper();
 		final TestBroadcastHandler handler = new TestBroadcastHandler(looper);
 		
-		RestBroadcastManager.initializeHandler(context, handler);
+		RestBroadcastManager.initialize(getContext(), handler);
 	}
 	
 	public void testErrorBroadcast() {
 		final AssertionLatch latch = new AssertionLatch(1);
 		final ErrorReceiver receiver = new ErrorReceiver(new ErrorListener() {
-			
+
 			@Override
 			public void onRequestError(final Error error) {
 				latch.countDown();
@@ -47,18 +46,28 @@ public class ErrorBroadcasterTest extends AndroidTestCase {
 				assertEquals(ERROR_MESSAGE, error.getMessage());
 			}
 		});
-		
 		receiver.register(URI);
-		
 		ErrorBroadcaster.broadcast(getContext(), URI, ERROR_CODE, ERROR_MESSAGE);
-		
 		latch.assertComplete();
+	}
+	
+	public void testErrorFromIntent() {
+		final Error error = new Error(ERROR_CODE, ERROR_MESSAGE);
+		final Intent intent = new Intent(URI.toString());
+		intent.putExtra(ErrorBroadcaster.Extras.ERROR, error);
+		final Error actual = ErrorBroadcaster.getError(intent);
+		assertEquals(error, actual);
+	}
+	
+	public void testNullErrorFromIntent() {
+		final Error error = ErrorBroadcaster.getError(null);
+		assertNull(error);
 	}
 	
 	// ============================================
 	
 	
-	public static class TestBroadcastHandler extends BroadcastHandler {
+	private static class TestBroadcastHandler extends BroadcastHandler {
 
 		public TestBroadcastHandler(final Looper looper) {
 			super(looper);
@@ -70,7 +79,6 @@ public class ErrorBroadcasterTest extends AndroidTestCase {
 			return true;
 		}
 	}
-	
 	
 	
 	// ============================================

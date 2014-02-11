@@ -10,11 +10,11 @@ import android.os.Parcelable;
  */
 public class ServiceError implements Parcelable {
 
-	public static class Codes {		
+	public static interface Codes {		
 		public static final int UNKNOWN = 100;
 	}
 
-	public static class Messages {		
+	public static interface Messages {		
 		public static final String UNKNOWN = "An unknown error occured.";
 	}
 

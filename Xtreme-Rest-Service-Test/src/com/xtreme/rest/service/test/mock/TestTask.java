@@ -7,7 +7,7 @@ import com.xtreme.threading.RequestIdentifier;
 
 public class TestTask extends Task<String> {
 
-	public static class Messages extends Task.Messages {}
+	public static interface Messages extends Task.Messages {}
 	
 	private RequestIdentifier<?> mIdentifier;
 	private Exception mNetworkException;

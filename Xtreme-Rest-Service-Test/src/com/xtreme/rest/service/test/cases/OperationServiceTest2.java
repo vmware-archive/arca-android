@@ -29,7 +29,6 @@ public class OperationServiceTest2 extends ServiceTestCase<TestOperationService>
 	}
 	
 	public void testOperationServiceExtras() {
-		assertNotNull(new TestOperationService.Extras());
 		assertEquals("action", TestOperationService.Extras.ACTION);
 		assertEquals("operation", TestOperationService.Extras.OPERATION);
 	}

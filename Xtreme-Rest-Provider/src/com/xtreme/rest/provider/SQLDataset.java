@@ -23,7 +23,7 @@ public abstract class SQLDataset implements Dataset {
 		return mDatabase;
 	}
 	
-	void setDatabase(final SQLiteDatabase db) {
+	protected void setDatabase(final SQLiteDatabase db) {
 		mDatabase = db;
 	}
 	

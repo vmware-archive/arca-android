@@ -1,7 +1,10 @@
 package com.xtreme.rest.dispatcher;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 abstract class ModernResultLoader<T> extends ModernLoader<T> {
 
 	private T mResult;

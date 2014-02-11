@@ -1,4 +1,4 @@
-package com.xtreme.rest.provider.test.cases;
+package com.xtreme.rest.provider.test;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;

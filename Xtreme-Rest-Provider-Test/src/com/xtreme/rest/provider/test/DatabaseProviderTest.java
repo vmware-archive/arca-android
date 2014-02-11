@@ -1,5 +1,9 @@
-package com.xtreme.rest.provider.test.cases;
+package com.xtreme.rest.provider.test;
 
+import java.util.ArrayList;
+
+import junit.framework.Assert;
+import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,15 +16,15 @@ import com.xtreme.rest.provider.DatabaseConfiguration.DefaultDatabaseConfigurati
 import com.xtreme.rest.provider.DatabaseProvider;
 import com.xtreme.rest.provider.Dataset;
 import com.xtreme.rest.provider.SQLTable;
-import com.xtreme.rest.provider.test.cases.DatabaseProviderTest.TestDatabaseProvider;
-import com.xtreme.rest.provider.test.cases.DatabaseProviderTest.TestDatabaseProvider.Uris;
+import com.xtreme.rest.provider.test.DatabaseProviderTest.TestDatabaseProvider;
+import com.xtreme.rest.provider.test.DatabaseProviderTest.TestDatabaseProvider.Uris;
 
 public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider> {
 
 	public DatabaseProviderTest() {
 		super(TestDatabaseProvider.class, TestDatabaseProvider.AUTHORITY);
 	}
-
+	
 	public void testDatabaseExists() {
 		final TestDatabaseProvider provider = getProvider();
 		final SQLiteDatabase database = provider.getDatabase();
@@ -34,9 +38,37 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 		assertNotNull(database);
 	}
 	
+	public void testDatabaseApplyBatchNullOperations() {
+		try {
+			getProvider().applyBatch(null);
+			Assert.fail();
+		} catch (final Exception e) {
+			assertNotNull(e);
+		}
+	}
+	
+	public void testDatabaseApplyBatchEmptyOperations() {
+		try {
+			final ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+			getProvider().applyBatch(operations);
+		} catch (final Exception e) {
+			Assert.fail();
+		}
+	}
+	
+	public void testDatabaseDefaultConfiguration() {
+		final DatabaseProvider provider = new DatabaseProvider() {
+			@Override 
+			public boolean onCreate() { 
+				return true; 
+			}
+		};
+		final DatabaseConfiguration config = provider.onCreateDatabaseConfiguration();
+		assertNotNull(config);
+	}
+	
 	
 	// ==================================
-	
 	
 	
 	public static class TestDatabaseProvider extends DatabaseProvider {

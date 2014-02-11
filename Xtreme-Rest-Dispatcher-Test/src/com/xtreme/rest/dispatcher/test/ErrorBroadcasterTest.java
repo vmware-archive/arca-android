@@ -17,7 +17,7 @@ import com.xtreme.rest.dispatcher.ErrorBroadcaster;
 import com.xtreme.rest.dispatcher.ErrorListener;
 import com.xtreme.rest.dispatcher.ErrorReceiver;
 
-public class ContentBroadcasterTest extends AndroidTestCase {
+public class ErrorBroadcasterTest extends AndroidTestCase {
 
 	private static final Uri URI = Uri.parse("content://empty");
 	

@@ -1,6 +1,6 @@
 package com.xtreme.rest.dispatcher;
 
-abstract class Result<T> {
+public abstract class Result<T> {
 
 	private final T mData;
 	private final Error mError;

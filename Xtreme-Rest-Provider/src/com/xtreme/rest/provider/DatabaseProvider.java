@@ -70,7 +70,7 @@ public abstract class DatabaseProvider extends DatasetProvider {
 		return mDatabase;
 	}
 
-	protected void destroyDatabase() {
+	protected void closeDatabase() {
 		synchronized (this) {
 			if (mDatabase != null) {
 				mDatabase.close();

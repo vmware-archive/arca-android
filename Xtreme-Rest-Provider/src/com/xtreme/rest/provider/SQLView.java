@@ -7,22 +7,22 @@ public abstract class SQLView extends SQLDataset {
 	
 	@Override
 	public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
-		throw new UnsupportedOperationException("\"Delete\" cannot be called on a view!");
+		throw new UnsupportedOperationException("A SQLView does not support delete operations.");
 	}
 
 	@Override
 	public int update(final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {
-		throw new UnsupportedOperationException("\"Update\" cannot be called on a view!");
+		throw new UnsupportedOperationException("A SQLView does not support update operations.");
 	}
 
 	@Override
 	public int bulkInsert(final Uri uri, final ContentValues[] values) {
-		throw new UnsupportedOperationException("\"Bulk Insert\" cannot be called on a view!");
+		throw new UnsupportedOperationException("A SQLView does not support bulk insert operations.");
 	}
 
 	@Override
 	public Uri insert(final Uri uri, final ContentValues values) {
-		throw new UnsupportedOperationException("\"Insert\" cannot be called on a view!");
+		throw new UnsupportedOperationException("A SQLView does not support insert operations.");
 	}
 
 }

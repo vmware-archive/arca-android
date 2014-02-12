@@ -3,7 +3,6 @@ package com.xtreme.rest.provider;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Column {
 
 	public static enum Type {

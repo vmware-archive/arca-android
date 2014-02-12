@@ -15,12 +15,14 @@ import com.xtreme.rest.provider.DatabaseConfiguration.DefaultDatabaseConfigurati
 import com.xtreme.rest.provider.DatabaseHelper;
 import com.xtreme.rest.provider.SQLDataset;
 import com.xtreme.rest.provider.SQLTable;
+import com.xtreme.rest.provider.SQLView;
 
-public class SQLTableTest extends AndroidTestCase {
+public class SQLViewTest extends AndroidTestCase {
 
 	private static final Uri URI = Uri.EMPTY;
 	private static final ContentValues VALUES = new ContentValues();
 	private static final TestSQLTable TABLE = new TestSQLTable();
+	private static final TestSQLView VIEW = new TestSQLView();
 	private static final Collection<SQLDataset> DATASETS = new ArrayList<SQLDataset>();
 	
 	static {
@@ -29,6 +31,7 @@ public class SQLTableTest extends AndroidTestCase {
 	
 	static {
 		DATASETS.add(TABLE);
+		DATASETS.add(VIEW);
 	}
 	
 	private SQLiteDatabase mDatabase;
@@ -46,92 +49,61 @@ public class SQLTableTest extends AndroidTestCase {
 		deleteDatabase();
 	}
 	
-	public void testSQLTableQuery() {
-		testSQLTableInsert();
-		
+	public void testSQLViewQuery() {
 		TABLE.setDatabase(mDatabase);
-		final Cursor cursor = TABLE.query(URI, null, null, null, null);
+		final Uri uri = TABLE.insert(URI, VALUES);
+		assertNotNull(uri);
+		
+		VIEW.setDatabase(mDatabase);
+		final Cursor cursor = VIEW.query(URI, null, null, null, null);
 		assertEquals(1, cursor.getCount());
 		cursor.getColumnIndexOrThrow("id");
 		cursor.close();
 	}
-
-	public void testSQLTableUpdate() {
-		testSQLTableInsert();
-		
-		TABLE.setDatabase(mDatabase);
-		final int updated = TABLE.update(URI, VALUES, null, null);
-		assertEquals(1, updated);
-	}
-
-	public void testSQLTableInsert() {
-		TABLE.setDatabase(mDatabase);
-		final Uri uri = TABLE.insert(URI, VALUES);
-		assertNotNull(uri);
-	}
-
-	public void testSQLTableBulkInsert() {
-		TABLE.setDatabase(mDatabase);
-		final ContentValues[] values = new ContentValues[] { VALUES };
-		final int inserted = TABLE.bulkInsert(URI, values);
-		assertEquals(1, inserted);
-	}
-
-	public void testSQLTableDelete() {
-		testSQLTableInsert();
-		
-		TABLE.setDatabase(mDatabase);
-		final int deleted = TABLE.delete(URI, null, null);
-		assertEquals(1, deleted);
-	}
 	
-	public void testSQLTableQueryThrowsExceptionWithoutDatabase() {
+	public void testSQLViewQueryThrowsExceptionWithoutDatabase() {
 		try {
-			TABLE.setDatabase(null);
-			TABLE.query(null, null, null, null, null);
+			VIEW.setDatabase(null);
+			VIEW.query(null, null, null, null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
+		} catch(final Exception e) {
 			assertEquals("Database is null.", e.getLocalizedMessage());
 		}
 	}
 	
-	public void testSQLTableUpdateThrowsExceptionWithoutDatabase() {
+	public void testSQLViewUpdateThrowsException() {
 		try {
-			TABLE.setDatabase(null);
-			TABLE.update(null, null, null, null);
+			VIEW.update(null, null, null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
-			assertEquals("Database is null.", e.getLocalizedMessage());
+		} catch(final Exception e) {
+			assertEquals("A SQLView does not support update operations.", e.getLocalizedMessage());
 		}
 	}
 	
-	public void testSQLTableInsertThrowsExceptionWithoutDatabase() {
+	public void testSQLViewInsertThrowsException() {
 		try {
-			TABLE.setDatabase(null);
-			TABLE.insert(null, null);
+			VIEW.insert(null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
-			assertEquals("Database is null.", e.getLocalizedMessage());
+		} catch(final UnsupportedOperationException e) {
+			assertEquals("A SQLView does not support insert operations.", e.getLocalizedMessage());
 		}
 	}
 	
-	public void testSQLTableBulkInsertThrowsExceptionWithoutDatabase() {
+	public void testSQLViewBulkInsertThrowsException() {
 		try {
-			TABLE.setDatabase(null);
-			TABLE.bulkInsert(null, null);
+			VIEW.bulkInsert(null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
-			assertEquals("Database is null.", e.getLocalizedMessage());
+		} catch(final UnsupportedOperationException e) {
+			assertEquals("A SQLView does not support bulk insert operations.", e.getLocalizedMessage());
 		}
 	}
 	
-	public void testSQLTableDeleteThrowsExceptionWithoutDatabase() {
+	public void testSQLViewDeleteThrowsException() {
 		try {
-			TABLE.setDatabase(null);
-			TABLE.delete(null, null, null);
+			VIEW.delete(null, null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
-			assertEquals("Database is null.", e.getLocalizedMessage());
+		} catch(final UnsupportedOperationException e) {
+			assertEquals("A SQLView does not support delete operations.", e.getLocalizedMessage());
 		}
 	}
 	
@@ -153,7 +125,6 @@ public class SQLTableTest extends AndroidTestCase {
 	public void closeDatabase() {
 		if (mDatabase.isOpen()) { 
 			mDatabase.close();
-			mDatabase = null;
 		}
 	}
 	
@@ -170,6 +141,24 @@ public class SQLTableTest extends AndroidTestCase {
 		@Override
 		public void onDrop(final SQLiteDatabase db) {
 			db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
+		}
+		
+		@Override
+		public void setDatabase(final SQLiteDatabase db) {
+			super.setDatabase(db);
+		}
+	}
+	
+	private static final class TestSQLView extends SQLView {
+
+		@Override
+		public void onCreate(final SQLiteDatabase db) {
+			db.execSQL(String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM %s;", getName(), TestSQLTable.class.getSimpleName()));
+		}
+
+		@Override
+		public void onDrop(final SQLiteDatabase db) {
+			db.execSQL(String.format("DROP VIEW IF EXISTS %s;", getName()));
 		}
 		
 		@Override

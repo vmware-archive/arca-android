@@ -25,10 +25,17 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 		super(TestDatabaseProvider.class, TestDatabaseProvider.AUTHORITY);
 	}
 	
-	public void testDatabaseExists() {
+	public void testDatabaseOpened() {
 		final TestDatabaseProvider provider = getProvider();
 		final SQLiteDatabase database = provider.getDatabase();
-		assertNotNull(database);
+		assertTrue(database.isOpen());
+	}
+	
+	public void testDatabaseClosed() {
+		final TestDatabaseProvider provider = getProvider();
+		final SQLiteDatabase database = provider.getDatabase();
+		provider.closeDatabase();
+		assertTrue(!database.isOpen());
 	}
 	
 	public void testDatasetIsGivenTheDatabase() {
@@ -56,7 +63,7 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 		}
 	}
 	
-	public void testDatabaseDefaultConfiguration() {
+	public void testDatabaseHasDefaultConfiguration() {
 		final DatabaseProvider provider = new DatabaseProvider() {
 			@Override 
 			public boolean onCreate() { 
@@ -106,6 +113,11 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 		public SQLiteDatabase getDatabase() {
 			return super.getDatabase();
 		}
+		
+		@Override
+		public void closeDatabase() {
+			super.closeDatabase();
+		}
 	}
 	
 	public static class TestDatabaseConfiguration extends DefaultDatabaseConfiguration {
@@ -141,7 +153,6 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 		public SQLiteDatabase getDatabase() {
 			return super.getDatabase();
 		}
-
 	}
 	
 	public static class TestTable2 implements Dataset {

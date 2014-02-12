@@ -9,41 +9,63 @@ public abstract class SQLTable extends SQLDataset {
 	
 	@Override
 	public int update(final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {
-		return getDatabase().update(getName(), values, selection, selectionArgs);
+		final SQLiteDatabase database = getDatabase();
+		if (database != null) {
+			return database.update(getName(), values, selection, selectionArgs);
+		} else {
+			throw new IllegalStateException("Database is null.");
+		}
 	}
 
 	@Override
 	public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
-		return getDatabase().delete(getName(), selection, selectionArgs);
+		final SQLiteDatabase database = getDatabase();
+		if (database != null) {
+			return database.delete(getName(), selection, selectionArgs);
+		} else {
+			throw new IllegalStateException("Database is null.");
+		}
 	}
 
 	@Override
 	public Uri insert(final Uri uri, final ContentValues values) {
-		final long id = getDatabase().insert(getName(), null, values);
-		return ContentUris.withAppendedId(uri, id);
+		final SQLiteDatabase database = getDatabase();
+		if (database != null) {
+			final long id = database.insert(getName(), null, values);
+			return ContentUris.withAppendedId(uri, id);
+		} else {
+			throw new IllegalStateException("Database is null.");
+		}
 	}
 	
 	@Override
 	public int bulkInsert(final Uri uri, final ContentValues[] values) {
 		final SQLiteDatabase database = getDatabase();
+		if (database != null) {
+			return insertWithTransaction(database, getName(), values);
+		} else {
+			throw new IllegalStateException("Database is null.");
+		}
+	}
+
+	private static int insertWithTransaction(final SQLiteDatabase database, final String name, final ContentValues[] values) {
 		database.beginTransaction();
 		try {
-			final String name = getName();
-			final int numInserted = insert(database, name, values);
+			final int inserted = insert(database, name, values);
 			database.setTransactionSuccessful();
-			return numInserted;
+			return inserted;
 		} finally {
 			database.endTransaction();
 		}
 	}
 
 	private static int insert(final SQLiteDatabase database, final String name, final ContentValues[] values) {
-		int numInserted = 0;
+		int inserted = 0;
 		for (final ContentValues value : values) {
 			if (database.insert(name, null, value) > -1) {
-				numInserted++;
+				inserted++;
 			}
 		}
-		return numInserted;
+		return inserted;
 	}
 }

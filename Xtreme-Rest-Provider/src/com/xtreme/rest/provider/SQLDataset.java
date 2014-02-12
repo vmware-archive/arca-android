@@ -61,7 +61,12 @@ public abstract class SQLDataset implements Dataset {
 
 	@Override
 	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
-		return getDatabase().query(getName(), projection, selection, selectionArgs, null, null, sortOrder);
+		final SQLiteDatabase database = getDatabase();
+		if (database != null) {
+			return database.query(getName(), projection, selection, selectionArgs, null, null, sortOrder);
+		} else {
+			throw new IllegalStateException("Database is null.");
+		}
 	}
 	
 }

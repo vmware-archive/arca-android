@@ -28,7 +28,7 @@ public class DatabaseConfigurationTest extends AndroidTestCase {
 	public void testDatabaseCursorFactory() {
 		final DatabaseConfiguration config = new DefaultDatabaseConfiguration(getContext());
 		final CursorFactory factory = config.getCursorFactory();
-		assertNotNull(factory);
+		assertNull(factory);
 	}
 	
 	public void testDatabaseErrorHandler() {

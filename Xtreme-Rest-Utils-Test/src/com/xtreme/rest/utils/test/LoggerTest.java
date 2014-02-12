@@ -1,4 +1,4 @@
-package com.xtreme.rest.utils.test.cases;
+package com.xtreme.rest.utils.test;
 
 import android.test.AndroidTestCase;
 
@@ -26,7 +26,6 @@ public class LoggerTest extends AndroidTestCase {
 	}
 	
 	public void testLoggerLogLevel() {
-		assertNotNull(new Logger.Level());
 		assertEquals(0, Logger.Level.ERROR);
 		assertEquals(1, Logger.Level.WARNING);
 		assertEquals(2, Logger.Level.INFO);

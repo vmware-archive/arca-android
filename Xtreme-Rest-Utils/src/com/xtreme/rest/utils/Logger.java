@@ -8,7 +8,7 @@ import android.util.Log;
 public enum Logger {
 	INSTANCE;
 
-	public static final class Level {
+	public static interface Level {
 		public static final int ERROR = 0;
 		public static final int WARNING = 1;
 		public static final int INFO = 2;

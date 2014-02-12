@@ -1,4 +1,4 @@
-package com.xtreme.rest.sync.test.cases;
+package com.xtreme.rest.sync.test;
 
 import android.test.AndroidTestCase;
 

@@ -61,7 +61,7 @@ public interface DatasetMatcher {
 		
 		@Override
 		public Collection<Dataset> getDatasets() {
-			return mDatasetMapping.collect();
+			return mDatasetMapping.values();
 		}
 	}
 }

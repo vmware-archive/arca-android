@@ -14,7 +14,7 @@ public class StringUtils {
 	}
 	
 	public static String left(final String s, final int n) {
-		if (s != null) {
+		if (s != null && n >= 0) {
 			return s.substring(0, Math.min(s.length(), n));
 		} else {
 			return "";
@@ -22,7 +22,7 @@ public class StringUtils {
 	}
 	
 	public static String right(final String s, final int n) {
-		if (s != null) {
+		if (s != null && n >= 0) {
 			final int length = s.length();
 			return s.substring(length - Math.min(length, n), length);
 		} else {
@@ -47,7 +47,7 @@ public class StringUtils {
 
 		final StringBuffer buffer = new StringBuffer();
 		for (final T t : s) {
-			if (buffer.length() > 0) {
+			if (buffer.length() > 0 && delimiter != null) {
 				buffer.append(delimiter);
 			}
 			buffer.append(t.toString());
@@ -61,7 +61,7 @@ public class StringUtils {
 
 		final StringBuffer buffer = new StringBuffer();
 		for (final T t : s) {
-			if (buffer.length() > 0) {
+			if (buffer.length() > 0 && delimiter != null) {
 				buffer.append(delimiter);
 			}
 			buffer.append(t.toString());

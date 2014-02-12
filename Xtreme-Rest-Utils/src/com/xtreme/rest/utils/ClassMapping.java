@@ -12,7 +12,18 @@ public class ClassMapping<T> extends SparseArray<T> {
 
 	public void append(final int index, final Class<? extends T> klass) {
 		final T instance = getOrCreateFromMap(klass);
-		append(index, instance);
+		if (instance != null) {
+			removeExistingFromMapIfNeeded(index);
+			append(index, instance);
+		}
+	}
+
+	private void removeExistingFromMapIfNeeded(final int index) {
+		final T existing = get(index);
+		if (existing != null) {
+			final String name = existing.getClass().getName();
+			mObjects.remove(name);
+		}
 	}
 
 	private T getOrCreateFromMap(final Class<? extends T> klass) {
@@ -25,13 +36,23 @@ public class ClassMapping<T> extends SparseArray<T> {
 	}
 
 	private T createAndAddToMap(final Class<? extends T> klass) {
-		final T instance = ClassUtils.getInstance(klass);
-		mObjects.put(klass.getName(), instance);
+		final T instance = newInstance(klass);
+		if (instance != null) {
+			mObjects.put(klass.getName(), instance);
+		}
 		return instance;
 	}
 
-	public Collection<T> collect() {
+	public Collection<T> values() {
 		return mObjects.values();
+	}
+	
+	private static <T> T newInstance(final Class<T> klass) {
+		try {
+			return klass.newInstance();
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 }

@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.xtreme.rest.dispatcher.ContentBroadcaster;
+import com.xtreme.rest.dispatcher.ErrorBroadcaster;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
@@ -48,7 +48,7 @@ public class MovieOperation extends Operation {
 	public void onFailure(final Context context, final ServiceError error) {
 		final int errorCode = error.getCode();
 		final String errorMessage = error.getMessage();
-		ContentBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
+		ErrorBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
 	}
 	
 	public static final Parcelable.Creator<MovieOperation> CREATOR = new Parcelable.Creator<MovieOperation>() {

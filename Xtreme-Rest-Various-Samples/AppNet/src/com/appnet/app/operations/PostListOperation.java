@@ -10,8 +10,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.appnet.app.providers.AppNetUriCache;
-import com.xtreme.rest.dispatcher.ContentBroadcaster;
+import com.xtreme.rest.dispatcher.ErrorBroadcaster;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.Task;
@@ -41,18 +40,15 @@ public class PostListOperation extends Operation {
 
 	@Override
 	public void onSuccess(final Context context, final List<Task<?>> completed) {
-		final Uri uri = getUri();
-		AppNetUriCache.add(uri);
-		
 		final ContentResolver resolver = context.getContentResolver();
-		resolver.notifyChange(uri, null);
+		resolver.notifyChange(getUri(), null);
 	}
 
 	@Override
 	public void onFailure(final Context context, final ServiceError error) {
 		final int errorCode = error.getCode();
 		final String errorMessage = error.getMessage();
-		ContentBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
+		ErrorBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
 	}
 	
 	public static final Parcelable.Creator<PostListOperation> CREATOR = new Parcelable.Creator<PostListOperation>() {

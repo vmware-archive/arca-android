@@ -7,11 +7,11 @@ import android.test.AndroidTestCase;
 import com.xtreme.rest.service.NetworkRequest;
 import com.xtreme.rest.service.ProcessingRequest;
 import com.xtreme.rest.service.RequestExecutor;
+import com.xtreme.rest.service.RequestExecutor.SerialRequestExecutor;
 import com.xtreme.rest.service.ServiceError;
 import com.xtreme.rest.service.ServiceException;
 import com.xtreme.rest.service.Task;
 import com.xtreme.rest.service.TaskObserver;
-import com.xtreme.rest.service.test.mock.TestRequestExecutor;
 import com.xtreme.rest.service.test.mock.TestTask;
 import com.xtreme.rest.service.test.mock.TestTaskFactory;
 import com.xtreme.rest.service.test.utils.AssertionLatch;
@@ -441,7 +441,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskCompleted() {
 		final ObserverCounter latch = new ObserverCounter(1, 1, 0);
 		final TestTask task = TestTaskFactory.newTask();
-		task.setRequestExecutor(new TestRequestExecutor());
+		task.setRequestExecutor(new SerialRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -473,7 +473,7 @@ public class TaskTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task.setRequestExecutor(new TestRequestExecutor());
+		task.setRequestExecutor(new SerialRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -505,7 +505,7 @@ public class TaskTest extends AndroidTestCase {
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
-		task.setRequestExecutor(new TestRequestExecutor());
+		task.setRequestExecutor(new SerialRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -536,7 +536,7 @@ public class TaskTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final Exception exception = new Exception(ERROR);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task.setRequestExecutor(new TestRequestExecutor());
+		task.setRequestExecutor(new SerialRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override
@@ -568,7 +568,7 @@ public class TaskTest extends AndroidTestCase {
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestTask task = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task.setRequestExecutor(new TestRequestExecutor());
+		task.setRequestExecutor(new SerialRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
 			@Override

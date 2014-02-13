@@ -12,7 +12,22 @@ public interface RequestExecutor {
 	public void executeNetworkRequest(NetworkRequest<?> request);
 	public void executeProcessingRequest(ProcessingRequest<?> request);
 	
-	public static class DefaultRequestExecutor implements AuxiliaryExecutorObserver, RequestExecutor, RequestObserver {
+	public static class SerialRequestExecutor implements RequestExecutor {
+
+		@Override
+		public void executeNetworkRequest(final NetworkRequest<?> request) {
+			request.run();
+			request.notifyComplete(request.getData(), request.getError());
+		}
+
+		@Override
+		public void executeProcessingRequest(final ProcessingRequest<?> request) {
+			request.run();
+			request.notifyComplete(request.getError());
+		}
+	}
+	
+	public static class ThreadedRequestExecutor implements RequestExecutor, RequestObserver, AuxiliaryExecutorObserver {
 		
 		public static interface Config {
 			public static final int NUM_NETWORK_THREADS = 2;
@@ -26,7 +41,7 @@ public interface RequestExecutor {
 		private final AuxiliaryExecutor mNetworkExecutor;
 		private final AuxiliaryExecutor mProcessingExecutor;
 		
-		public DefaultRequestExecutor() {
+		public ThreadedRequestExecutor() {
 			mNetworkExecutor = onCreateNetworkExecutor();
 			mProcessingExecutor = onCreateProcessingExecutor();
 		}
@@ -48,7 +63,7 @@ public interface RequestExecutor {
 		// ======================================================
 
 		public int getRequestCount() {
-			synchronized (DefaultRequestExecutor.this) {
+			synchronized (ThreadedRequestExecutor.this) {
 				final int networkCount = mNetworkExecutor.getQueue().size() + mNetworkExecutor.getActiveCount();
 				final int processingCount = mProcessingExecutor.getQueue().size() + mProcessingExecutor.getActiveCount();
 				return networkCount + processingCount;
@@ -63,7 +78,7 @@ public interface RequestExecutor {
 
 		@Override
 		public void executeNetworkRequest(final NetworkRequest<?> request) {
-			synchronized (DefaultRequestExecutor.this) {
+			synchronized (ThreadedRequestExecutor.this) {
 				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
 				mNetworkMap.add(identifier, request);
 				mNetworkExecutor.execute(request);
@@ -72,7 +87,7 @@ public interface RequestExecutor {
 		
 		@Override
 		public void executeProcessingRequest(final ProcessingRequest<?> request) {
-			synchronized (DefaultRequestExecutor.this) {
+			synchronized (ThreadedRequestExecutor.this) {
 				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
 				mProcessingMap.add(identifier, request);
 				mProcessingExecutor.execute(request);
@@ -105,7 +120,7 @@ public interface RequestExecutor {
 		
 		@Override
 		public void onNetworkRequestComplete(final NetworkRequest<?> request) {
-			synchronized (DefaultRequestExecutor.this) {
+			synchronized (ThreadedRequestExecutor.this) {
 				final Object data = request.getData();
 				final ServiceError error = request.getError();
 				
@@ -122,7 +137,7 @@ public interface RequestExecutor {
 		
 		@Override
 		public void onProcessingRequestComplete(final ProcessingRequest<?> request) {
-			synchronized (DefaultRequestExecutor.this) {
+			synchronized (ThreadedRequestExecutor.this) {
 				final ServiceError error = request.getError();
 
 				final RequestIdentifier<?> identifier = request.getRequestIdentifier();

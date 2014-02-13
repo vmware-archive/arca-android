@@ -7,7 +7,7 @@ import android.os.IBinder;
 
 import com.xtreme.rest.service.OperationHandler.HandlerState;
 import com.xtreme.rest.service.OperationHandler.OnStateChangeListener;
-import com.xtreme.rest.service.RequestExecutor.DefaultRequestExecutor;
+import com.xtreme.rest.service.RequestExecutor.ThreadedRequestExecutor;
 import com.xtreme.rest.utils.Logger;
 
 /**
@@ -81,7 +81,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 
 	protected OperationHandler onCreateOperationHandler() {
 		final Context context = getApplicationContext();
-		final RequestExecutor executor = new DefaultRequestExecutor();
+		final RequestExecutor executor = new ThreadedRequestExecutor();
 		final OperationHandler handler = new OperationHandler(context, executor);
 		handler.setOnStateChangeListener(this);
 		return handler;

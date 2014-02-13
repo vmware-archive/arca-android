@@ -3,6 +3,7 @@ package com.xtreme.rest.service.test.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xtreme.rest.service.RequestExecutor.SerialRequestExecutor;
 import com.xtreme.rest.service.Task;
 import com.xtreme.threading.RequestIdentifier;
 
@@ -29,7 +30,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithPrerequisites() {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 		
 		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
 		task1.setRequestExecutor(executor);
@@ -46,7 +47,7 @@ public class TestTaskFactory {
 	}
 
 	public static List<Task<?>> newTaskListWithPrerequisitesFirstTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task1 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
 		task1.setRequestExecutor(executor);
@@ -63,7 +64,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithPrerequisitesSecondTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
 		task1.setRequestExecutor(executor);
@@ -80,7 +81,7 @@ public class TestTaskFactory {
 	}
 
 	public static List<Task<?>> newTaskListWithPrerequisitesFirstTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 		
 		final TestTask task1 = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
 		task1.setRequestExecutor(executor);
@@ -97,7 +98,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithPrerequisitesSecondTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 		
 		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
 		task1.setRequestExecutor(executor);
@@ -114,7 +115,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependants() {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
 		task2.setRequestExecutor(executor);
@@ -131,7 +132,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsFirstTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
 		task2.setRequestExecutor(executor);
@@ -148,7 +149,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsSecondTaskFailsWithNetworkException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
 		task2.setRequestExecutor(executor);
@@ -165,7 +166,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsFirstTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
 		task2.setRequestExecutor(executor);
@@ -182,7 +183,7 @@ public class TestTaskFactory {
 	}
 	
 	public static List<Task<?>> newTaskListWithDependantsSecondTaskFailsWithProcessingException(final Exception exception) {
-		final TestRequestExecutor executor = new TestRequestExecutor();
+		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
 		task2.setRequestExecutor(executor);

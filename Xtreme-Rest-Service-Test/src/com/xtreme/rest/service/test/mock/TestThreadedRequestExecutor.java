@@ -1,9 +1,9 @@
 package com.xtreme.rest.service.test.mock;
 
-import com.xtreme.rest.service.RequestExecutor.DefaultRequestExecutor;
+import com.xtreme.rest.service.RequestExecutor.ThreadedRequestExecutor;
 import com.xtreme.threading.AuxiliaryExecutor;
 
-public class TestDefaultRequestExecutor extends DefaultRequestExecutor {
+public class TestThreadedRequestExecutor extends ThreadedRequestExecutor {
 	
 	@Override
 	protected AuxiliaryExecutor onCreateNetworkExecutor() {

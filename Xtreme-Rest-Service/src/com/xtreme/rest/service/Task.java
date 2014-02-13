@@ -17,7 +17,7 @@ import com.xtreme.threading.RequestIdentifier;
 /**
  * A Task consists of two components: a network request, and a processing request.</br>
  * The network request occurs in {@link #onExecuteNetworkRequest(Context)} and is used to download data from a network,
- * and is then parsed into the generic specified. The processing request then processes the data stores it if necessary.</br>
+ * and is then parsed into the generic specified. The processing request then processes the data and stores it if necessary.</br>
  * </br>
  * Please keep in mind that no CPU-intensive processing should happen in {@link #onExecuteNetworkRequest(Context)}, as that
  * may cause UI lag. All of that work should be done in {@link #onExecuteProcessingRequest(Context, Object)}.

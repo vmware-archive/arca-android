@@ -9,7 +9,7 @@ import android.os.Message;
 
 public class OperationHandler extends Handler implements OperationObserver {
 
-	private static final int NOTIFY_COMPLETE = 100;
+	private static final int MSG_NOTIFY_COMPLETE = 100;
 
 	public static enum HandlerState {
 		IDLE, RUNNING
@@ -79,13 +79,13 @@ public class OperationHandler extends Handler implements OperationObserver {
 
 	@Override
 	public void onOperationComplete(final Operation operation) {
-		final Message message = obtainMessage(NOTIFY_COMPLETE, operation);
+		final Message message = obtainMessage(MSG_NOTIFY_COMPLETE, operation);
 		sendMessage(message);
 	}
 	
 	@Override
 	public void handleMessage(final Message msg) {
-		if (msg.what == NOTIFY_COMPLETE) {
+		if (msg.what == MSG_NOTIFY_COMPLETE) {
 			final Operation operation = (Operation) msg.obj;
 			finish(operation);
 		}

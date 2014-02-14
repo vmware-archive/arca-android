@@ -5,13 +5,13 @@
 # CrunchBaseApi.java
 
 # ==================================
-# built application files
+# Built application files
 # ==================================
 *.apk
 *.ap_
 
 # ==================================
-# files for the dex VM
+# Files for the dex VM
 # ==================================
 *.dex
 
@@ -21,7 +21,7 @@
 *.class
 
 # ==================================
-# generated files
+# Generated files
 # ==================================
 bin/
 gen/
@@ -33,6 +33,7 @@ local.properties
 *.DS_Store
 
 # ==================================
-# Compiled python classes
+# Ant files
 # ==================================
-*.pyc
+build.xml
+ant.properties

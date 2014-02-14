@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 
-import com.xtreme.rest.service.NetworkRequest;
+import com.xtreme.rest.service.NetworkingRequest;
 import com.xtreme.rest.service.Operation;
 import com.xtreme.rest.service.OperationObserver;
 import com.xtreme.rest.service.ProcessingRequest;
@@ -40,8 +40,8 @@ public class OperationTest extends AndroidTestCase {
 		operation.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				fail();
 			}
@@ -58,14 +58,14 @@ public class OperationTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testOperationExecutesTaskNetworkRequest() {
+	public void testOperationExecutesTaskNetworkingRequest() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
 		operation.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertNotNull(request);
 			}
@@ -88,8 +88,8 @@ public class OperationTest extends AndroidTestCase {
 		operation.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(null, null);
 			}
@@ -148,7 +148,7 @@ public class OperationTest extends AndroidTestCase {
 	public void testOperationExecutedTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final Exception exception = new Exception(ERROR);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -169,7 +169,7 @@ public class OperationTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -189,7 +189,7 @@ public class OperationTest extends AndroidTestCase {
 	public void testOperationExecutedTaskFailsWithProcessingError() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final Exception exception = new Exception(ERROR);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -210,7 +210,7 @@ public class OperationTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -237,8 +237,8 @@ public class OperationTest extends AndroidTestCase {
 		operation.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				fail();
 			}
@@ -255,14 +255,14 @@ public class OperationTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testOperationWithTaskExecutesNetworkRequest() {
+	public void testOperationWithTaskExecutesNetworkingRequest() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestOperation operation = TestOperationFactory.newOperationWithTask();
 		operation.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertNotNull(request);
 			}
@@ -285,8 +285,8 @@ public class OperationTest extends AndroidTestCase {
 		operation.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(null, null);
 			}
@@ -345,7 +345,7 @@ public class OperationTest extends AndroidTestCase {
 	public void testOperationWithTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
 
@@ -365,7 +365,7 @@ public class OperationTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
 
@@ -443,7 +443,7 @@ public class OperationTest extends AndroidTestCase {
 	public void testOperationWithTaskPrerequisitesFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
 
@@ -463,7 +463,7 @@ public class OperationTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
 
@@ -539,7 +539,7 @@ public class OperationTest extends AndroidTestCase {
 	public void testOperationWithTaskDependantsFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
 
@@ -559,7 +559,7 @@ public class OperationTest extends AndroidTestCase {
 		final ObserverCounter latch = new ObserverCounter(1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsNetworkException(exception);
+		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependantsThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
 
@@ -673,7 +673,7 @@ public class OperationTest extends AndroidTestCase {
 			mProcessingLatch = new AssertionLatch(processingCount);
 		}
 		
-		public void executeNetworkRequest() {
+		public void executeNetworkingRequest() {
 			mNetworkLatch.countDown();
 		}
 		

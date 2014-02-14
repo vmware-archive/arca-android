@@ -29,13 +29,13 @@ public class MovieListTask extends Task<List<Movie>> {
 	}
 	
 	@Override
-	public List<Movie> onExecuteNetworkRequest(final Context context) throws Exception {
+	public List<Movie> onExecuteNetworking(final Context context) throws Exception {
 		final MoviesResponse response = RottenTomatoesRequests.getMovieList(mType, 50, "ca");
 		return response.getMovies();
 	}
 
 	@Override
-	public void onExecuteProcessingRequest(final Context context, final List<Movie> data) throws Exception {
+	public void onExecuteProcessing(final Context context, final List<Movie> data) throws Exception {
 		final ContentResolver resolver = context.getContentResolver();
 		
 		final ContentValues[] movieValues = MovieTable.getContentValues(data);

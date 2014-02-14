@@ -1,6 +1,5 @@
 package com.xtreme.rest.service;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,17 +14,19 @@ import com.xtreme.threading.AuxiliaryExecutor;
 import com.xtreme.threading.RequestIdentifier;
 
 /**
- * A Task consists of two components: a network request, and a processing request.</br>
- * The network request occurs in {@link #onExecuteNetworkRequest(Context)} and is used to download data from a network,
- * and is then parsed into the generic specified. The processing request then processes the data and stores it if necessary.</br>
+ * A Task consists of two components: network and processing.</br>
  * </br>
- * Please keep in mind that no CPU-intensive processing should happen in {@link #onExecuteNetworkRequest(Context)}, as that
- * may cause UI lag. All of that work should be done in {@link #onExecuteProcessingRequest(Context, Object)}.
+ * The network component is performed in {@link #onExecuteNetworking(Context)} 
+ * and is used to download data from the network, then parse the data into the 
+ * generic specified. The processing component then stores the data if necessary.</br>
+ * </br>
+ * Please perform any CPU-intensive processing in {@link #onExecuteProcessing(Context, Object)}
+ * instead of {@link #onExecuteNetworking(Context)} as it may cause UI lag. This includes 
+ * any calls to the database.
  * 
- * @param <T> The type downloaded, parsed, and then returned from {@link #onExecuteNetworkRequest(Context)}. In most cases it is a model
- * class, but sometimes it may be a {@link String}.
+ * @param <T> The type downloaded, parsed, and returned from {@link #onExecuteNetworking(Context)}.
  */
-public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkRequestObserver<T>, ProcessingRequestExecutor<T>, ProcessingRequestObserver<T> {
+public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritizableObserver<T>, ProcessingTask<T>, ProcessingPrioritizableObserver<T> {
 
 	protected static interface Messages {
 		public static final String NO_EXECUTOR = "Cannot execute request. No request executor found.";
@@ -86,57 +87,56 @@ public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkReque
 			notifyFailure(error);
 		} else {
 			notifyStarted();
-			startNetworkRequest();
+			startNetworkingRequest();
 		}
 	}
 
 	// ======================================================
 	
 	/**
-	 * This method must return a globally unique {@link RequestIdentifier}. This is used within the {@link AuxiliaryExecutor}
-	 * and ensures that if more than one {@link Task} is processing the same data, only one actually executes and the results
-	 * are then shared among all {@link Operation}s "executing" that {@link Task}.
+	 * This method must return a globally unique {@link RequestIdentifier}. This is used within
+	 * the {@link AuxiliaryExecutor} and ensures that if more than one {@link Task} is processing 
+	 * the same data, only one actually executes and the results are then shared among all 
+	 * {@link Operation}s "executing" that {@link Task}.
 	 * 
 	 * @return The unique {@link RequestIdentifier}
 	 */
 	public abstract RequestIdentifier<?> onCreateIdentifier();
 	
 	/**
-	 * This method is meant to execute network-dependent code (or anything that yields the {@link Thread} frequently and is
-	 * light on the CPU). For example, this is where your model would be downloaded and parsed from the API.</br>
+	 * This method is meant to execute network-dependent code (or anything that yields the 
+	 * {@link Thread} frequently and is light on the CPU). For example, this is where your 
+	 * model would download data from some API.</br>
 	 * </br>
-	 * Note that you should try to parse straight from the {@link InputStream} instead of converting it to a {@link String}
-	 * and then parsing that. This is to avoid doing any CPU-intensive processing in this method, such as parsing or string
-	 * processing. If it is absolutely necessary, then use this method to only convert the {@link InputStream} to a {@link String},
-	 * and then process the {@link String} and parse it in {@link #onExecuteProcessingRequest(Context, Object)}. In this
-	 * case, you would want to make the generic for this class a {@link String}.</br>
-	 * </br>
-	 * All network processing must happen synchronously within this method.
+	 * Note: All processing should happen synchronously within this method.
 	 * 
 	 * @param context The context in which this {@link Task} is running
 	 * @return The result of the network request
 	 * @throws Exception
 	 */
-	public abstract T onExecuteNetworkRequest(Context context) throws Exception;
+	public abstract T onExecuteNetworking(Context context) throws Exception;
 
 	/**
-	 * This method is meant to execute CPU-intensive processing requests. For example, this is where one would process a {@link String} or
-	 * insert data into a {@link ContentProvider} backed by a {@link SQLiteDatabase} via the {@link ContentResolver}.</br>
+	 * This method is meant to execute CPU-intensive processing requests. For example, this 
+	 * is where one would process a {@link String} or insert data into a {@link ContentProvider} 
+	 * backed by a {@link SQLiteDatabase} via the {@link ContentResolver}.</br>
 	 * </br>
-	 * All processing must happen synchronously within this method.
+	 * Note: All processing should happen synchronously within this method.
 	 * 
 	 * @param context The context in which this {@link Task} is running
-	 * @param data The result returned from {@link #onExecuteNetworkRequest(Context)}
+	 * @param data The result returned from {@link #onExecuteNetworking(Context)}
 	 * @throws Exception
 	 */
-	public abstract void onExecuteProcessingRequest(Context context, T data) throws Exception;
+	public abstract void onExecuteProcessing(Context context, T data) throws Exception;
 
 	// ======================================================
 
 	/**
-	 * Adds a prerequisite. This {@link Task} will wait until all prerequisites are finished before being executed.</br>
+	 * Adds a prerequisite. This {@link Task} will wait until all prerequisites are 
+	 * finished before executing.</br>
 	 * </br>
-	 * Note that by adding a prerequisite, the necessary dependants are also added to the task parameter.
+	 * Note: By adding a prerequisite, the necessary dependants are also added 
+	 * to the task parameter.
 	 * 
 	 * @param task The prerequisite {@link Task}
 	 */
@@ -150,9 +150,11 @@ public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkReque
 	}
 
 	/**
-	 * Adds a dependant. The {@link Task} will notify all dependants when it has completed so they may execute.</br>
+	 * Adds a dependant. The {@link Task} will notify all dependants when it has completed 
+	 * so that they may execute.</br>
 	 * </br>
-	 * Note that by adding a dependant, the necessary prerequisites are also added to the task parameter.
+	 * Note: By adding a dependant, the necessary prerequisites are also added 
+	 * to the task parameter.
 	 * 
 	 * @param task The dependant {@link Task}
 	 */
@@ -199,28 +201,28 @@ public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkReque
 	
 	// ======================================================
 
-	private void startNetworkRequest() {
+	private void startNetworkingRequest() {
 		if (mExecutor != null) {
-			final NetworkRequestPrioritizable<T> prioritzable = new NetworkRequestPrioritizable<T>(this);
-			final NetworkRequest<T> request = new NetworkRequest<T>(prioritzable, mPriority.ordinal(), this);
-			mExecutor.executeNetworkRequest(request);
+			final NetworkingPrioritizable<T> prioritzable = new NetworkingPrioritizable<T>(this);
+			final NetworkingRequest<T> request = new NetworkingRequest<T>(prioritzable, mPriority.ordinal(), this);
+			mExecutor.executeNetworkingRequest(request);
 		} else {
 			notifyFailure(new ServiceError(Messages.NO_EXECUTOR));
 		}
 	}
 
 	@Override
-	public final T executeNetworkRequest() throws Exception {
-		return onExecuteNetworkRequest(mContext);
+	public final T executeNetworking() throws Exception {
+		return onExecuteNetworking(mContext);
 	}
 
 	@Override
-	public final void onNetworkRequestComplete(final T data) {
+	public final void onNetworkingComplete(final T data) {
 		startProcessingRequest(data);
 	}
 
 	@Override
-	public final void onNetworkRequestFailure(final ServiceError error) {
+	public final void onNetworkingFailure(final ServiceError error) {
 		notifyFailure(error);
 	}
 
@@ -228,7 +230,7 @@ public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkReque
 
 	private void startProcessingRequest(final T data) {
 		if (mExecutor != null) {
-			final ProcessingRequestPrioritizable<T> prioritizable = new ProcessingRequestPrioritizable<T>(this, data);
+			final ProcessingPrioritizable<T> prioritizable = new ProcessingPrioritizable<T>(this, data);
 			final ProcessingRequest<T> request = new ProcessingRequest<T>(prioritizable, mPriority.ordinal(), this);
 			mExecutor.executeProcessingRequest(request);
 		} else {
@@ -237,17 +239,17 @@ public abstract class Task<T> implements NetworkRequestExecutor<T>, NetworkReque
 	}
 
 	@Override
-	public final void executeProcessingRequest(final T data) throws Exception {
-		onExecuteProcessingRequest(mContext, data);
+	public final void executeProcessing(final T data) throws Exception {
+		onExecuteProcessing(mContext, data);
 	}
 
 	@Override
-	public final void onProcessingRequestComplete() {
+	public final void onProcessingComplete() {
 		notifyComplete();
 	}
 
 	@Override
-	public final void onProcessingRequestFailure(final ServiceError error) {
+	public final void onProcessingFailure(final ServiceError error) {
 		notifyFailure(error);
 	}
 

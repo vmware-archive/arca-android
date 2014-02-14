@@ -4,7 +4,7 @@ import java.util.List;
 
 import android.test.AndroidTestCase;
 
-import com.xtreme.rest.service.NetworkRequest;
+import com.xtreme.rest.service.NetworkingRequest;
 import com.xtreme.rest.service.ProcessingRequest;
 import com.xtreme.rest.service.RequestExecutor;
 import com.xtreme.rest.service.RequestExecutor.SerialRequestExecutor;
@@ -43,14 +43,14 @@ public class TaskTest extends AndroidTestCase {
 	
 	// =============================================
 	
-	public void testTaskExecutesNetworkRequest() {
+	public void testTaskExecutesNetworkingRequest() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertNotNull(request);
 			}
@@ -67,15 +67,15 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskExecutesNetworkRequestWithIdentifier() {
+	public void testTaskExecutesNetworkingRequestWithIdentifier() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
 		final TestTask task = TestTaskFactory.newTaskWithIdentifier(identifier);
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertEquals(identifier, request.getRequestIdentifier());
 			}
@@ -92,14 +92,14 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskExecutesNetworkRequestWithoutError() {
+	public void testTaskExecutesNetworkingRequestWithoutError() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertNull(request.getError());
 				
@@ -120,15 +120,15 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskExecutesNetworkRequestWithResult() {
+	public void testTaskExecutesNetworkingRequestWithResult() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final String networkResult = RESULT;
-		final TestTask task = TestTaskFactory.newTaskWithNetworkResult(networkResult);
+		final TestTask task = TestTaskFactory.newTaskWithNetworkingResult(networkResult);
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertNull(request.getData());
 				
@@ -149,15 +149,15 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskExecutesNetworkRequestWithError() {
+	public void testTaskExecutesNetworkingRequestWithError() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertNull(request.getError());
 				
@@ -178,16 +178,16 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskExecutesNetworkRequestWithCustomError() {
+	public void testTaskExecutesNetworkingRequestWithCustomError() {
 		final RequestCounter latch = new RequestCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				assertNull(request.getError());
 				
@@ -214,8 +214,8 @@ public class TaskTest extends AndroidTestCase {
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(null, null);
 			}
@@ -239,8 +239,8 @@ public class TaskTest extends AndroidTestCase {
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(null, null);
 			}
@@ -263,8 +263,8 @@ public class TaskTest extends AndroidTestCase {
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(null, null);
 			}
@@ -292,8 +292,8 @@ public class TaskTest extends AndroidTestCase {
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(networkResult, null);
 			}
@@ -317,8 +317,8 @@ public class TaskTest extends AndroidTestCase {
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(null, null);
 			}
@@ -347,8 +347,8 @@ public class TaskTest extends AndroidTestCase {
 		task.setRequestExecutor(new RequestExecutor() {
 
 			@Override
-			public void executeNetworkRequest(final NetworkRequest<?> request) {
-				latch.executeNetworkRequest();
+			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+				latch.executeNetworkingRequest();
 				
 				request.notifyComplete(null, null);
 			}
@@ -373,7 +373,7 @@ public class TaskTest extends AndroidTestCase {
 	// =============================================
 	
 	
-	public void testTaskFailsWithoutExecutorForNetworkRequest() {
+	public void testTaskFailsWithoutExecutorForNetworkingRequest() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestExecutor(null);
@@ -433,7 +433,7 @@ public class TaskTest extends AndroidTestCase {
 				assertEquals(TestTask.Messages.NO_EXECUTOR, e.getMessage());
 			}
 		});
-		task.onNetworkRequestComplete(null);
+		task.onNetworkingComplete(null);
 		latch.assertComplete();
 	}
 	
@@ -469,10 +469,10 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskFailedNetworkRequestWithError() {
+	public void testTaskFailedNetworkingRequestWithError() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final Exception exception = new Exception(ERROR);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task.setRequestExecutor(new SerialRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
@@ -500,11 +500,11 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskFailedNetworkRequestWithCustomError() {
+	public void testTaskFailedNetworkingRequestWithCustomError() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 1);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
-		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task.setRequestExecutor(new SerialRequestExecutor());
 		task.setTaskObserver(new TaskObserver() {
 
@@ -639,7 +639,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskPrerequisitesFirstTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesFirstTaskFailsWithNetworkException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesFirstTaskFailsWithNetworkingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -677,7 +677,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskPrerequisitesSecondTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesSecondTaskFailsWithNetworkException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithPrerequisitesSecondTaskFailsWithNetworkingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -832,7 +832,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskDependantsFirstTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithNetworkException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithNetworkingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -870,7 +870,7 @@ public class TaskTest extends AndroidTestCase {
 	public void testTaskDependantsSecondTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsSecondTaskFailsWithNetworkException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsSecondTaskFailsWithNetworkingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -1029,7 +1029,7 @@ public class TaskTest extends AndroidTestCase {
 			mProcessingLatch = new AssertionLatch(processingCount);
 		}
 		
-		public void executeNetworkRequest() {
+		public void executeNetworkingRequest() {
 			mNetworkLatch.countDown();
 		}
 		

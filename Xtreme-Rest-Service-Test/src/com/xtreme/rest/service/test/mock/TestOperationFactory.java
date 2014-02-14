@@ -26,9 +26,9 @@ public class TestOperationFactory {
 		return newOperationWithTasks(tasks);
 	}
 
-	public static TestOperation newOperationWithTaskThatThrowsNetworkException(final Exception exception) {
+	public static TestOperation newOperationWithTaskThatThrowsNetworkingException(final Exception exception) {
 		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.add(TestTaskFactory.newTaskThatThrowsNetworkException(exception));
+		tasks.add(TestTaskFactory.newTaskThatThrowsNetworkingException(exception));
 		return newOperationWithTasks(tasks);
 	}
 
@@ -44,9 +44,9 @@ public class TestOperationFactory {
 		return newOperationWithTasks(tasks);
 	}
 
-	public static TestOperation newOperationWithTaskPrerequisitesThatThrowsNetworkException(final Exception exception) {
+	public static TestOperation newOperationWithTaskPrerequisitesThatThrowsNetworkingException(final Exception exception) {
 		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithPrerequisitesFirstTaskFailsWithNetworkException(exception));
+		tasks.addAll(TestTaskFactory.newTaskListWithPrerequisitesFirstTaskFailsWithNetworkingException(exception));
 		return newOperationWithTasks(tasks);
 	}
 
@@ -62,9 +62,9 @@ public class TestOperationFactory {
 		return newOperationWithTasks(tasks);
 	}
 
-	public static TestOperation newOperationWithTaskDependantsThatThrowsNetworkException(final Exception exception) {
+	public static TestOperation newOperationWithTaskDependantsThatThrowsNetworkingException(final Exception exception) {
 		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithNetworkException(exception));
+		tasks.addAll(TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithNetworkingException(exception));
 		return newOperationWithTasks(tasks);
 	}
 

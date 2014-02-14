@@ -17,11 +17,11 @@ public class TestTaskFactory {
 		return new TestTask(identifier);
 	}
 
-	public static TestTask newTaskWithNetworkResult(final String networkResult) {
+	public static TestTask newTaskWithNetworkingResult(final String networkResult) {
 		return new TestTask(new RequestIdentifier<String>("task"), networkResult);
 	}
 
-	public static TestTask newTaskThatThrowsNetworkException(final Exception exception) {
+	public static TestTask newTaskThatThrowsNetworkingException(final Exception exception) {
 		return new TestTask(new RequestIdentifier<String>("task"), null, exception, null);
 	}
 
@@ -46,10 +46,10 @@ public class TestTaskFactory {
 		return expectedOrder;
 	}
 
-	public static List<Task<?>> newTaskListWithPrerequisitesFirstTaskFailsWithNetworkException(final Exception exception) {
+	public static List<Task<?>> newTaskListWithPrerequisitesFirstTaskFailsWithNetworkingException(final Exception exception) {
 		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
-		final TestTask task1 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task1 = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task1.setRequestExecutor(executor);
 		
 		final TestTask task2 = TestTaskFactory.newTask();
@@ -63,13 +63,13 @@ public class TestTaskFactory {
 		return expectedOrder;
 	}
 	
-	public static List<Task<?>> newTaskListWithPrerequisitesSecondTaskFailsWithNetworkException(final Exception exception) {
+	public static List<Task<?>> newTaskListWithPrerequisitesSecondTaskFailsWithNetworkingException(final Exception exception) {
 		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));
 		task1.setRequestExecutor(executor);
 		
-		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task2.setRequestExecutor(executor);
 		task2.addPrerequisite(task1);
 
@@ -131,13 +131,13 @@ public class TestTaskFactory {
 		return expectedOrder;
 	}
 	
-	public static List<Task<?>> newTaskListWithDependantsFirstTaskFailsWithNetworkException(final Exception exception) {
+	public static List<Task<?>> newTaskListWithDependantsFirstTaskFailsWithNetworkingException(final Exception exception) {
 		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task2"));
 		task2.setRequestExecutor(executor);
 		
-		final TestTask task1 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task1 = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task1.setRequestExecutor(executor);
 		task1.addDependant(task2);
 		
@@ -148,10 +148,10 @@ public class TestTaskFactory {
 		return expectedOrder;
 	}
 	
-	public static List<Task<?>> newTaskListWithDependantsSecondTaskFailsWithNetworkException(final Exception exception) {
+	public static List<Task<?>> newTaskListWithDependantsSecondTaskFailsWithNetworkingException(final Exception exception) {
 		final SerialRequestExecutor executor = new SerialRequestExecutor();
 
-		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkException(exception);
+		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
 		task2.setRequestExecutor(executor);
 		
 		final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new RequestIdentifier<String>("task1"));

@@ -21,19 +21,16 @@ public class MovieTask extends Task<String> {
 
 	@Override
 	public RequestIdentifier<?> onCreateIdentifier() {
-		// TODO this needs to be a unique identifier across all tasks
 		return new RequestIdentifier<String>(String.format("movie::%s", mId));
 	}
 	
 	@Override
-	public String onExecuteNetworkRequest(final Context context) throws Exception {
-		// TODO make network request to fetch object(s) 
-		// return RottenTomatoesRequests.getMovie(mId);
+	public String onExecuteNetworking(final Context context) throws Exception {
 		throw new Exception("Override this method to return a json string for a Movie.");
 	}
 
 	@Override
-	public void onExecuteProcessingRequest(final Context context, final String data) throws Exception {
+	public void onExecuteProcessing(final Context context, final String data) throws Exception {
 		// TODO parse the response and insert into content provider
 		final Movie item = new Gson().fromJson(data, Movie.class);
 		final ContentValues values = MovieTable.getContentValues(item);

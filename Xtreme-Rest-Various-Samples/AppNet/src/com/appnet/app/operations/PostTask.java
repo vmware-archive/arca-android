@@ -25,12 +25,12 @@ public class PostTask extends Task<String> {
 	}
 	
 	@Override
-	public String onExecuteNetworkRequest(final Context context) throws Exception {
+	public String onExecuteNetworking(final Context context) throws Exception {
 		throw new Exception("Override this method to return a json string for a Post.");
 	}
 
 	@Override
-	public void onExecuteProcessingRequest(final Context context, final String data) throws Exception {
+	public void onExecuteProcessing(final Context context, final String data) throws Exception {
 		final Post item = new Gson().fromJson(data, Post.class);
 		final ContentValues values = PostTable.getContentValues(item);
 		final ContentResolver resolver = context.getContentResolver();

@@ -1,28 +1,27 @@
 package com.xtreme.rest.service;
 
-import com.xtreme.threading.Prioritizable;
 import com.xtreme.threading.PrioritizableRequest;
 
 public class ProcessingRequest<T> extends PrioritizableRequest {
 
-	private final ProcessingRequestObserver<T> mObserver;
+	private final ProcessingPrioritizableObserver<T> mObserver;
 	
-	public ProcessingRequest(final Prioritizable prioritizable, final int accessorIndex, final ProcessingRequestObserver<T> observer) {
+	public ProcessingRequest(final ProcessingPrioritizable<?> prioritizable, final int accessorIndex, final ProcessingPrioritizableObserver<T> observer) {
 		super(prioritizable, accessorIndex);
 		mObserver = observer;
 	}
 	
 	public void notifyComplete(final ServiceError error) {
 		if (error == null) {
-			mObserver.onProcessingRequestComplete();
+			mObserver.onProcessingComplete();
 		} else {
-			mObserver.onProcessingRequestFailure(error);
+			mObserver.onProcessingFailure(error);
 		}
 	}
 
 	@Override
-	public ProcessingRequestPrioritizable<?> getPrioritizable() {
-		return (ProcessingRequestPrioritizable<?>) super.getPrioritizable();
+	public ProcessingPrioritizable<?> getPrioritizable() {
+		return (ProcessingPrioritizable<?>) super.getPrioritizable();
 	}
 	
 	public Object getData() {

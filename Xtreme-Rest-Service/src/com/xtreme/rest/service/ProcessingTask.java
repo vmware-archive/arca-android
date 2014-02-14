@@ -2,7 +2,7 @@ package com.xtreme.rest.service;
 
 import com.xtreme.threading.RequestIdentifier;
 
-public interface ProcessingRequestExecutor<T> {
+public interface ProcessingTask<T> {
 	public RequestIdentifier<?> getIdentifier();
-	public void executeProcessingRequest(T data) throws Exception;
+	public void executeProcessing(T data) throws Exception;
 }

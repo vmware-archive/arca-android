@@ -13,7 +13,7 @@ import com.xtreme.rest.utils.Logger;
 /**
  * This class serves as the main entry point to the system, where {@link Operation}s are started, 
  * and their {@link Task}s execute. This {@link Service} runs as long as there are {@link Operation}s 
- * running and stops itself once the last one is done.</br>
+ * running and is stopped after the last one completes.</br>
  * </br>
  * Note: This class must be declared in the AndroidManifest.xml file as follows:</br>
  * {@code <service android:name="com.xtreme.rest.service.OperationService" android:exported="false" />}
@@ -37,7 +37,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 	 * 
 	 * @param context The {@link Context} in which this service should be started
 	 * @param operation The {@link Operation} to be started
-	 * @return <code>true</code> if the {@link Operation} was started, <code>false</code> otherwise
+	 * @return A boolean indicating if the {@link Operation} was started.
 	 */
 	public static boolean start(final Context context, final Operation operation) {
 		return startService(context, operation, Action.START);
@@ -50,7 +50,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 	 * 
 	 * @param context The {@link Context} in which this service should be started
 	 * @param operation The {@link Operation} to be canceled
-	 * @return <code>false<code> if the cancel cannot be attempted, <code>true</code> otherwise
+	 * @return A boolean indicating if the cancel will be attempted
 	 */
 	public static boolean cancel(final Context context, final Operation operation) {
 		return startService(context, operation, Action.CANCEL);
@@ -107,7 +107,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 		return start;
 	}
 
-	private void handleIntent(final Intent intent) {
+	protected void handleIntent(final Intent intent) {
 		if (intent != null && intent.hasExtra(Extras.OPERATION)) {
 			final Action action = (Action) intent.getSerializableExtra(Extras.ACTION);
 			final Operation operation = intent.getParcelableExtra(Extras.OPERATION);
@@ -115,7 +115,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 		}
 	}
 	
-	private void handleAction(final Action action, final Operation operation) {
+	protected void handleAction(final Action action, final Operation operation) {
 		if (action == Action.START) {
 			handleStart(operation);
 		} else {
@@ -123,7 +123,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 		}
 	}
 
-	private void handleStart(final Operation operation) {
+	protected void handleStart(final Operation operation) {
 		mHandler.start(operation);
 	}
 	

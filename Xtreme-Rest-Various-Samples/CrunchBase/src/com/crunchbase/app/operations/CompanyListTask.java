@@ -31,13 +31,13 @@ public class CompanyListTask extends Task<List<Company>> {
 	}
 	
 	@Override
-	public List<Company> onExecuteNetworkRequest(final Context context) throws Exception {
+	public List<Company> onExecuteNetworking(final Context context) throws Exception {
 		mResponse = CrunchBaseRequests.getSearchResults("toronto", mPage);
 		return mResponse.getResults();
 	}
 
 	@Override
-	public void onExecuteProcessingRequest(final Context context, final List<Company> data) throws Exception {
+	public void onExecuteProcessing(final Context context, final List<Company> data) throws Exception {
 		final ContentValues[] values = CompanyTable.getContentValues(data);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.bulkInsert(CrunchBaseContentProvider.Uris.COMPANIES_URI, values);

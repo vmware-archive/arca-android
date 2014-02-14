@@ -24,13 +24,13 @@ public class PostListTask extends Task<List<Post>> {
 	}
 	
 	@Override
-	public List<Post> onExecuteNetworkRequest(final Context context) throws Exception {
+	public List<Post> onExecuteNetworking(final Context context) throws Exception {
 		final PostsResponse response = AppNetRequests.getPostList(100);
 		return response.getData();
 	}
 
 	@Override
-	public void onExecuteProcessingRequest(final Context context, final List<Post> data) throws Exception {
+	public void onExecuteProcessing(final Context context, final List<Post> data) throws Exception {
 		final ContentValues[] values = PostTable.getContentValues(data);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.bulkInsert(AppNetContentProvider.Uris.POSTS_URI, values);

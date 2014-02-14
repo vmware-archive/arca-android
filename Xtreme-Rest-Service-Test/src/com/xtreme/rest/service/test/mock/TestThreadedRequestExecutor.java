@@ -6,7 +6,7 @@ import com.xtreme.threading.AuxiliaryExecutor;
 public class TestThreadedRequestExecutor extends ThreadedRequestExecutor {
 	
 	@Override
-	protected AuxiliaryExecutor onCreateNetworkExecutor() {
+	protected AuxiliaryExecutor onCreateNetworkingExecutor() {
 		return new TestAuxiliaryExecutor(this);
 	}
 

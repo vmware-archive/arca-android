@@ -4,27 +4,26 @@ import com.xtreme.rest.utils.Logger;
 import com.xtreme.threading.Prioritizable;
 import com.xtreme.threading.RequestIdentifier;
 
-public class ProcessingRequestPrioritizable<T> extends Prioritizable {
+public class NetworkingPrioritizable<T> extends Prioritizable {
 
-	private final ProcessingRequestExecutor<T> mExecutor;
-	private final T mData;
+	private final NetworkingTask<T> mTask;
 
 	private ServiceError mError;
+	private T mData;
 
-	public ProcessingRequestPrioritizable(final ProcessingRequestExecutor<T> executor, final T data) {
-		mExecutor = executor;
-		mData = data;
+	public NetworkingPrioritizable(final NetworkingTask<T> task) {
+		mTask = task;
 	}
 
 	@Override
 	public RequestIdentifier<?> getIdentifier() {
-		return mExecutor.getIdentifier();
+		return mTask.getIdentifier();
 	}
 
 	@Override
 	public void execute() {
 		try {
-			mExecutor.executeProcessingRequest(mData);
+			mData = mTask.executeNetworking();
 		} catch (final ServiceException e) {
 			Logger.ex(e);
 			mError = e.getError();
@@ -33,7 +32,7 @@ public class ProcessingRequestPrioritizable<T> extends Prioritizable {
 			mError = new ServiceError(e);
 		}
 	}
-	
+
 	public Object getData() {
 		return mData;
 	}

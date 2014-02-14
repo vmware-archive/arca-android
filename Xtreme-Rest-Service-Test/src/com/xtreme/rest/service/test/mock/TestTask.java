@@ -10,7 +10,7 @@ public class TestTask extends Task<String> {
 	public static interface Messages extends Task.Messages {}
 	
 	private RequestIdentifier<?> mIdentifier;
-	private Exception mNetworkException;
+	private Exception mNetworkingException;
 	private Exception mProcessingException;
 	private String mNetworkResult;
 
@@ -22,10 +22,10 @@ public class TestTask extends Task<String> {
 		this(identifier, networkResult, null, null);
 	}
 	
-	public TestTask(final RequestIdentifier<?> identifier, final String networkResult, final Exception networkException, final Exception processingException) {
+	public TestTask(final RequestIdentifier<?> identifier, final String networkResult, final Exception networkingException, final Exception processingException) {
 		mIdentifier = identifier;
 		mNetworkResult = networkResult;
-		mNetworkException = networkException;
+		mNetworkingException = networkingException;
 		mProcessingException = processingException;
 	}
 	
@@ -35,17 +35,17 @@ public class TestTask extends Task<String> {
 	}
 	
 	@Override
-	public String onExecuteNetworkRequest(final Context context) throws Exception {
+	public String onExecuteNetworking(final Context context) throws Exception {
 		
-		if (mNetworkException != null) {
-			throw mNetworkException;
+		if (mNetworkingException != null) {
+			throw mNetworkingException;
 		}
 		
 		return mNetworkResult;
 	}
 
 	@Override
-	public void onExecuteProcessingRequest(final Context context, final String data) throws Exception {
+	public void onExecuteProcessing(final Context context, final String data) throws Exception {
 		if (mProcessingException != null) {
 			throw mProcessingException;
 		}

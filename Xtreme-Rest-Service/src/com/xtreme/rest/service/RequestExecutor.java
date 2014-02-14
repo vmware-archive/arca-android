@@ -9,13 +9,13 @@ import com.xtreme.threading.PrioritizableRequest;
 import com.xtreme.threading.RequestIdentifier;
 
 public interface RequestExecutor {
-	public void executeNetworkRequest(NetworkRequest<?> request);
+	public void executeNetworkingRequest(NetworkingRequest<?> request);
 	public void executeProcessingRequest(ProcessingRequest<?> request);
 	
 	public static class SerialRequestExecutor implements RequestExecutor {
 
 		@Override
-		public void executeNetworkRequest(final NetworkRequest<?> request) {
+		public void executeNetworkingRequest(final NetworkingRequest<?> request) {
 			request.run();
 			request.notifyComplete(request.getData(), request.getError());
 		}
@@ -35,18 +35,18 @@ public interface RequestExecutor {
 			public static final long THREAD_KEEP_ALIVE_TIME = 15;
 		}
 
-		private final IdentifierMap<NetworkRequest<?>> mNetworkMap = new IdentifierMap<NetworkRequest<?>>();
+		private final IdentifierMap<NetworkingRequest<?>> mNetworkMap = new IdentifierMap<NetworkingRequest<?>>();
 		private final IdentifierMap<ProcessingRequest<?>> mProcessingMap = new IdentifierMap<ProcessingRequest<?>>();
 
 		private final AuxiliaryExecutor mNetworkExecutor;
 		private final AuxiliaryExecutor mProcessingExecutor;
 		
 		public ThreadedRequestExecutor() {
-			mNetworkExecutor = onCreateNetworkExecutor();
+			mNetworkExecutor = onCreateNetworkingExecutor();
 			mProcessingExecutor = onCreateProcessingExecutor();
 		}
 		
-		protected AuxiliaryExecutor onCreateNetworkExecutor() {
+		protected AuxiliaryExecutor onCreateNetworkingExecutor() {
 			final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), this);
 			builder.setCorePoolSize(Config.NUM_NETWORK_THREADS);
 			builder.setKeepAliveTime(Config.THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS);
@@ -77,7 +77,7 @@ public interface RequestExecutor {
 		// ======================================================
 
 		@Override
-		public void executeNetworkRequest(final NetworkRequest<?> request) {
+		public void executeNetworkingRequest(final NetworkingRequest<?> request) {
 			synchronized (ThreadedRequestExecutor.this) {
 				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
 				mNetworkMap.add(identifier, request);
@@ -97,8 +97,8 @@ public interface RequestExecutor {
 		@Override
 		public void onComplete(final PrioritizableRequest request) {
 			
-			if (request instanceof NetworkRequest) { 
-				onNetworkRequestComplete((NetworkRequest<?>) request);
+			if (request instanceof NetworkingRequest) { 
+				onNetworkingRequestComplete((NetworkingRequest<?>) request);
 			}
 			
 			if (request instanceof ProcessingRequest) { 
@@ -109,8 +109,8 @@ public interface RequestExecutor {
 		@Override
 		public void onCancelled(final PrioritizableRequest request) {
 			
-			if (request instanceof NetworkRequest) { 
-				onNetworkRequestCancelled((NetworkRequest<?>) request);
+			if (request instanceof NetworkingRequest) { 
+				onNetworkingRequestCancelled((NetworkingRequest<?>) request);
 			}
 			
 			if (request instanceof ProcessingRequest) { 
@@ -119,15 +119,15 @@ public interface RequestExecutor {
 		}
 		
 		@Override
-		public void onNetworkRequestComplete(final NetworkRequest<?> request) {
+		public void onNetworkingRequestComplete(final NetworkingRequest<?> request) {
 			synchronized (ThreadedRequestExecutor.this) {
 				final Object data = request.getData();
 				final ServiceError error = request.getError();
 				
 				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
-				final Set<NetworkRequest<?>> set = mNetworkMap.remove(identifier);
+				final Set<NetworkingRequest<?>> set = mNetworkMap.remove(identifier);
 				
-				for (final NetworkRequest<?> prioritizable : set) {
+				for (final NetworkingRequest<?> prioritizable : set) {
 					prioritizable.notifyComplete(data, error);
 				}
 			
@@ -152,7 +152,7 @@ public interface RequestExecutor {
 		}
 		
 		@Override
-		public void onNetworkRequestCancelled(final NetworkRequest<?> request) {
+		public void onNetworkingRequestCancelled(final NetworkingRequest<?> request) {
 			// do nothing
 		}
 		

@@ -15,10 +15,10 @@ import com.appnet.app.R;
 import com.appnet.app.datasets.PostTable;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
-import com.xtreme.rest.binders.Binding;
-import com.xtreme.rest.binders.ViewBinder;
-import com.xtreme.rest.dispatcher.Query;
+import com.xtreme.rest.adapters.Binding;
+import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestItemSupportFragment;
 

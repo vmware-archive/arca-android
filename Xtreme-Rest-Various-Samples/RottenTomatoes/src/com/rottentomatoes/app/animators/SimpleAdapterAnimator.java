@@ -10,7 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.rottentomatoes.app.R;
-import com.xtreme.rest.animators.ViewAnimator;
+import com.xtreme.rest.adapters.ViewAnimator;
 
 public class SimpleAdapterAnimator implements ViewAnimator {
 

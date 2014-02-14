@@ -1,8 +1,5 @@
 package com.xtreme.rest.fragments;
 
-import com.xtreme.rest.dispatcher.QueryResult;
-import com.xtreme.rest.dispatcher.Error;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +8,9 @@ import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+
+import com.xtreme.rest.dispatcher.Error;
+import com.xtreme.rest.dispatcher.QueryResult;
 
 /**
  * A {@link RestQueryFragment} that adds convenient support for {@link AdapterView}s 

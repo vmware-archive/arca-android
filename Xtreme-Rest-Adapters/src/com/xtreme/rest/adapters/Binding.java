@@ -1,4 +1,4 @@
-package com.xtreme.rest.binders;
+package com.xtreme.rest.adapters;
 
 import android.database.Cursor;
 

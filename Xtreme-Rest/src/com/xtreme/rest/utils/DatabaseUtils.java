@@ -16,7 +16,7 @@ public class DatabaseUtils {
 	private static final String SQLITE_VERSION = "sqlite_version";
 	private static final String SQLITE_MEMORY = ":memory:";
 
-	public static String checkDBVersion() {
+	public static String checkSQLiteVersion() {
 		Cursor cursor = null;
 		
 		try {
@@ -71,7 +71,7 @@ public class DatabaseUtils {
 		return null;
 	}
 
-	public static String transferFile(final File srcFile, final File dstFile) throws IOException {
+	private static String transferFile(final File srcFile, final File dstFile) throws IOException {
 		
 		FileInputStream inStream = null;
 		FileOutputStream outStream = null;

@@ -1,30 +1,25 @@
 package com.xtreme.rest.adapters;
 
+
 import java.util.Collection;
 import java.util.List;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Build;
+import android.support.v4.widget.ResourceCursorAdapter;
 import android.view.View;
-import android.widget.ResourceCursorAdapter;
 
-import com.xtreme.rest.animators.ViewAnimator;
-import com.xtreme.rest.binders.Binding;
-import com.xtreme.rest.binders.ViewBinder;
-import com.xtreme.rest.binders.ViewBinder.DefaultViewBinder;
+import com.xtreme.rest.adapters.ViewBinder.DefaultViewBinder;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class ModernCursorAdapter extends ResourceCursorAdapter {
+public class SupportCursorAdapter extends ResourceCursorAdapter {
 	
 	private final DefaultViewBinder mDefaultBinder;
 	private final CursorAdapterHelper mHelper;
 	
 	private ViewBinder mViewBinder;
 	private ViewAnimator mViewAnimator;
-
-	public ModernCursorAdapter(final Context context, final int layout, final Collection<Binding> bindings) {
+	
+	public SupportCursorAdapter(final Context context, final int layout, final Collection<Binding> bindings) {
 		super(context, layout, null, 0);
 		mHelper = new CursorAdapterHelper(bindings);
 		mDefaultBinder = new DefaultViewBinder();
@@ -33,7 +28,7 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 	public void setViewBinder(final ViewBinder binder) {
 		mViewBinder = binder;
 	}
-
+	
 	public void setViewAnimator(final ViewAnimator animator) {
 		mViewAnimator = animator;
 	}

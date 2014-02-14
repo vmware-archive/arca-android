@@ -1,5 +1,6 @@
 package com.xtreme.rest.adapters;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,8 +9,6 @@ import android.database.Cursor;
 import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
-
-import com.xtreme.rest.binders.Binding;
 
 class CursorAdapterHelper {
 

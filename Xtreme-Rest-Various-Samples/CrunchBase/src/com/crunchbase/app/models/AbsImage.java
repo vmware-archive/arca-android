@@ -1,6 +1,7 @@
 package com.crunchbase.app.models;
 
 import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 
 public abstract class AbsImage  {

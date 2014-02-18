@@ -6,6 +6,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 
+import com.xtreme.rest.dispatcher.RequestDispatcher.AbstractRequestDispatcher;
+
 public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 
 	private final Context mContext;

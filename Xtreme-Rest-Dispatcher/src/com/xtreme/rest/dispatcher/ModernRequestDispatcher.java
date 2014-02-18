@@ -8,6 +8,8 @@ import android.content.Loader;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.xtreme.rest.dispatcher.RequestDispatcher.AbstractRequestDispatcher;
+
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 

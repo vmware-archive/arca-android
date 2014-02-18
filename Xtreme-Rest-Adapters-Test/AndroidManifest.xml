@@ -10,7 +10,7 @@
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="com.xtrem.rest.adapters.test" />
+        android:targetPackage="com.xtreme.rest.adapters.test" />
 
     <application
         android:allowBackup="false"

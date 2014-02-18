@@ -10,7 +10,7 @@ import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
 
-class CursorAdapterHelper {
+public class CursorAdapterHelper {
 
 	private final BindingHelper mBindingHelper;
 

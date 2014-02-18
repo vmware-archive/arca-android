@@ -20,7 +20,6 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 	private final CursorAdapterHelper mHelper;
 	
 	private ViewBinder mViewBinder;
-	private ViewAnimator mViewAnimator;
 
 	public ModernCursorAdapter(final Context context, final int layout, final Collection<Binding> bindings) {
 		super(context, layout, null, 0);
@@ -32,10 +31,6 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 		mViewBinder = binder;
 	}
 
-	public void setViewAnimator(final ViewAnimator animator) {
-		mViewAnimator = animator;
-	}
-	
 	public boolean hasResults() {
 		final Cursor cursor = getCursor();
 		return cursor != null && cursor.getCount() > 0;
@@ -48,8 +43,6 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 		for (final Binding binding : bindings) {
 			bindView(container, cursor, binding);
 		}
-		
-		animateView(container, context, cursor);
 	}
 	
 	private List<Binding> getBindings(final Cursor cursor) {
@@ -73,12 +66,6 @@ public class ModernCursorAdapter extends ResourceCursorAdapter {
 		
 		if (!bound) {
 			throw new IllegalStateException("Connot bind to view: " + view.getClass());
-		}
-	}
-
-	private void animateView(final View view, final Context context, final Cursor cursor) {
-		if (mViewAnimator != null) {
-			mViewAnimator.animateView(view, context, cursor);
 		}
 	}
 }

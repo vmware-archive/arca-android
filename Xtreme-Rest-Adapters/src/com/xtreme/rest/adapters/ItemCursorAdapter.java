@@ -13,12 +13,11 @@ public class ItemCursorAdapter {
 
 	private static final int TYPE = 0;
 	
-	private final DefaultViewBinder mDefaultBinder;
 	private final CursorAdapterHelper mHelper;
+	private final DefaultViewBinder mDefaultBinder;
+	private final View mView;
 	
 	private ViewBinder mViewBinder;
-	
-	private final View mView;
 	private Cursor mCursor;
 	
 	public ItemCursorAdapter(final View view, final Collection<Binding> bindings) {
@@ -32,27 +31,38 @@ public class ItemCursorAdapter {
 	}
 	
 	public boolean hasResults() {
-		return mCursor != null && mCursor.getCount() > 0;
-	}
-	
-	public void swapCursor(final Cursor cursor) {
-		mCursor = cursor;
-
-		if (cursor != null && cursor.moveToPosition(0)) {
-			bindView(mView, cursor);
-		}
+		final Cursor cursor = getCursor();
+		return cursor != null && cursor.getCount() > 0;
 	}
 	
 	public Cursor getCursor() {
 		return mCursor;
 	}
 	
-	protected void bindView(final View container, final Cursor cursor) {
-		final List<Binding> bindings = mHelper.getBindings(TYPE, cursor); 
+	public void swapCursor(final Cursor cursor) {
+		mCursor = cursor;
+
+		if (cursor != null) {
+			bindViewAtPosition(mView, cursor, 0);
+		}
+	}
+	
+	public void bindViewAtPosition(final View container, final Cursor cursor, final int position) {
+		if (cursor.moveToPosition(position)) {
+			bindView(container, cursor);
+		}
+	}
+
+	public void bindView(final View container, final Cursor cursor) {
+		final List<Binding> bindings = getBindings(cursor);
 		
 		for (final Binding binding : bindings) {
 			bindView(container, cursor, binding);
 		}
+	}
+	
+	private List<Binding> getBindings(final Cursor cursor) {
+		return mHelper.getBindings(TYPE, cursor);
 	}
 	
 	private void bindView(final View container, final Cursor cursor, final Binding binding) {

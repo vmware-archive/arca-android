@@ -5,8 +5,8 @@ import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.xtreme.rest.DispatcherFactory;
 import com.xtreme.rest.RestDispatcher;
+import com.xtreme.rest.RestDispatcherFactory;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryListener;
 import com.xtreme.rest.dispatcher.RequestDispatcher;
@@ -29,7 +29,7 @@ public abstract class RestQueryFragment extends Fragment implements QueryListene
 	}
 	
 	protected RestDispatcher onCreateRequestDispatcher() {
-		return DispatcherFactory.generateRequestDispatcher(this);
+		return RestDispatcherFactory.generateRequestDispatcher(this);
 	}
 	
 	/**

@@ -2,12 +2,11 @@ package com.crunchbase.app.validators;
 
 import android.content.Context;
 
+import com.xtreme.rest.RestQueryValidator;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
-import com.xtreme.rest.validator.ContentState;
-import com.xtreme.rest.validator.QueryValidator;
 
-public class CompanyValidator implements QueryValidator {
+public class CompanyValidator implements RestQueryValidator {
 
 	@Override
 	public ContentState validate(final Query request, final QueryResult result) {

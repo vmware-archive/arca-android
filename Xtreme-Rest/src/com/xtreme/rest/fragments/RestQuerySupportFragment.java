@@ -3,8 +3,8 @@ package com.xtreme.rest.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.xtreme.rest.DispatcherFactory;
 import com.xtreme.rest.RestDispatcher;
+import com.xtreme.rest.RestDispatcherFactory;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryListener;
 import com.xtreme.rest.dispatcher.RequestDispatcher;
@@ -26,7 +26,7 @@ public abstract class RestQuerySupportFragment extends Fragment implements Query
 	}
 	
 	protected RestDispatcher onCreateRequestDispatcher() {
-		return DispatcherFactory.generateRequestDispatcher(this);
+		return RestDispatcherFactory.generateRequestDispatcher(this);
 	}
 	
 	/**

@@ -17,11 +17,11 @@ import android.widget.Toast;
 
 import com.rottentomatoes.app.R;
 import com.rottentomatoes.app.activities.MovieActivity;
-import com.rottentomatoes.app.animators.SimpleAdapterAnimator;
+import com.rottentomatoes.app.adapters.AnimationCursorAdapter;
+import com.rottentomatoes.app.animators.ViewAnimator.DefaultViewAnimator;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
-import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
@@ -48,8 +48,8 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 	
 	@Override
 	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState) {
-		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), R.layout.list_item_movie, BINDINGS);
-		adapter.setViewAnimator(new SimpleAdapterAnimator());
+		final AnimationCursorAdapter adapter = new AnimationCursorAdapter(getActivity(), R.layout.list_item_movie, BINDINGS);
+		adapter.setViewAnimator(new DefaultViewAnimator());
 		adapter.setViewBinder(this);
 		return adapter;
 	}

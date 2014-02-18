@@ -18,13 +18,12 @@ import android.widget.Toast;
 
 import com.appnet.app.R;
 import com.appnet.app.activities.PostActivity;
-import com.appnet.app.animators.SimpleAdapterAnimator;
 import com.appnet.app.datasets.PostTable;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.appnet.app.validators.PostListValidator;
 import com.xtreme.rest.RestDispatcher;
-import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.adapters.Binding;
+import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
@@ -52,7 +51,6 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 	@Override
 	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState) {
 		final SupportCursorAdapter adapter = new SupportCursorAdapter(getActivity(), R.layout.list_item_post, BINDINGS);
-		adapter.setViewAnimator(new SimpleAdapterAnimator());
 		adapter.setViewBinder(this);
 		return adapter;
 	}

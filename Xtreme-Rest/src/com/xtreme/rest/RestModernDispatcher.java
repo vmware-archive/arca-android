@@ -1,10 +1,10 @@
 package com.xtreme.rest;
 
+import com.xtreme.rest.dispatcher.ModernRequestDispatcher;
+
 import android.app.LoaderManager;
 import android.content.Context;
 
-import com.xtreme.rest.dispatcher.ModernRequestDispatcher;
-import com.xtreme.rest.validator.QueryValidator;
 
 public class RestModernDispatcher extends ModernRequestDispatcher implements RestDispatcher {
 
@@ -13,7 +13,7 @@ public class RestModernDispatcher extends ModernRequestDispatcher implements Res
 	}
 
 	@Override
-	public void setValidator(final QueryValidator validator) {
+	public void setValidator(final RestQueryValidator validator) {
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
 		executor.setValidator(validator);
 	}

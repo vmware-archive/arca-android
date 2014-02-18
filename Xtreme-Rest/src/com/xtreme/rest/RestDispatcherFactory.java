@@ -6,7 +6,7 @@ import android.os.Build;
 
 import com.xtreme.rest.RestExecutor.DefaultRestExecutor;
 
-public class DispatcherFactory {
+public class RestDispatcherFactory {
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static RestDispatcher generateRequestDispatcher(android.app.Activity activity) {

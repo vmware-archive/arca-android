@@ -1,10 +1,10 @@
 package com.xtreme.rest;
 
+import com.xtreme.rest.dispatcher.SupportRequestDispatcher;
+
 import android.content.Context;
 import android.support.v4.app.LoaderManager;
 
-import com.xtreme.rest.dispatcher.SupportRequestDispatcher;
-import com.xtreme.rest.validator.QueryValidator;
 
 public class RestSupportDispatcher extends SupportRequestDispatcher implements RestDispatcher {
 
@@ -13,7 +13,7 @@ public class RestSupportDispatcher extends SupportRequestDispatcher implements R
 	}
 
 	@Override
-	public void setValidator(final QueryValidator validator) {
+	public void setValidator(final RestQueryValidator validator) {
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
 		executor.setValidator(validator);
 	}

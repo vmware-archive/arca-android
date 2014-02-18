@@ -1,11 +1,17 @@
-package com.xtreme.rest.validator;
-
-import android.content.Context;
+package com.xtreme.rest;
 
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
 
-public interface QueryValidator {
+import android.content.Context;
+
+public interface RestQueryValidator {
+
+	public static enum ContentState {
+		VALID, INVALID, EXPIRED
+	}
+
 	public ContentState validate(final Query request, final QueryResult result);
+
 	public boolean refresh(final Context context, final Query request, final QueryResult result);
 }

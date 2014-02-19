@@ -15,6 +15,14 @@ import com.xtreme.rest.adapters.CursorAdapterHelper;
 
 public class CursorAdapterHelperTest extends AndroidTestCase {
 
+	public void testBindingsNull() {
+		final String[] columns = new String[] { "_id" };
+		final Cursor cursor = createCursor(columns);
+		final CursorAdapterHelper helper = new CursorAdapterHelper(null);
+		final List<Binding> bindings = helper.getBindings(0, cursor);
+		assertEquals(0, bindings.size());
+	}
+	
 	public void testBindingsEmpty() {
 		final String[] columns = new String[] { "_id" };
 		final Cursor cursor = createCursor(columns);
@@ -34,7 +42,7 @@ public class CursorAdapterHelperTest extends AndroidTestCase {
 		assertEquals(1, bindings.size());
 	}
 	
-	public void testBindingsMultipleItemsDifferentTypes() {
+	public void testBindingsMultipleItemsDifferentType() {
 		final String[] columns = new String[] { "_id" };
 		final Cursor cursor = createCursor(columns);
 		final Collection<Binding> allBindings = new ArrayList<Binding>();
@@ -45,7 +53,7 @@ public class CursorAdapterHelperTest extends AndroidTestCase {
 		assertEquals(1, bindings.size());
 	}
 	
-	public void testBindingsMultipleItemsSameTypes() {
+	public void testBindingsMultipleItemsSameType() {
 		final String[] columns = new String[] { "_id" };
 		final Cursor cursor = createCursor(columns);
 		final Collection<Binding> allBindings = new ArrayList<Binding>();
@@ -58,7 +66,7 @@ public class CursorAdapterHelperTest extends AndroidTestCase {
 	
 	public void testGetViewFromViewGroupEmpty() {
 		final FrameLayout container = new FrameLayout(getContext());
-		final Binding binding = new Binding(R.id.test_id, "_id");
+		final Binding binding = new Binding(R.id.test_id_1, "_id");
 		final CursorAdapterHelper helper = new CursorAdapterHelper(null);
 		final View view = helper.getView(container, binding);
 		assertNull(view);
@@ -66,10 +74,10 @@ public class CursorAdapterHelperTest extends AndroidTestCase {
 	
 	public void testGetViewFromViewGroupWithSingleItem() {
 		final View child1 = new View(getContext());
-		child1.setId(R.id.test_id);
+		child1.setId(R.id.test_id_1);
 		final FrameLayout container = new FrameLayout(getContext());
 		container.addView(child1);
-		final Binding binding = new Binding(R.id.test_id, "_id");
+		final Binding binding = new Binding(R.id.test_id_1, "_id");
 		final CursorAdapterHelper helper = new CursorAdapterHelper(null);
 		final View view = helper.getView(container, binding);
 		assertEquals(child1, view);
@@ -77,13 +85,13 @@ public class CursorAdapterHelperTest extends AndroidTestCase {
 	
 	public void testGetViewFromViewGroupWithMultipleItems() {
 		final View child1 = new View(getContext());
-		child1.setId(R.id.test_id);
+		child1.setId(R.id.test_id_1);
 		final View child2 = new View(getContext());
-		child2.setId(R.id.test_id);
+		child2.setId(R.id.test_id_2);
 		final FrameLayout container = new FrameLayout(getContext());
 		container.addView(child1);
 		container.addView(child2);
-		final Binding binding = new Binding(R.id.test_id, "_id");
+		final Binding binding = new Binding(R.id.test_id_1, "_id");
 		final CursorAdapterHelper helper = new CursorAdapterHelper(null);
 		final View view = helper.getView(container, binding);
 		assertEquals(child1, view);

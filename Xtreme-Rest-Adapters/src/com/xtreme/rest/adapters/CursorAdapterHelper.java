@@ -38,23 +38,29 @@ public class CursorAdapterHelper {
 		public List<Binding> getBindings(final int type, final Cursor cursor) {
 			final List<Binding> bindings = mBindingTypes.get(type);
 			if (bindings == null) {
-				return setupBindingsTypes(type, cursor);
+				return setupBindingsOfType(type, cursor);
 			} else {
 				return bindings;
 			}
 		}
 
-		private List<Binding> setupBindingsTypes(final int type, final Cursor cursor) {
+		private List<Binding> setupBindingsOfType(final int type, final Cursor cursor) {
+			if (mBindings != null) {
+				findBindingsOfType(type, cursor);
+			}
+			return getNonNullBindingsOfType(type);
+		}
+
+		private void findBindingsOfType(final int type, final Cursor cursor) {
 			for (final Binding binding : mBindings) {
 				if (binding.isType(type)) { 
 					binding.findColumnIndex(cursor);
 					mBindingTypes.add(binding);
 				}
 			}
-			return getNonNullBindings(type);
 		}
 
-		private List<Binding> getNonNullBindings(final int type) {
+		private List<Binding> getNonNullBindingsOfType(final int type) {
 			final List<Binding> bindings = mBindingTypes.get(type);
 			if (bindings == null) {
 				return new ArrayList<Binding>();

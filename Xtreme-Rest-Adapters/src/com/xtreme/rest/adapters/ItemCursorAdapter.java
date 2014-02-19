@@ -42,13 +42,11 @@ public class ItemCursorAdapter {
 	public void swapCursor(final Cursor cursor) {
 		mCursor = cursor;
 
-		if (cursor != null) {
-			bindViewAtPosition(mView, cursor, 0);
-		}
+		bindViewAtPosition(mView, cursor, 0);
 	}
 	
 	public void bindViewAtPosition(final View container, final Cursor cursor, final int position) {
-		if (cursor.moveToPosition(position)) {
+		if (cursor != null && cursor.moveToPosition(position)) {
 			bindView(container, cursor);
 		}
 	}
@@ -79,7 +77,7 @@ public class ItemCursorAdapter {
 		}
 		
 		if (!bound) {
-			throw new IllegalStateException("Connot bind to view: " + view.getClass());
+			throw new IllegalStateException("Connot bind to view: " + view);
 		}
 	}
 }

@@ -62,7 +62,7 @@ public class SupportCursorAdapter extends ResourceCursorAdapter {
 		}
 		
 		if (!bound) {
-			throw new IllegalStateException("Connot bind to view: " + view.getClass());
+			throw new IllegalStateException("Connot bind to view: " + view);
 		}
 	}
 }

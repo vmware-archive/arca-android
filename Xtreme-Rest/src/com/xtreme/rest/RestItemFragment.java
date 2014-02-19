@@ -1,4 +1,4 @@
-package com.xtreme.rest.fragments;
+package com.xtreme.rest;
 
 import android.annotation.TargetApi;
 import android.os.Build;

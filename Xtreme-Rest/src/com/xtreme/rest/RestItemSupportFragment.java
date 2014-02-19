@@ -1,4 +1,4 @@
-package com.xtreme.rest.fragments;
+package com.xtreme.rest;
 
 import android.os.Bundle;
 import android.view.View;

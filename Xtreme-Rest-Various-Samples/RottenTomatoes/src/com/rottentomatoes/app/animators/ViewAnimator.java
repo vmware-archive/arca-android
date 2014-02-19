@@ -3,13 +3,13 @@ package com.rottentomatoes.app.animators;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.rottentomatoes.app.R;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+
+import com.rottentomatoes.app.R;
 
 public interface ViewAnimator {
 	public void animateView(final View view, final Context context, final Cursor cursor);

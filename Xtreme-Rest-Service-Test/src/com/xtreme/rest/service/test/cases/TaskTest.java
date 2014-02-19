@@ -77,7 +77,7 @@ public class TaskTest extends AndroidTestCase {
 			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
 				latch.executeNetworkingRequest();
 				
-				assertEquals(identifier, request.getRequestIdentifier());
+				assertEquals(identifier, request.getIdentifier());
 			}
 
 			@Override
@@ -249,7 +249,7 @@ public class TaskTest extends AndroidTestCase {
 			public void executeProcessingRequest(final ProcessingRequest<?> request) {
 				latch.executeProcessingRequest();
 				
-				assertEquals(identifier, request.getRequestIdentifier());
+				assertEquals(identifier, request.getIdentifier());
 			}
 			
 		});

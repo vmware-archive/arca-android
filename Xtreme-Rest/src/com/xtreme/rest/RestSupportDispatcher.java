@@ -18,4 +18,9 @@ public class RestSupportDispatcher extends SupportRequestDispatcher implements R
 		executor.setValidator(validator);
 	}
 
+	@Override
+	public RestQueryValidator getValidator() {
+		final RestExecutor executor = (RestExecutor) getRequestExecutor();
+		return executor.getValidator();
+	}
 }

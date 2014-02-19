@@ -1,12 +1,8 @@
-package com.xtreme.rest.fragments;
+package com.xtreme.rest;
 
-import android.annotation.TargetApi;
-import android.app.Fragment;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
-import com.xtreme.rest.RestDispatcher;
-import com.xtreme.rest.RestDispatcherFactory;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryListener;
 import com.xtreme.rest.dispatcher.RequestDispatcher;
@@ -16,8 +12,7 @@ import com.xtreme.rest.dispatcher.RequestDispatcher;
  * for a fragment. Using this class, fragments can request data simply by calling 
  * {@link #execute(Query)}.
  */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public abstract class RestQueryFragment extends Fragment implements QueryListener {
+public abstract class RestQuerySupportFragment extends Fragment implements QueryListener {
 	
 	private RestDispatcher mDispatcher;
 	
@@ -32,16 +27,10 @@ public abstract class RestQueryFragment extends Fragment implements QueryListene
 		return RestDispatcherFactory.generateRequestDispatcher(this);
 	}
 	
-	/**
-	 * @return The {@link RequestDispatcher} instance used by this fragment.
-	 */
 	protected RestDispatcher getRequestDispatcher() {
 		return mDispatcher;
 	}
 	
-	/**
-	 * @see {@link RequestDispatcher#execute(Query, QueryListener)}
-	 */
 	protected void execute(final Query query) {
 		final RestDispatcher dispatcher = getRequestDispatcher();
 		dispatcher.execute(query, this);

@@ -15,13 +15,13 @@ import android.widget.Toast;
 import com.rottentomatoes.app.R;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
+import com.xtreme.rest.RestItemSupportFragment;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
-import com.xtreme.rest.fragments.RestItemSupportFragment;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class MovieFragment extends RestItemSupportFragment implements ViewBinder {

@@ -10,6 +10,7 @@ import com.xtreme.rest.dispatcher.RequestExecutor;
 
 public interface RestExecutor extends RequestExecutor {
 	public void setValidator(final RestQueryValidator validator);
+	public RestQueryValidator getValidator();
 	
 	public static class DefaultRestExecutor extends DefaultRequestExecutor implements RestExecutor {
 
@@ -24,6 +25,11 @@ public interface RestExecutor extends RequestExecutor {
 		@Override
 		public void setValidator(final RestQueryValidator validator) {
 			mValidator = validator;
+		}
+		
+		@Override
+		public RestQueryValidator getValidator() {
+			return mValidator;
 		}
 		
 		@Override

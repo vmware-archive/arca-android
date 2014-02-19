@@ -21,6 +21,7 @@ import com.crunchbase.app.activities.CompanyActivity;
 import com.crunchbase.app.datasets.CompanyTable;
 import com.crunchbase.app.providers.CrunchBaseContentProvider;
 import com.crunchbase.app.validators.CompanyListValidator;
+import com.xtreme.rest.RestAdapterSupportFragment;
 import com.xtreme.rest.RestDispatcher;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
@@ -28,7 +29,6 @@ import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
-import com.xtreme.rest.fragments.RestAdapterSupportFragment;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class CompanyListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {

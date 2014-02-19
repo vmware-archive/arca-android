@@ -17,5 +17,11 @@ public class RestModernDispatcher extends ModernRequestDispatcher implements Res
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
 		executor.setValidator(validator);
 	}
+	
+	@Override
+	public RestQueryValidator getValidator() {
+		final RestExecutor executor = (RestExecutor) getRequestExecutor();
+		return executor.getValidator();
+	}
 
 }

@@ -22,12 +22,12 @@ import com.rottentomatoes.app.animators.ViewAnimator.DefaultViewAnimator;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
+import com.xtreme.rest.RestAdapterSupportFragment;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
-import com.xtreme.rest.fragments.RestAdapterSupportFragment;
 import com.xtreme.rest.utils.Logger;
 import com.xtremelabs.imageutils.ImageLoader;
 

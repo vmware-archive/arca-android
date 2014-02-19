@@ -15,13 +15,13 @@ import android.widget.Toast;
 import com.crunchbase.app.R;
 import com.crunchbase.app.datasets.CompanyTable;
 import com.crunchbase.app.providers.CrunchBaseContentProvider;
+import com.xtreme.rest.RestItemSupportFragment;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.ItemCursorAdapter;
 import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
-import com.xtreme.rest.fragments.RestItemSupportFragment;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class CompanyFragment extends RestItemSupportFragment implements ViewBinder {

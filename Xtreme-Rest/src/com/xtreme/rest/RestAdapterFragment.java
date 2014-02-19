@@ -1,9 +1,11 @@
-package com.xtreme.rest.fragments;
+package com.xtreme.rest;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.CursorAdapter;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 
@@ -11,10 +13,11 @@ import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.QueryResult;
 
 /**
- * A {@link RestQuerySupportFragment} that adds convenient support for {@link AdapterView}s 
+ * A {@link RestQueryFragment} that adds convenient support for {@link AdapterView}s 
  * such as {@link ListView} or {@link GridView} by wrapping a {@link CursorAdapter}.
  */
-public abstract class RestAdapterSupportFragment extends RestQuerySupportFragment {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+public abstract class RestAdapterFragment extends RestQueryFragment {
 	
 	protected abstract int getAdapterViewId();
 	
@@ -23,15 +26,25 @@ public abstract class RestAdapterSupportFragment extends RestQuerySupportFragmen
 	private AdapterView<CursorAdapter> mAdapterView;
 	
 	@Override
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		
 		setupAdapterView(view, savedInstanceState);
 	}
 	
+	@Override
+	public void onStart() {
+		super.onStart();
+		
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
+			setupAdapterView(getView(), null);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
-		final int adapterViewId = getAdapterViewId();		
+		final int adapterViewId = getAdapterViewId();	
 		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(adapterViewId);
 		mAdapterView.setAdapter(onCreateAdapter(mAdapterView, savedInstanceState));
 	}

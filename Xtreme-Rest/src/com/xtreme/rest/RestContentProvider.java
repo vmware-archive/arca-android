@@ -29,9 +29,7 @@ public class RestContentProvider extends DatabaseProvider implements ServiceConn
 		return mService != null;
 	}
 	
-	
 	// ==================================
-	
 	
 	@Override
 	public void onServiceConnected(final ComponentName name, final IBinder service) {
@@ -45,5 +43,4 @@ public class RestContentProvider extends DatabaseProvider implements ServiceConn
 		Logger.v("onServiceDisconnected %s", this.getClass()); 
 		mService = null;
 	}
-
 }

@@ -48,15 +48,15 @@ public interface RequestExecutor {
 		
 		protected AuxiliaryExecutor onCreateNetworkingExecutor() {
 			final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), this);
-			builder.setCorePoolSize(Config.NUM_NETWORK_THREADS);
 			builder.setKeepAliveTime(Config.THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS);
+			builder.setCorePoolSize(Config.NUM_NETWORK_THREADS);
 			return builder.create();
 		}
 
 		protected AuxiliaryExecutor onCreateProcessingExecutor() {
 			final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), this);
-			builder.setCorePoolSize(Config.NUM_PROCESSING_THREADS);
 			builder.setKeepAliveTime(Config.THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS);
+			builder.setCorePoolSize(Config.NUM_PROCESSING_THREADS);
 			return builder.create();
 		}
 
@@ -79,7 +79,7 @@ public interface RequestExecutor {
 		@Override
 		public void executeNetworkingRequest(final NetworkingRequest<?> request) {
 			synchronized (ThreadedRequestExecutor.this) {
-				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
+				final RequestIdentifier<?> identifier = request.getIdentifier();
 				mNetworkMap.add(identifier, request);
 				mNetworkExecutor.execute(request);
 			}
@@ -88,7 +88,7 @@ public interface RequestExecutor {
 		@Override
 		public void executeProcessingRequest(final ProcessingRequest<?> request) {
 			synchronized (ThreadedRequestExecutor.this) {
-				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
+				final RequestIdentifier<?> identifier = request.getIdentifier();
 				mProcessingMap.add(identifier, request);
 				mProcessingExecutor.execute(request);
 			}
@@ -124,7 +124,7 @@ public interface RequestExecutor {
 				final Object data = request.getData();
 				final ServiceError error = request.getError();
 				
-				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
+				final RequestIdentifier<?> identifier = request.getIdentifier();
 				final Set<NetworkingRequest<?>> set = mNetworkMap.remove(identifier);
 				
 				for (final NetworkingRequest<?> prioritizable : set) {
@@ -140,7 +140,7 @@ public interface RequestExecutor {
 			synchronized (ThreadedRequestExecutor.this) {
 				final ServiceError error = request.getError();
 
-				final RequestIdentifier<?> identifier = request.getRequestIdentifier();
+				final RequestIdentifier<?> identifier = request.getIdentifier();
 				final Set<ProcessingRequest<?>> set = mProcessingMap.remove(identifier);
 				
 				for (final ProcessingRequest<?> prioritizable : set) {

@@ -50,6 +50,7 @@ public interface RequestExecutor {
 			final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), this);
 			builder.setKeepAliveTime(Config.THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS);
 			builder.setCorePoolSize(Config.NUM_NETWORK_THREADS);
+			builder.allowCoreThreadTimeOut();
 			return builder.create();
 		}
 
@@ -57,6 +58,7 @@ public interface RequestExecutor {
 			final AuxiliaryExecutor.Builder builder = new AuxiliaryExecutor.Builder(Priority.newAccessorArray(), this);
 			builder.setKeepAliveTime(Config.THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS);
 			builder.setCorePoolSize(Config.NUM_PROCESSING_THREADS);
+			builder.allowCoreThreadTimeOut();
 			return builder.create();
 		}
 

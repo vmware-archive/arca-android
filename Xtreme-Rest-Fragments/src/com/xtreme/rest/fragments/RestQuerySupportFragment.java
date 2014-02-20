@@ -30,8 +30,26 @@ public abstract class RestQuerySupportFragment extends Fragment implements Query
 		return mDispatcher;
 	}
 	
+	protected RestQueryVerifier getQueryVerifier() {
+		final RestDispatcher dispatcher = getRequestDispatcher();
+		if (dispatcher != null) {
+			return dispatcher.getQueryVerifier();
+		} else {
+			return null;
+		}
+	}
+	
+	protected void setQueryVerifier(final RestQueryVerifier verifier) {
+		final RestDispatcher dispatcher = getRequestDispatcher();
+		if (dispatcher != null) {
+			dispatcher.setQueryVerifier(verifier);
+		}
+	}
+	
 	protected void execute(final Query query) {
 		final RestDispatcher dispatcher = getRequestDispatcher();
-		dispatcher.execute(query, this);
+		if (dispatcher != null) {
+			dispatcher.execute(query, this);
+		}
 	}
 }

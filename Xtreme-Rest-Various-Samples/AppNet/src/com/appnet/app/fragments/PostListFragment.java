@@ -20,15 +20,15 @@ import com.appnet.app.R;
 import com.appnet.app.activities.PostActivity;
 import com.appnet.app.datasets.PostTable;
 import com.appnet.app.providers.AppNetContentProvider;
-import com.appnet.app.validators.PostListValidator;
-import com.xtreme.rest.RestAdapterSupportFragment;
-import com.xtreme.rest.RestDispatcher;
+import com.appnet.app.verifiers.PostListVerifier;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
+import com.xtreme.rest.fragments.RestAdapterSupportFragment;
+import com.xtreme.rest.fragments.RestDispatcher;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class PostListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
@@ -56,9 +56,9 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 	}
 	
 	@Override
-	protected RestDispatcher onCreateRequestDispatcher() {
-		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
-		dispatcher.setValidator(new PostListValidator());
+	protected RestDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
+		final RestDispatcher dispatcher = super.onCreateDispatcher(savedInstaceState);
+		dispatcher.setQueryVerifier(new PostListVerifier());
 		return dispatcher;
 	}
 	

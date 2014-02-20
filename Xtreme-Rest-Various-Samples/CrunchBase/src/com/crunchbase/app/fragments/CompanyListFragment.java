@@ -20,15 +20,15 @@ import com.crunchbase.app.R;
 import com.crunchbase.app.activities.CompanyActivity;
 import com.crunchbase.app.datasets.CompanyTable;
 import com.crunchbase.app.providers.CrunchBaseContentProvider;
-import com.crunchbase.app.validators.CompanyListValidator;
-import com.xtreme.rest.RestAdapterSupportFragment;
-import com.xtreme.rest.RestDispatcher;
+import com.crunchbase.app.verifiers.CompanyListVerifier;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.adapters.ViewBinder;
 import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
+import com.xtreme.rest.fragments.RestAdapterSupportFragment;
+import com.xtreme.rest.fragments.RestDispatcher;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class CompanyListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
@@ -56,9 +56,9 @@ public class CompanyListFragment extends RestAdapterSupportFragment implements O
 	}
 
 	@Override
-	protected RestDispatcher onCreateRequestDispatcher() {
-		final RestDispatcher dispatcher = super.onCreateRequestDispatcher();
-		dispatcher.setValidator(new CompanyListValidator());
+	protected RestDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
+		final RestDispatcher dispatcher = super.onCreateDispatcher(savedInstaceState);
+		dispatcher.setQueryVerifier(new CompanyListVerifier());
 		return dispatcher;
 	}
 	

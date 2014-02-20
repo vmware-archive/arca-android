@@ -30,9 +30,7 @@ public interface RequestExecutor {
 		public QueryResult execute(final Query request) {
 			final ContentResolver resolver = getContentResolver();
 			final Cursor cursor = resolver.query(request.getUri(), request.getProjection(), request.getWhereClause(), request.getWhereArgs(), request.getSortOrder());
-			if (cursor != null) {
-				cursor.getCount();
-			}
+			if (cursor != null) cursor.getCount();
 			return new QueryResult(cursor);
 		}
 

@@ -19,8 +19,8 @@ import android.widget.Toast;
 import com.appnet.app.R;
 import com.appnet.app.activities.PostActivity;
 import com.appnet.app.datasets.PostTable;
+import com.appnet.app.monitors.PostListMonitor;
 import com.appnet.app.providers.AppNetContentProvider;
-import com.appnet.app.verifiers.PostListVerifier;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.adapters.ViewBinder;
@@ -28,7 +28,7 @@ import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestAdapterSupportFragment;
-import com.xtreme.rest.fragments.RestDispatcher;
+import com.xtreme.rest.monitor.RestDispatcher;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class PostListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
@@ -58,7 +58,7 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 	@Override
 	protected RestDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
 		final RestDispatcher dispatcher = super.onCreateDispatcher(savedInstaceState);
-		dispatcher.setQueryVerifier(new PostListVerifier());
+		dispatcher.setRequestMonitor(new PostListMonitor());
 		return dispatcher;
 	}
 	
@@ -103,7 +103,7 @@ public class PostListFragment extends RestAdapterSupportFragment implements OnIt
 		final CursorAdapter adapter = getCursorAdapter();
 		if (adapter.getCount() > 0) {
 			showResults();
-		} else if (!result.isRefreshing()) {
+		} else if (!result.isSyncing()) {
 			hideLoading();
 		}
 	}

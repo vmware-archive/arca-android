@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryListener;
+import com.xtreme.rest.monitor.RequestMonitor;
+import com.xtreme.rest.monitor.RestDispatcher;
 
 /**
  * This class provides a basic implementation of a single {@link RestDispatcher} 
@@ -30,19 +32,19 @@ public abstract class RestQuerySupportFragment extends Fragment implements Query
 		return mDispatcher;
 	}
 	
-	protected RestQueryVerifier getQueryVerifier() {
+	protected RequestMonitor getRequestMonitor() {
 		final RestDispatcher dispatcher = getRequestDispatcher();
 		if (dispatcher != null) {
-			return dispatcher.getQueryVerifier();
+			return dispatcher.getRequestMonitor();
 		} else {
 			return null;
 		}
 	}
 	
-	protected void setQueryVerifier(final RestQueryVerifier verifier) {
+	protected void setRequestMonitor(final RequestMonitor monitor) {
 		final RestDispatcher dispatcher = getRequestDispatcher();
 		if (dispatcher != null) {
-			dispatcher.setQueryVerifier(verifier);
+			dispatcher.setRequestMonitor(monitor);
 		}
 	}
 	

@@ -4,7 +4,11 @@ import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.os.Build;
 
-import com.xtreme.rest.fragments.RestExecutor.DefaultRestExecutor;
+import com.xtreme.rest.monitor.RestDispatcher;
+import com.xtreme.rest.monitor.RestExecutor;
+import com.xtreme.rest.monitor.RestExecutor.DefaultRestExecutor;
+import com.xtreme.rest.monitor.RestModernDispatcher;
+import com.xtreme.rest.monitor.RestSupportDispatcher;
 
 public class RestDispatcherFactory {
 	

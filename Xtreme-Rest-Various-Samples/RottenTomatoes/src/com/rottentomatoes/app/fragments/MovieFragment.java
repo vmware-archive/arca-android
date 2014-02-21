@@ -89,7 +89,7 @@ public class MovieFragment extends RestItemSupportFragment implements ViewBinder
 		final ItemCursorAdapter adapter = getItemAdapter();
 		if (adapter.hasResults()) {
 			showResults();
-		} else if (!result.isRefreshing()) {
+		} else if (!result.isSyncing()) {
 			hideLoading();
 		}
 	}

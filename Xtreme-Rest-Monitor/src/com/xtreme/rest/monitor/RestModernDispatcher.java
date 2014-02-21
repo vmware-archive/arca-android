@@ -1,10 +1,9 @@
-package com.xtreme.rest.fragments;
+package com.xtreme.rest.monitor;
 
 import android.app.LoaderManager;
 import android.content.Context;
 
 import com.xtreme.rest.dispatcher.ModernRequestDispatcher;
-
 
 public class RestModernDispatcher extends ModernRequestDispatcher implements RestDispatcher {
 
@@ -13,15 +12,15 @@ public class RestModernDispatcher extends ModernRequestDispatcher implements Res
 	}
 
 	@Override
-	public void setQueryVerifier(final RestQueryVerifier validator) {
+	public void setRequestMonitor(final RequestMonitor monitor) {
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
-		executor.setQueryVerifier(validator);
+		executor.setRequestMonitor(monitor);
 	}
 	
 	@Override
-	public RestQueryVerifier getQueryVerifier() {
+	public RequestMonitor getRequestMonitor() {
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
-		return executor.getQueryVerifier();
+		return executor.getRequestMonitor();
 	}
 
 }

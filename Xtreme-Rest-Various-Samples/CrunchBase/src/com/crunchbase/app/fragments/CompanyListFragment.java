@@ -19,8 +19,8 @@ import android.widget.Toast;
 import com.crunchbase.app.R;
 import com.crunchbase.app.activities.CompanyActivity;
 import com.crunchbase.app.datasets.CompanyTable;
+import com.crunchbase.app.monitors.CompanyListMonitor;
 import com.crunchbase.app.providers.CrunchBaseContentProvider;
-import com.crunchbase.app.verifiers.CompanyListVerifier;
 import com.xtreme.rest.adapters.Binding;
 import com.xtreme.rest.adapters.SupportCursorAdapter;
 import com.xtreme.rest.adapters.ViewBinder;
@@ -28,7 +28,7 @@ import com.xtreme.rest.dispatcher.Error;
 import com.xtreme.rest.dispatcher.Query;
 import com.xtreme.rest.dispatcher.QueryResult;
 import com.xtreme.rest.fragments.RestAdapterSupportFragment;
-import com.xtreme.rest.fragments.RestDispatcher;
+import com.xtreme.rest.monitor.RestDispatcher;
 import com.xtremelabs.imageutils.ImageLoader;
 
 public class CompanyListFragment extends RestAdapterSupportFragment implements OnItemClickListener, ViewBinder {
@@ -58,7 +58,7 @@ public class CompanyListFragment extends RestAdapterSupportFragment implements O
 	@Override
 	protected RestDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
 		final RestDispatcher dispatcher = super.onCreateDispatcher(savedInstaceState);
-		dispatcher.setQueryVerifier(new CompanyListVerifier());
+		dispatcher.setRequestMonitor(new CompanyListMonitor());
 		return dispatcher;
 	}
 	
@@ -105,7 +105,7 @@ public class CompanyListFragment extends RestAdapterSupportFragment implements O
 		final CursorAdapter adapter = getCursorAdapter();
 		if (adapter.getCount() > 0) {
 			showResults();
-		} else if (!result.isRefreshing()) {
+		} else if (!result.isSyncing()) {
 			hideLoading();
 		}
 	}

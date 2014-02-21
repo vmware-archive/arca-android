@@ -19,11 +19,11 @@ public class ResultTest extends AndroidTestCase {
 		assertFalse(result.hasError());
 	}
 	
-	public void testResultIsRefreshing() {
+	public void testResultIsSyncing() {
 		final Object data = new Object();
 		final TestResult result = new TestResult(data);
-		result.setIsRefreshing(true);
-		assertTrue(result.isRefreshing());
+		result.setIsSyncing(true);
+		assertTrue(result.isSyncing());
 	}
 
 	public void testResultIsValid() {

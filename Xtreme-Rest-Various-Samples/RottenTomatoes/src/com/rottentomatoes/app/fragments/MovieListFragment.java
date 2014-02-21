@@ -105,7 +105,7 @@ public class MovieListFragment extends RestAdapterSupportFragment implements OnI
 		Logger.v("cursor %s", result.getResult());
 		if (adapter.getCount() > 0) {
 			showResults();
-		} else if (!result.isRefreshing()) {
+		} else if (!result.isSyncing()) {
 			hideLoading();
 		}
 	}

@@ -1,10 +1,9 @@
-package com.xtreme.rest.fragments;
+package com.xtreme.rest.monitor;
 
 import android.content.Context;
 import android.support.v4.app.LoaderManager;
 
 import com.xtreme.rest.dispatcher.SupportRequestDispatcher;
-
 
 public class RestSupportDispatcher extends SupportRequestDispatcher implements RestDispatcher {
 
@@ -13,14 +12,14 @@ public class RestSupportDispatcher extends SupportRequestDispatcher implements R
 	}
 
 	@Override
-	public void setQueryVerifier(final RestQueryVerifier validator) {
+	public void setRequestMonitor(final RequestMonitor monitor) {
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
-		executor.setQueryVerifier(validator);
+		executor.setRequestMonitor(monitor);
 	}
-
+	
 	@Override
-	public RestQueryVerifier getQueryVerifier() {
+	public RequestMonitor getRequestMonitor() {
 		final RestExecutor executor = (RestExecutor) getRequestExecutor();
-		return executor.getQueryVerifier();
+		return executor.getRequestMonitor();
 	}
 }

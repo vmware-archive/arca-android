@@ -5,7 +5,7 @@ public abstract class Result<T> {
 	private final T mData;
 	private final Error mError;
 	
-	private boolean mIsRefreshing = false;
+	private boolean mIsSyncing = false;
 	private boolean mIsValid = true;
 
 	public Result(final T data) {
@@ -30,12 +30,12 @@ public abstract class Result<T> {
 		return mError != null;
 	}
 	
-	public void setIsRefreshing(final boolean refreshing) {
-		mIsRefreshing = refreshing;
+	public void setIsSyncing(final boolean syncing) {
+		mIsSyncing = syncing;
 	}
 	
-	public boolean isRefreshing() {
-		return mIsRefreshing;
+	public boolean isSyncing() {
+		return mIsSyncing;
 	}
 	
 	public void setIsValid(final boolean valid) {

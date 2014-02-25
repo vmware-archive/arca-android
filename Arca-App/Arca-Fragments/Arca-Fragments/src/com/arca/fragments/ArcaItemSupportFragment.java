@@ -1,21 +1,22 @@
 package com.arca.fragments;
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.widget.CursorAdapter;
 import android.view.View;
 
-import com.arca.adapters.ItemCursorAdapter;
-import com.arca.dispatcher.QueryResult;
 import com.arca.dispatcher.Error;
+import com.arca.dispatcher.QueryResult;
 
 /**
  * A {@link ArcaQuerySupportFragment} that adds convenient support for 
- * a single item by wrapping a {@link ItemCursorAdapter}.
+ * a single item by wrapping a {@link CursorAdapter}.
  */
 public abstract class ArcaItemSupportFragment extends ArcaQuerySupportFragment {
 
-	public abstract ItemCursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState);
+	public abstract CursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState);
 
-	private ItemCursorAdapter mAdapter;
+	private CursorAdapter mAdapter;
 
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
@@ -28,23 +29,32 @@ public abstract class ArcaItemSupportFragment extends ArcaQuerySupportFragment {
 		mAdapter = onCreateAdapter(view, savedInstanceState);
 	}
 	
-	public ItemCursorAdapter getItemAdapter() {
+	public CursorAdapter getCursorAdapter() {
 		return mAdapter;
 	}
-	
+
 	@Override
 	public final void onRequestComplete(final QueryResult result) {
 		if (result.hasError()) {
 			onContentError(result.getError());
 		} else {
-			getItemAdapter().swapCursor(result.getResult());
+			getCursorAdapter().swapCursor(result.getResult());
+			bindViewAtPosition(0);
 			onContentChanged(result);
 		}
 	}
-	
+
+	public void bindViewAtPosition(final int position) {
+		final CursorAdapter adapter = getCursorAdapter();
+		final Cursor cursor = adapter.getCursor();
+		if (cursor != null && cursor.moveToPosition(position)) {
+			adapter.bindView(getView(), getActivity(), cursor);
+		}
+	}
+
 	@Override
 	public final void onRequestReset() {
-		getItemAdapter().swapCursor(null);
+		getCursorAdapter().swapCursor(null);
 		onContentReset();
 	}
 	

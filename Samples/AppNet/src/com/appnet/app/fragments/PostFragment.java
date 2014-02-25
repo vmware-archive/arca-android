@@ -6,6 +6,7 @@ import java.util.Collection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,11 @@ import com.appnet.app.R;
 import com.appnet.app.datasets.PostTable;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.arca.adapters.Binding;
-import com.arca.adapters.ItemCursorAdapter;
+import com.arca.adapters.SupportItemAdapter;
 import com.arca.adapters.ViewBinder;
+import com.arca.dispatcher.Error;
 import com.arca.dispatcher.Query;
 import com.arca.dispatcher.QueryResult;
-import com.arca.dispatcher.Error;
 import com.arca.fragments.ArcaItemSupportFragment;
 
 public class PostFragment extends ArcaItemSupportFragment implements ViewBinder {
@@ -36,8 +37,8 @@ public class PostFragment extends ArcaItemSupportFragment implements ViewBinder 
 	}
 	
 	@Override
-	public ItemCursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState) {
-		final ItemCursorAdapter adapter = new ItemCursorAdapter(view, BINDINGS);
+	public CursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState) {
+		final SupportItemAdapter adapter = new SupportItemAdapter(getActivity(), BINDINGS);
 		adapter.setViewBinder(this);
 		return adapter;
 	}
@@ -60,8 +61,8 @@ public class PostFragment extends ArcaItemSupportFragment implements ViewBinder 
 	
 	@Override
 	public void onContentChanged(final QueryResult result) {
-		final ItemCursorAdapter adapter = getItemAdapter();
-		if (adapter.hasResults()) {
+		final CursorAdapter adapter = getCursorAdapter();
+		if (adapter.getCount() > 0) {
 			showResults();
 		} else {
 			hideLoading();

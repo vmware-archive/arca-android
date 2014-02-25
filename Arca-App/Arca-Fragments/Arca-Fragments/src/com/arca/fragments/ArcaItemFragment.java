@@ -1,47 +1,38 @@
 package com.arca.fragments;
 
 import android.annotation.TargetApi;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CursorAdapter;
 
-import com.arca.adapters.ItemCursorAdapter;
-import com.arca.dispatcher.QueryResult;
 import com.arca.dispatcher.Error;
+import com.arca.dispatcher.QueryResult;
 
 /**
  * A {@link ArcaQueryFragment} that adds convenient support for 
- * a single item by wrapping a {@link ItemCursorAdapter}.
+ * a single item by wrapping a {@link CursorAdapter}.
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public abstract class ArcaItemFragment extends ArcaQueryFragment {
 
-	public abstract ItemCursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState);
+	public abstract CursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState);
 
-	private ItemCursorAdapter mAdapter;
+	private CursorAdapter mAdapter;
 
 	@Override
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		
 		setupAdapterView(view, savedInstanceState);
 	}
 	
-	@Override
-	public void onStart() {
-		super.onStart();
-		
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
-			setupAdapterView(getView(), null);
-		}
-	}
-	
 	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
 		mAdapter = onCreateAdapter(view, savedInstanceState);
 	}
 	
-	public ItemCursorAdapter getItemAdapter() {
+	public CursorAdapter getCursorAdapter() {
 		return mAdapter;
 	}
 
@@ -50,14 +41,23 @@ public abstract class ArcaItemFragment extends ArcaQueryFragment {
 		if (result.hasError()) {
 			onContentError(result.getError());
 		} else {
-			getItemAdapter().swapCursor(result.getResult());
+			getCursorAdapter().swapCursor(result.getResult());
+			bindViewAtPosition(0);
 			onContentChanged(result);
+		}
+	}
+
+	public void bindViewAtPosition(final int position) {
+		final CursorAdapter adapter = getCursorAdapter();
+		final Cursor cursor = adapter.getCursor();
+		if (cursor != null && cursor.moveToPosition(position)) {
+			adapter.bindView(getView(), getActivity(), cursor);
 		}
 	}
 
 	@Override
 	public final void onRequestReset() {
-		getItemAdapter().swapCursor(null);
+		getCursorAdapter().swapCursor(null);
 		onContentReset();
 	}
 	

@@ -50,7 +50,7 @@ public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragmen
 	}
 	
 	@Override
-	public final void onRequestComplete(final QueryResult result) {
+	public void onRequestComplete(final QueryResult result) {
 		if (result.hasError()) {
 			onContentError(result.getError());
 		} else {
@@ -60,7 +60,7 @@ public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragmen
 	}
 	
 	@Override
-	public final void onRequestReset() {
+	public void onRequestReset() {
 		getCursorAdapter().swapCursor(null);
 		onContentReset();
 	}

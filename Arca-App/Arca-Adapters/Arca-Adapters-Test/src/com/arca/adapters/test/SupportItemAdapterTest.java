@@ -12,28 +12,33 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.arca.adapters.Binding;
-import com.arca.adapters.ItemCursorAdapter;
+import com.arca.adapters.SupportItemAdapter;
 import com.arca.adapters.ViewBinder;
 
-public class ItemCursorAdapterTest extends AndroidTestCase {
+public class SupportItemAdapterTest extends AndroidTestCase {
 
 	public void testItemCursorAdapterNullCursorHasNoResults() {
-		final ItemCursorAdapter adapter = new ItemCursorAdapter(null, null);
+		final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
 		assertFalse(adapter.hasResults());
 	}
 	
 	public void testItemCursorAdapterEmptyCursorHasNoResults() {
 		final MatrixCursor cursor = new MatrixCursor(new String[] { "_id" });
-		final ItemCursorAdapter adapter = new ItemCursorAdapter(null, null);
+		final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
 		adapter.swapCursor(cursor);
 		assertFalse(adapter.hasResults());
 	}
 	
 	public void testItemCursorAdapterCursorHasResults() {
 		final Cursor cursor = createCursor(new String[] { "_id" });
-		final ItemCursorAdapter adapter = new ItemCursorAdapter(null, null);
+		final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
 		adapter.swapCursor(cursor);
 		assertTrue(adapter.hasResults());
+	}
+	
+	public void testItemCursorAdapterViewType() {
+		final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
+		assertEquals(1, adapter.getViewTypeCount());
 	}
 	
 	public void testItemCursorAdapterDefaultViewBinding() {
@@ -44,8 +49,8 @@ public class ItemCursorAdapterTest extends AndroidTestCase {
 		final String[] columns = new String[] { "_id" };
 		final Cursor cursor = createCursor(columns);
 		final Collection<Binding> bindings = createBindings(columns);
-		final ItemCursorAdapter adapter = new ItemCursorAdapter(container, bindings);
-		adapter.bindViewAtPosition(container, cursor, 0);
+		final SupportItemAdapter adapter = new SupportItemAdapter(getContext(), bindings);
+		adapter.bindView(container, getContext(), cursor);
 		assertEquals("default_test", child1.getText());
 	}
 	
@@ -57,9 +62,9 @@ public class ItemCursorAdapterTest extends AndroidTestCase {
 		final String[] columns = new String[] { "_id" };
 		final Cursor cursor = createCursor(columns);
 		final Collection<Binding> bindings = createBindings(columns);
-		final ItemCursorAdapter adapter = new ItemCursorAdapter(container, bindings);
+		final SupportItemAdapter adapter = new SupportItemAdapter(getContext(), bindings);
 		adapter.setViewBinder(new TestViewBinder());
-		adapter.bindViewAtPosition(container, cursor, 0);
+		adapter.bindView(container, getContext(), cursor);
 		assertEquals("custom_test", child1.getText());
 	}
 	
@@ -72,10 +77,50 @@ public class ItemCursorAdapterTest extends AndroidTestCase {
 			final String[] columns = new String[] { "_id" };
 			final Cursor cursor = createCursor(columns);
 			final Collection<Binding> bindings = createBindings(columns);
-			final ItemCursorAdapter adapter = new ItemCursorAdapter(container, bindings);
-			adapter.bindViewAtPosition(container, cursor, 0);
+			final SupportItemAdapter adapter = new SupportItemAdapter(getContext(), bindings);
+			adapter.bindView(container, getContext(), cursor);
 			Assert.fail();
 		} catch (final IllegalStateException e) {
+			assertNotNull(e);
+		}
+	}
+	
+	public void testItemCursorAdapterGetViewThrowsException() {
+		try {
+			final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
+			adapter.getView(0, null, null);
+			Assert.fail();
+		} catch (final UnsupportedOperationException e) {
+			assertNotNull(e);
+		}
+	}
+	
+	public void testItemCursorAdapterGetDropDownViewThrowsException() {
+		try {
+			final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
+			adapter.getDropDownView(0, null, null);
+			Assert.fail();
+		} catch (final UnsupportedOperationException e) {
+			assertNotNull(e);
+		}
+	}
+	
+	public void testItemCursorAdapterNewViewThrowsException() {
+		try {
+			final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
+			adapter.newView(null, null, null);
+			Assert.fail();
+		} catch (final UnsupportedOperationException e) {
+			assertNotNull(e);
+		}
+	}
+	
+	public void testItemCursorAdapterNewDropDownViewThrowsException() {
+		try {
+			final SupportItemAdapter adapter = new SupportItemAdapter(null, null);
+			adapter.newDropDownView(null, null, null);
+			Assert.fail();
+		} catch (final UnsupportedOperationException e) {
 			assertNotNull(e);
 		}
 	}

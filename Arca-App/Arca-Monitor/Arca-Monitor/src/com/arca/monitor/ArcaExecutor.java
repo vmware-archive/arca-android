@@ -45,7 +45,7 @@ public interface ArcaExecutor extends RequestExecutor {
 		public QueryResult execute(final Query request) {
 			final RequestMonitor monitor = getRequestMonitor();
 			
-			int flags = Flags.DATA_VALID;
+			int flags = 0;
 			
 			if (monitor != null) {
 				flags = flags | monitor.onPreExecute(mContext, request);
@@ -64,7 +64,7 @@ public interface ArcaExecutor extends RequestExecutor {
 		public UpdateResult execute(final Update request) {
 			final RequestMonitor monitor = getRequestMonitor();
 			
-			int flags = Flags.DATA_VALID;
+			int flags = 0;
 			
 			if (monitor != null) {
 				flags = flags | monitor.onPreExecute(mContext, request);
@@ -83,7 +83,7 @@ public interface ArcaExecutor extends RequestExecutor {
 		public InsertResult execute(final Insert request) {
 			final RequestMonitor monitor = getRequestMonitor();
 			
-			int flags = Flags.DATA_VALID;
+			int flags = 0;
 			
 			if (monitor != null) {
 				flags = flags | monitor.onPreExecute(mContext, request);
@@ -102,7 +102,7 @@ public interface ArcaExecutor extends RequestExecutor {
 		public DeleteResult execute(final Delete request) {
 			final RequestMonitor monitor = getRequestMonitor();
 			
-			int flags = Flags.DATA_VALID;
+			int flags = 0;
 			
 			if (monitor != null) {
 				flags = flags | monitor.onPreExecute(mContext, request);
@@ -119,7 +119,7 @@ public interface ArcaExecutor extends RequestExecutor {
 
 
 		private static Result<?> appendFlags(final Result<?> result, int flags) {
-			result.setIsValid((flags & Flags.DATA_VALID) != 0);
+			result.setIsValid((flags & Flags.DATA_INVALID) == 0);
 			result.setIsSyncing((flags & Flags.DATA_SYNCING) != 0);
 			return result;
 		}

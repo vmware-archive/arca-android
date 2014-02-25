@@ -16,7 +16,7 @@ public class CompanyListMonitor extends AbstractRequestMonitor {
 		if (count == 0 && ArcaService.start(context, new CompanyListOperation(request.getUri()))) {
 			return Flags.DATA_SYNCING; 
 		} else {
-			return Flags.DATA_VALID;
+			return 0;
 		}
 	}
 }

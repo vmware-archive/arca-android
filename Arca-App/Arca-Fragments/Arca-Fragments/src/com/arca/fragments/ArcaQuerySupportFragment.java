@@ -24,7 +24,7 @@ public abstract class ArcaQuerySupportFragment extends Fragment implements Query
 		mDispatcher = onCreateDispatcher(savedInstanceState);
 	}
 	
-	protected ArcaDispatcher onCreateDispatcher(final Bundle savedInstanceState) {
+	public ArcaDispatcher onCreateDispatcher(final Bundle savedInstanceState) {
 		return ArcaDispatcherFactory.generateDispatcher(this);
 	}
 	

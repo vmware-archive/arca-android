@@ -56,7 +56,7 @@ public class CompanyListFragment extends ArcaAdapterSupportFragment implements O
 	}
 
 	@Override
-	protected ArcaDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
+	public ArcaDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
 		final ArcaDispatcher dispatcher = super.onCreateDispatcher(savedInstaceState);
 		dispatcher.setRequestMonitor(new CompanyListMonitor());
 		return dispatcher;

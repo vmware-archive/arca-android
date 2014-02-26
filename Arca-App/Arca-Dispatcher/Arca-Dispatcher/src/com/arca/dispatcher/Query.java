@@ -44,7 +44,7 @@ public class Query extends Request<Cursor> implements Parcelable {
 		mProjection = projection;
 	}
 
-	public void setWhere(final String whereClause, final String[] whereArgs) {
+	public void setWhere(final String whereClause, final String... whereArgs) {
 		mWhereClause = whereClause;
 		mWhereArgs = whereArgs;
 	}

@@ -26,7 +26,7 @@ public class Delete extends Request<Integer> {
 		dest.writeStringArray(mWhereArgs);
 	}
 
-	public void setWhere(final String whereClause, final String[] whereArgs) {
+	public void setWhere(final String whereClause, final String... whereArgs) {
 		mWhereClause = whereClause;
 		mWhereArgs = whereArgs;
 	}

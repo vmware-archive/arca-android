@@ -11,17 +11,17 @@ import android.test.AndroidTestCase;
 import com.arca.provider.DatabaseConfiguration;
 import com.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import com.arca.provider.DatabaseHelper;
-import com.arca.provider.SQLDataset;
-import com.arca.provider.SQLTable;
-import com.arca.provider.SQLView;
+import com.arca.provider.SQLiteDataset;
+import com.arca.provider.SQLiteTable;
+import com.arca.provider.SQLiteView;
 
 public class DatabaseHelperTest extends AndroidTestCase {
 
 	
 	public void testDatabaseHelperUpgradeDataset() {
 		final AssertionLatch latch = new AssertionLatch(1);
-		final ArrayList<SQLDataset> datasets = new ArrayList<SQLDataset>();
-		datasets.add(new TestSQLTable() {
+		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
+		datasets.add(new TestSQLiteTable() {
 			
 			@Override
 			public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
@@ -40,8 +40,8 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	
 	public void testDatabaseHelperUpgradeMultipleDatasets() {
 		final AssertionLatch latch = new AssertionLatch(2);
-		final ArrayList<SQLDataset> datasets = new ArrayList<SQLDataset>();
-		datasets.add(new TestSQLTable() {
+		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
+		datasets.add(new TestSQLiteTable() {
 			
 			@Override
 			public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
@@ -52,7 +52,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 			}
 			
 		});
-		datasets.add(new TestSQLView() {
+		datasets.add(new TestSQLiteView() {
 			
 			@Override
 			public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
@@ -72,8 +72,8 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	
 	public void testDatabaseHelperDowngradeDataset() {
 		final AssertionLatch latch = new AssertionLatch(1);
-		final ArrayList<SQLDataset> datasets = new ArrayList<SQLDataset>();
-		datasets.add(new TestSQLTable() {
+		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
+		datasets.add(new TestSQLiteTable() {
 
 			@Override
 			public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -92,8 +92,8 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	
 	public void testDatabaseHelperDowngradeMultipleDatasets() {
 		final AssertionLatch latch = new AssertionLatch(2);
-		final ArrayList<SQLDataset> datasets = new ArrayList<SQLDataset>();
-		datasets.add(new TestSQLTable() {
+		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
+		datasets.add(new TestSQLiteTable() {
 
 			@Override
 			public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -104,7 +104,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 			}
 			
 		});
-		datasets.add(new TestSQLView() {
+		datasets.add(new TestSQLiteView() {
 
 			@Override
 			public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -125,7 +125,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	// =======================================
 	
 	
-	private static class TestSQLTable extends SQLTable {
+	private static class TestSQLiteTable extends SQLiteTable {
 		
 		@Override
 		public void onCreate(final SQLiteDatabase db) {
@@ -138,11 +138,11 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		}
 	}
 	
-	private static class TestSQLView extends SQLView {
+	private static class TestSQLiteView extends SQLiteView {
 
 		@Override
 		public void onCreate(final SQLiteDatabase db) {
-			db.execSQL(String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM %s;", getName(), TestSQLTable.class.getSimpleName()));
+			db.execSQL(String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM %s;", getName(), TestSQLiteTable.class.getSimpleName()));
 		}
 		
 		@Override

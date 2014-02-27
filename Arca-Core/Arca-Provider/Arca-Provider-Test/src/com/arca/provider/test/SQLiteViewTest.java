@@ -13,17 +13,17 @@ import android.test.AndroidTestCase;
 import com.arca.provider.DatabaseConfiguration;
 import com.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import com.arca.provider.DatabaseHelper;
-import com.arca.provider.SQLDataset;
-import com.arca.provider.SQLTable;
-import com.arca.provider.SQLView;
+import com.arca.provider.SQLiteDataset;
+import com.arca.provider.SQLiteTable;
+import com.arca.provider.SQLiteView;
 
-public class SQLViewTest extends AndroidTestCase {
+public class SQLiteViewTest extends AndroidTestCase {
 
 	private static final Uri URI = Uri.EMPTY;
 	private static final ContentValues VALUES = new ContentValues();
-	private static final TestSQLTable TABLE = new TestSQLTable();
-	private static final TestSQLView VIEW = new TestSQLView();
-	private static final Collection<SQLDataset> DATASETS = new ArrayList<SQLDataset>();
+	private static final TestSQLiteTable TABLE = new TestSQLiteTable();
+	private static final TestSQLiteView VIEW = new TestSQLiteView();
+	private static final Collection<SQLiteDataset> DATASETS = new ArrayList<SQLiteDataset>();
 	
 	static {
 		VALUES.put("id", "test");
@@ -49,7 +49,7 @@ public class SQLViewTest extends AndroidTestCase {
 		deleteDatabase();
 	}
 	
-	public void testSQLViewQuery() {
+	public void testSQLiteViewQuery() {
 		TABLE.setDatabase(mDatabase);
 		final Uri uri = TABLE.insert(URI, VALUES);
 		assertNotNull(uri);
@@ -61,7 +61,7 @@ public class SQLViewTest extends AndroidTestCase {
 		cursor.close();
 	}
 	
-	public void testSQLViewQueryThrowsExceptionWithoutDatabase() {
+	public void testSQLiteViewQueryThrowsExceptionWithoutDatabase() {
 		try {
 			VIEW.setDatabase(null);
 			VIEW.query(null, null, null, null, null);
@@ -71,39 +71,39 @@ public class SQLViewTest extends AndroidTestCase {
 		}
 	}
 	
-	public void testSQLViewUpdateThrowsException() {
+	public void testSQLiteViewUpdateThrowsException() {
 		try {
 			VIEW.update(null, null, null, null);
 			Assert.fail();
 		} catch(final Exception e) {
-			assertEquals("A SQLView does not support update operations.", e.getLocalizedMessage());
+			assertEquals("A SQLiteView does not support update operations.", e.getLocalizedMessage());
 		}
 	}
 	
-	public void testSQLViewInsertThrowsException() {
+	public void testSQLiteViewInsertThrowsException() {
 		try {
 			VIEW.insert(null, null);
 			Assert.fail();
 		} catch(final UnsupportedOperationException e) {
-			assertEquals("A SQLView does not support insert operations.", e.getLocalizedMessage());
+			assertEquals("A SQLiteView does not support insert operations.", e.getLocalizedMessage());
 		}
 	}
 	
-	public void testSQLViewBulkInsertThrowsException() {
+	public void testSQLiteViewBulkInsertThrowsException() {
 		try {
 			VIEW.bulkInsert(null, null);
 			Assert.fail();
 		} catch(final UnsupportedOperationException e) {
-			assertEquals("A SQLView does not support bulk insert operations.", e.getLocalizedMessage());
+			assertEquals("A SQLiteView does not support bulk insert operations.", e.getLocalizedMessage());
 		}
 	}
 	
-	public void testSQLViewDeleteThrowsException() {
+	public void testSQLiteViewDeleteThrowsException() {
 		try {
 			VIEW.delete(null, null, null);
 			Assert.fail();
 		} catch(final UnsupportedOperationException e) {
-			assertEquals("A SQLView does not support delete operations.", e.getLocalizedMessage());
+			assertEquals("A SQLiteView does not support delete operations.", e.getLocalizedMessage());
 		}
 	}
 	
@@ -131,7 +131,7 @@ public class SQLViewTest extends AndroidTestCase {
 
 	// ====================================
 
-	private static final class TestSQLTable extends SQLTable {
+	private static final class TestSQLiteTable extends SQLiteTable {
 
 		@Override
 		public void onCreate(final SQLiteDatabase db) {
@@ -149,11 +149,11 @@ public class SQLViewTest extends AndroidTestCase {
 		}
 	}
 	
-	private static final class TestSQLView extends SQLView {
+	private static final class TestSQLiteView extends SQLiteView {
 
 		@Override
 		public void onCreate(final SQLiteDatabase db) {
-			db.execSQL(String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM %s;", getName(), TestSQLTable.class.getSimpleName()));
+			db.execSQL(String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM %s;", getName(), TestSQLiteTable.class.getSimpleName()));
 		}
 
 		@Override

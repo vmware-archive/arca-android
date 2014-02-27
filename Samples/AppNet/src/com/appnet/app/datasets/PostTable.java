@@ -11,14 +11,14 @@ import com.appnet.app.models.Post;
 import com.arca.provider.Column;
 import com.arca.provider.Column.Type;
 import com.arca.provider.ColumnUtils;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteTable;
 import com.arca.utils.ArrayUtils;
 import com.arca.utils.StringUtils;
 
-public class PostTable extends SQLTable {
+public class PostTable extends SQLiteTable {
 	
-	public static interface Columns extends SQLTable.Columns {
-        public static final Column ID = Type.TEXT.newColumn("id");
+	public static interface Columns extends SQLiteTable.Columns {
+        public static final Column ID = Column.Type.TEXT.newColumn("id");
         public static final Column CREATED_AT = Type.TEXT.newColumn("created_at");
         public static final Column TEXT = Type.TEXT.newColumn("text");
         public static final Column NUM_STARS = Type.TEXT.newColumn("num_stars");

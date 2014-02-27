@@ -8,12 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import com.arca.provider.Column;
 import com.arca.provider.Column.Type;
 import com.arca.provider.ColumnUtils;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteTable;
 import com.rottentomatoes.app.models.Movie;
 
-public class MovieTypeTable extends SQLTable {
+public class MovieTypeTable extends SQLiteTable {
 	
-	public static interface Columns extends SQLTable.Columns {
+	public static interface Columns extends SQLiteTable.Columns {
 		public static final Column ID = Type.TEXT.newColumn("id");
         public static final Column TYPE = Type.TEXT.newColumn("type");
 	}

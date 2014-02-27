@@ -46,13 +46,13 @@ public abstract class DatabaseProvider extends DatasetProvider {
 	 */
 	protected SQLiteDatabase createDatabase() {
 		final DatabaseConfiguration configuration = onCreateDatabaseConfiguration();
-		final DatabaseHelper helper = DatabaseHelper.create(getContext(), configuration, getSQLDatasets());
+		final DatabaseHelper helper = DatabaseHelper.create(getContext(), configuration, getSQLiteDatasets());
 		return helper.getWritableDatabase();
 	}
 	
-	private Collection<SQLDataset> getSQLDatasets() {
+	private Collection<SQLiteDataset> getSQLiteDatasets() {
 		final Collection<Dataset> datasets = getDatasets(); 
-		return CollectionUtils.filter(datasets, SQLDataset.class);
+		return CollectionUtils.filter(datasets, SQLiteDataset.class);
 	}
 	
 	/**
@@ -82,9 +82,9 @@ public abstract class DatabaseProvider extends DatasetProvider {
 	@Override
 	protected Dataset getDatasetOrThrowException(final Uri uri) {
 		final Dataset dataset = super.getDatasetOrThrowException(uri);
-		if (dataset instanceof SQLDataset) {
+		if (dataset instanceof SQLiteDataset) {
 			final SQLiteDatabase database = getDatabase();
-			((SQLDataset) dataset).setDatabase(database);
+			((SQLiteDataset) dataset).setDatabase(database);
 		}
 		return dataset;
 	}

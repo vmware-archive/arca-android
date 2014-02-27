@@ -13,15 +13,15 @@ import android.test.AndroidTestCase;
 import com.arca.provider.DatabaseConfiguration;
 import com.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import com.arca.provider.DatabaseHelper;
-import com.arca.provider.SQLDataset;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteDataset;
+import com.arca.provider.SQLiteTable;
 
-public class SQLTableTest extends AndroidTestCase {
+public class SQLiteTableTest extends AndroidTestCase {
 
 	private static final Uri URI = Uri.EMPTY;
 	private static final ContentValues VALUES = new ContentValues();
-	private static final TestSQLTable TABLE = new TestSQLTable();
-	private static final Collection<SQLDataset> DATASETS = new ArrayList<SQLDataset>();
+	private static final TestSQLiteTable TABLE = new TestSQLiteTable();
+	private static final Collection<SQLiteDataset> DATASETS = new ArrayList<SQLiteDataset>();
 	
 	static {
 		VALUES.put("id", "test");
@@ -46,8 +46,8 @@ public class SQLTableTest extends AndroidTestCase {
 		deleteDatabase();
 	}
 	
-	public void testSQLTableQuery() {
-		testSQLTableInsert();
+	public void testSQLiteTableQuery() {
+		testSQLiteTableInsert();
 		
 		TABLE.setDatabase(mDatabase);
 		final Cursor cursor = TABLE.query(URI, null, null, null, null);
@@ -56,36 +56,36 @@ public class SQLTableTest extends AndroidTestCase {
 		cursor.close();
 	}
 
-	public void testSQLTableUpdate() {
-		testSQLTableInsert();
+	public void testSQLiteTableUpdate() {
+		testSQLiteTableInsert();
 		
 		TABLE.setDatabase(mDatabase);
 		final int updated = TABLE.update(URI, VALUES, null, null);
 		assertEquals(1, updated);
 	}
 
-	public void testSQLTableInsert() {
+	public void testSQLiteTableInsert() {
 		TABLE.setDatabase(mDatabase);
 		final Uri uri = TABLE.insert(URI, VALUES);
 		assertNotNull(uri);
 	}
 
-	public void testSQLTableBulkInsert() {
+	public void testSQLiteTableBulkInsert() {
 		TABLE.setDatabase(mDatabase);
 		final ContentValues[] values = new ContentValues[] { VALUES };
 		final int inserted = TABLE.bulkInsert(URI, values);
 		assertEquals(1, inserted);
 	}
 
-	public void testSQLTableDelete() {
-		testSQLTableInsert();
+	public void testSQLiteTableDelete() {
+		testSQLiteTableInsert();
 		
 		TABLE.setDatabase(mDatabase);
 		final int deleted = TABLE.delete(URI, null, null);
 		assertEquals(1, deleted);
 	}
 	
-	public void testSQLTableQueryThrowsExceptionWithoutDatabase() {
+	public void testSQLiteTableQueryThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.query(null, null, null, null, null);
@@ -95,7 +95,7 @@ public class SQLTableTest extends AndroidTestCase {
 		}
 	}
 	
-	public void testSQLTableUpdateThrowsExceptionWithoutDatabase() {
+	public void testSQLiteTableUpdateThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.update(null, null, null, null);
@@ -105,7 +105,7 @@ public class SQLTableTest extends AndroidTestCase {
 		}
 	}
 	
-	public void testSQLTableInsertThrowsExceptionWithoutDatabase() {
+	public void testSQLiteTableInsertThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.insert(null, null);
@@ -115,7 +115,7 @@ public class SQLTableTest extends AndroidTestCase {
 		}
 	}
 	
-	public void testSQLTableBulkInsertThrowsExceptionWithoutDatabase() {
+	public void testSQLiteTableBulkInsertThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.bulkInsert(null, null);
@@ -125,7 +125,7 @@ public class SQLTableTest extends AndroidTestCase {
 		}
 	}
 	
-	public void testSQLTableDeleteThrowsExceptionWithoutDatabase() {
+	public void testSQLiteTableDeleteThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.delete(null, null, null);
@@ -160,7 +160,7 @@ public class SQLTableTest extends AndroidTestCase {
 
 	// ====================================
 
-	private static final class TestSQLTable extends SQLTable {
+	private static final class TestSQLiteTable extends SQLiteTable {
 
 		@Override
 		public void onCreate(final SQLiteDatabase db) {

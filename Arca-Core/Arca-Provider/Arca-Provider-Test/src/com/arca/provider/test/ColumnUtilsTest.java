@@ -4,12 +4,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
 import com.arca.provider.ColumnUtils;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteTable;
 
 public class ColumnUtilsTest extends AndroidTestCase {
 
 	public void testColumnUtilsDefaultConversion() {
-		final String columns = ColumnUtils.toString(TestSQLTable.Columns.class);
+		final String columns = ColumnUtils.toString(TestSQLiteTable.Columns.class);
 		final String expected = "_id INTEGER PRIMARY KEY AUTOINCREMENT,_state INTEGER DEFAULT 0";
 		assertEquals(expected, columns);
 	}
@@ -18,9 +18,9 @@ public class ColumnUtilsTest extends AndroidTestCase {
 	// ====================================
 	
 	
-	private static final class TestSQLTable extends SQLTable {
+	private static final class TestSQLiteTable extends SQLiteTable {
 	
-		public static interface Columns extends SQLTable.Columns {}
+		public static interface Columns extends SQLiteTable.Columns {}
 
 		@Override
 		public void onCreate(final SQLiteDatabase db) {}

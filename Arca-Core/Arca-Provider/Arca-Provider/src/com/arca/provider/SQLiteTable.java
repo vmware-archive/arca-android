@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-public abstract class SQLTable extends SQLDataset {
+public abstract class SQLiteTable extends SQLiteDataset {
 	
 	@Override
 	public int update(final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {

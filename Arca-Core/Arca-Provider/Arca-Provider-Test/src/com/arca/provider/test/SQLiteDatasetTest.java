@@ -12,15 +12,15 @@ import android.test.AndroidTestCase;
 import com.arca.provider.DatabaseConfiguration;
 import com.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import com.arca.provider.DatabaseHelper;
-import com.arca.provider.SQLDataset;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteDataset;
+import com.arca.provider.SQLiteTable;
 
-public class SQLDatasetTest extends AndroidTestCase {
+public class SQLiteDatasetTest extends AndroidTestCase {
 
 	private static final Uri URI = Uri.EMPTY;
 	private static final ContentValues VALUES = new ContentValues();
-	private static final TestSQLTable TABLE = new TestSQLTable();
-	private static final Collection<SQLDataset> DATASETS = new ArrayList<SQLDataset>();
+	private static final TestSQLiteTable TABLE = new TestSQLiteTable();
+	private static final Collection<SQLiteDataset> DATASETS = new ArrayList<SQLiteDataset>();
 	
 	static {
 		VALUES.put("id", "test");
@@ -64,13 +64,13 @@ public class SQLDatasetTest extends AndroidTestCase {
 		cursor.close();
 	}
 	
-	public void testSQLDatasetUpgrade() {
+	public void testSQLiteDatasetUpgrade() {
 		assertTableHasRecords();
 		TABLE.onUpgrade(mDatabase, 0, 1);
 		assertTableIsEmpty();
 	}
 
-	public void testSQLDatasetDowngrade() {
+	public void testSQLiteDatasetDowngrade() {
 		assertTableHasRecords();
 		TABLE.onDowngrade(mDatabase, 1, 0);
 		assertTableIsEmpty();
@@ -100,7 +100,7 @@ public class SQLDatasetTest extends AndroidTestCase {
 
 	// ====================================
 
-	private static final class TestSQLTable extends SQLTable {
+	private static final class TestSQLiteTable extends SQLiteTable {
 
 		@Override
 		public void onCreate(final SQLiteDatabase db) {

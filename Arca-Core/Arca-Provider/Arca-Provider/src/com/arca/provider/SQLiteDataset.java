@@ -6,7 +6,7 @@ import android.net.Uri;
 
 import com.arca.provider.Column.Type;
 
-public abstract class SQLDataset implements Dataset {
+public abstract class SQLiteDataset implements Dataset {
 
 	protected static interface Columns {
 		public static final Column _ID = Type._ID.newColumn("_id");

@@ -9,9 +9,9 @@ import android.provider.BaseColumns;
 
 import ${base_package}.models.${name};
 
-import com.xtreme.rest.providers.SQLTable;
+import com.xtreme.rest.providers.SQLiteTable;
 
-public abstract class Abs${name}Table extends SQLTable {
+public abstract class Abs${name}Table extends SQLiteTable {
 	
 	public static final String TABLE_NAME = "${common.pluralUnderscoreLowercase(name)}";
 	

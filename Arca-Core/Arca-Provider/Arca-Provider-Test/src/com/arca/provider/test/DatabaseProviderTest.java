@@ -15,7 +15,7 @@ import com.arca.provider.DatabaseConfiguration;
 import com.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import com.arca.provider.DatabaseProvider;
 import com.arca.provider.Dataset;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteTable;
 import com.arca.provider.test.DatabaseProviderTest.TestDatabaseProvider;
 import com.arca.provider.test.DatabaseProviderTest.TestDatabaseProvider.Uris;
 
@@ -137,7 +137,7 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 		}
 	}
 	
-	public static class TestTable1 extends SQLTable {
+	public static class TestTable1 extends SQLiteTable {
 
 		@Override
 		public void onCreate(final SQLiteDatabase db) {

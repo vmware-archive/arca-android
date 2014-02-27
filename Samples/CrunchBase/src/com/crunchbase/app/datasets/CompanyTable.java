@@ -10,14 +10,14 @@ import android.net.Uri;
 import com.arca.provider.Column;
 import com.arca.provider.Column.Type;
 import com.arca.provider.ColumnUtils;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteTable;
 import com.arca.utils.ArrayUtils;
 import com.arca.utils.StringUtils;
 import com.crunchbase.app.models.Company;
 
-public class CompanyTable extends SQLTable {
+public class CompanyTable extends SQLiteTable {
 	
-	public static interface Columns extends SQLTable.Columns {
+	public static interface Columns extends SQLiteTable.Columns {
         public static final Column NAME = Type.TEXT.newColumn("name");
         public static final Column CATEGORY_CODE = Type.TEXT.newColumn("categpry_code");
         public static final Column DESCRIPTION = Type.TEXT.newColumn("descrption");

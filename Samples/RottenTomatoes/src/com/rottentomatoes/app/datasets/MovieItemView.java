@@ -4,11 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import com.arca.provider.SQLView;
+import com.arca.provider.SQLiteView;
 import com.arca.utils.ArrayUtils;
 import com.arca.utils.StringUtils;
 
-public class MovieItemView extends SQLView {
+public class MovieItemView extends SQLiteView {
 	
 	public static interface Columns extends MovieTable.Columns {}
 	

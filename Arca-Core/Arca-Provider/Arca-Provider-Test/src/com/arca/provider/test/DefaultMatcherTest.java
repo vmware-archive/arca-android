@@ -7,7 +7,7 @@ import android.test.AndroidTestCase;
 import com.arca.provider.Dataset;
 import com.arca.provider.DatasetMatcher;
 import com.arca.provider.DatasetMatcher.DefaultMatcher;
-import com.arca.provider.SQLTable;
+import com.arca.provider.SQLiteTable;
 
 public class DefaultMatcherTest extends AndroidTestCase {
 
@@ -61,7 +61,7 @@ public class DefaultMatcherTest extends AndroidTestCase {
 		assertNotSame(dataset1, dataset2);
 	}
 	
-	public static class TestTable1 extends SQLTable {
+	public static class TestTable1 extends SQLiteTable {
 		
 		@Override
 		public void onCreate(final SQLiteDatabase db) {}
@@ -71,7 +71,7 @@ public class DefaultMatcherTest extends AndroidTestCase {
 
 	}
 	
-	public static class TestTable2 extends SQLTable {
+	public static class TestTable2 extends SQLiteTable {
 		
 		@Override
 		public void onCreate(final SQLiteDatabase db) {}

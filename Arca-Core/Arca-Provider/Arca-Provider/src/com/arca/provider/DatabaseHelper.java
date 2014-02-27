@@ -12,11 +12,11 @@ import android.os.Build;
 
 /**
  * This class is an extension of the {@link SQLiteOpenHelper} that directly 
- * forwards events to its {@link SQLDataset}s.
+ * forwards events to its {@link SQLiteDataset}s.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
-	public static DatabaseHelper create(final Context context, final DatabaseConfiguration config, final Collection<SQLDataset> datasets) {
+	public static DatabaseHelper create(final Context context, final DatabaseConfiguration config, final Collection<SQLiteDataset> datasets) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			return new DatabaseHelper(context, config.getDatabaseName(), config.getCursorFactory(), config.getDatabaseVersion(), datasets);
 		} else {
@@ -24,15 +24,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 	
-	private final Collection<SQLDataset> mDatasets;
+	private final Collection<SQLiteDataset> mDatasets;
 	
-	public DatabaseHelper(final Context context, final String name, final CursorFactory factory, final int version, final Collection<SQLDataset> datasets) {
+	public DatabaseHelper(final Context context, final String name, final CursorFactory factory, final int version, final Collection<SQLiteDataset> datasets) {
 		super(context, name, factory, version);
 		mDatasets = datasets;
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public DatabaseHelper(final Context context, final String name, final CursorFactory factory, final int version, final DatabaseErrorHandler errorHandler, final Collection<SQLDataset> datasets) {
+	public DatabaseHelper(final Context context, final String name, final CursorFactory factory, final int version, final DatabaseErrorHandler errorHandler, final Collection<SQLiteDataset> datasets) {
 		super(context, name, factory, version, errorHandler);
 		mDatasets = datasets;
 	}
@@ -56,48 +56,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	private void createTables(final SQLiteDatabase db) {
-		for (final SQLDataset dataset : mDatasets) {
-			if (dataset instanceof SQLTable) {
+		for (final SQLiteDataset dataset : mDatasets) {
+			if (dataset instanceof SQLiteTable) {
 				dataset.onCreate(db);
 			}
 		}
 	}
 	
 	private void createOtherDatasets(final SQLiteDatabase db) {
-		for (final SQLDataset dataset : mDatasets) {
-			if (!(dataset instanceof SQLTable)) { 
+		for (final SQLiteDataset dataset : mDatasets) {
+			if (!(dataset instanceof SQLiteTable)) { 
 				dataset.onCreate(db);
 			}
 		}
 	}
 
 	private void upgradeTables(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		for (final SQLDataset dataset : mDatasets) {
-			if (dataset instanceof SQLTable) { 
+		for (final SQLiteDataset dataset : mDatasets) {
+			if (dataset instanceof SQLiteTable) { 
 				dataset.onUpgrade(db, oldVersion, newVersion);
 			}
 		}
 	}
 	
 	private void upgradeOtherDatasets(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		for (final SQLDataset dataset : mDatasets) {
-			if (!(dataset instanceof SQLTable)) { 
+		for (final SQLiteDataset dataset : mDatasets) {
+			if (!(dataset instanceof SQLiteTable)) { 
 				dataset.onUpgrade(db, oldVersion, newVersion);
 			}
 		}
 	}
 
 	private void downgradeTables(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		for (final SQLDataset dataset : mDatasets) {
-			if (dataset instanceof SQLTable) { 
+		for (final SQLiteDataset dataset : mDatasets) {
+			if (dataset instanceof SQLiteTable) { 
 				dataset.onDowngrade(db, oldVersion, newVersion);
 			}
 		}
 	}
 
 	private void downgradeOtherDatasets(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		for (final SQLDataset dataset : mDatasets) {
-			if (!(dataset instanceof SQLTable)) { 
+		for (final SQLiteDataset dataset : mDatasets) {
+			if (!(dataset instanceof SQLiteTable)) { 
 				dataset.onDowngrade(db, oldVersion, newVersion);
 			}
 		}

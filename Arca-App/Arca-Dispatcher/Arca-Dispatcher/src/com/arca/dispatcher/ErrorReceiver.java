@@ -11,7 +11,6 @@ public class ErrorReceiver extends ArcaBroadcastReceiver {
 	private final ErrorListener mListener;
 	
 	public ErrorReceiver(final ErrorListener listener) {
-		super();
 		mListener = listener;
 	}
 	

@@ -1,16 +1,16 @@
-package com.arca.utils.test;
+package com.arca.provider.test;
 
 import java.util.Collection;
 
 import android.test.AndroidTestCase;
 
-import com.arca.utils.ClassMapping;
+import com.arca.provider.ClassMapping;
 
 public class ClassMappingTest extends AndroidTestCase {
 
 	public void testClassMappingCountWithInvalidClass() throws ClassNotFoundException {
 		final ClassMapping<Object> mapping = new ClassMapping<Object>();
-		mapping.append(0, Class.forName("com.arca.utils.test.ClassMappingTest$TestClass"));
+		mapping.append(0, Class.forName("com.arca.provider.test.ClassMappingTest$TestClass"));
 		final Collection<Object> objects = mapping.values();
 		assertEquals(0, objects.size());
 	}

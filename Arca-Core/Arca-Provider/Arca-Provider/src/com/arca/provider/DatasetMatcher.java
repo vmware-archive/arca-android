@@ -5,8 +5,6 @@ import java.util.Collection;
 import android.content.UriMatcher;
 import android.net.Uri;
 
-import com.arca.utils.ClassMapping;
-
 public interface DatasetMatcher {
 	
 	/**

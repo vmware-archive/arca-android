@@ -11,13 +11,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * A collection of {@link Task}s that, when executed, update the data associated with a certain {@link Uri}.
- * When started via the {@link OperationService}, an Operation's {@link Task}s begin executing. Dependencies
- * can be set up between tasks in {@link #onCreateTasks()}. When the final {@link Task} finishes executing,
- * the Operation is considered done and then {@link #onSuccess(Context, List)} or
- * {@link #onFailure(Context, ServiceError)} is called.
- */
 @SuppressLint("ParcelCreator")
 public abstract class Operation implements Parcelable, TaskObserver {
 	
@@ -35,31 +28,15 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	private Context mContext;
 	private ServiceError mError;
 
-	/**
-	 * Creates a new {@link Operation} with the specified {@link Uri} and {@link Priority}.
-	 * 
-	 * @param uri The associated {@link Uri}
-	 * @param priority The associated {@link Priority}
-	 */
 	public Operation(final Uri uri, final Priority priority) {
 		mUri = uri;
 		mPriority = priority;
 	}
 
-	/**
-	 * Creates a new {@link Operation} with the specified {@link Uri} and the default {@link Priority}.
-	 * 
-	 * @param uri The associated {@link Uri}
-	 */
 	public Operation(final Uri uri) {
 		this(uri, Priority.LIVE);
 	}
 
-	/**
-	 * Creates a new {@link Operation} from the provided {@link Parcel}.
-	 * 
-	 * @param in The {@link Parcel} containing all necessary data.
-	 */
 	public Operation(final Parcel in) {
 		mUri = in.readParcelable(Uri.class.getClassLoader());
 		mPriority = (Priority) in.readSerializable();
@@ -121,47 +98,14 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
 	// ======================================================
 
-
-	/**
-	 * This is where all {@link Task}s should be created.
-	 * 
-	 * @return The list of {@link Task}s to be executed.
-	 */
 	public abstract Set<Task<?>> onCreateTasks();
 
-	/**
-	 * The final callback once all {@link Task}s have been completed successfully.
-	 * 
-	 * @param context The context in which this {@link Operation} is running
-	 * @param completed The completed {@link Task}s
-	 */
 	public abstract void onSuccess(Context context, List<Task<?>> completed);
 
-	/**
-	 * A callback for when all {@link Task}s have finished executing but at least one has 
-	 * failed. You may create recovery {@link Task}s and call {@link #executeTask(Task)} 
-	 * here.</br>
-	 * </br>
-	 * IMPORTANT: If the recovery task fails, there will be another callback into this method. 
-	 * Make sure that you don't attempt to recover again, or this operation will never finish.
-	 * 
-	 * @param context The context in which this {@link Operation} is running
-	 * @param error The error that caused the failure.
-	 */
 	public abstract void onFailure(Context context, ServiceError error);
 	
 	// ======================================================
 
-	/**
-	 * Adds a {@link Task} to the queues to be executed. Typically {@link Task}s should be created 
-	 * in {@link #onCreateTasks()} but you may call this method explicitly if you need to schedule
-	 * a task to run after you receive a call to {@link #onFailure(Context, ServiceError)} or
-	 * {@link #onSuccess(Context, List)}.</br>
-	 * </br>
-	 * Note: Executing {@link Task}s with prerequisites/dependants is not supported.
-	 * 
-	 * @param task The {@link Task} to be executed.
-	 */
 	protected void executeTask(final Task<?> task) {
 		if (task != null) {
 			addTaskToPending(task);

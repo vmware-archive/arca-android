@@ -30,30 +30,12 @@ public abstract class SQLiteDataset implements Dataset {
 	public String getName() {
 		return getClass().getSimpleName();
 	}
-	
-	/**
-	 * This method should be overwritten for migrations support.<br>
-	 * <br>
-	 * This method is called when a database upgrade is detected. The default 
-	 * implementation is to drop the existing {@link Dataset} and create a new one.
-	 * 
-	 * @param oldVersion
-	 * @param newVersion
-	 */
+
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 		onDrop(db);
 		onCreate(db);
 	}
 
-	/**
-	 * /** This method should be overwritten for migrations support.<br>
-	 * <br>
-	 * This method is called when a database downgrade is detected. The default 
-	 * implementation is to drop the existing {@link Dataset} and create a new one.
-	 * 
-	 * @param oldVersion
-	 * @param newVersion
-	 */
 	public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 		onDrop(db);
 		onCreate(db);

@@ -10,14 +10,6 @@ import com.arca.service.OperationHandler.OnStateChangeListener;
 import com.arca.service.RequestExecutor.ThreadedRequestExecutor;
 import com.arca.utils.Logger;
 
-/**
- * This class serves as the main entry point to the system, where {@link Operation}s are started, 
- * and their {@link Task}s execute. This {@link Service} runs as long as there are {@link Operation}s 
- * running and is stopped after the last one completes.</br>
- * </br>
- * Note: This class must be declared in the AndroidManifest.xml file as follows:</br>
- * {@code <service android:name="com.arca.service.OperationService" android:exported="false" />}
- */
 public class OperationService extends Service implements OnStateChangeListener {
 
 	public static enum Action {
@@ -29,29 +21,10 @@ public class OperationService extends Service implements OnStateChangeListener {
 		public static final String OPERATION = "operation";
 	}
 	
-	/**
-	 * Starts an {@link Operation}. The {@link Operation} is given a {@link Context}, 
-	 * {@link OperationObserver} and {@link RequestExecutor} before being executed.</br>
-	 * </br>
-	 * Note: This method uses {@link Context#startService(Intent)} method to deliver the message.
-	 * 
-	 * @param context The {@link Context} in which this service should be started
-	 * @param operation The {@link Operation} to be started
-	 * @return A boolean indicating if the {@link Operation} was started.
-	 */
 	public static boolean start(final Context context, final Operation operation) {
 		return startService(context, operation, Action.START);
 	}
 
-	/**
-	 * Attempts to cancel a currently running {@link Operation}.</br>
-	 * </br>
-	 * Note: This method uses {@link Context#startService(Intent)} method to deliver the message.
-	 * 
-	 * @param context The {@link Context} in which this service should be started
-	 * @param operation The {@link Operation} to be canceled
-	 * @return A boolean indicating if the cancel will be attempted
-	 */
 	public static boolean cancel(final Context context, final Operation operation) {
 		return startService(context, operation, Action.CANCEL);
 	}

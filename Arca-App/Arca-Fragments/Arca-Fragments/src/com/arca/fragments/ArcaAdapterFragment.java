@@ -6,16 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
-import android.widget.GridView;
-import android.widget.ListView;
 
-import com.arca.dispatcher.QueryResult;
 import com.arca.dispatcher.Error;
+import com.arca.dispatcher.QueryResult;
 
-/**
- * A {@link ArcaQueryFragment} that adds convenient support for {@link AdapterView}s 
- * such as {@link ListView} or {@link GridView} by wrapping a {@link CursorAdapter}.
- */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 	

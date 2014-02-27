@@ -5,27 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
-import com.xtreme.threading.AuxiliaryExecutor;
 import com.xtreme.threading.RequestIdentifier;
 
-/**
- * A Task consists of two components: network and processing.</br>
- * </br>
- * The network component is performed in {@link #onExecuteNetworking(Context)} 
- * and is used to download data from the network, then parse the data into the 
- * generic specified. The processing component then stores the data if necessary.</br>
- * </br>
- * Please perform any CPU-intensive processing in {@link #onExecuteProcessing(Context, Object)}
- * instead of {@link #onExecuteNetworking(Context)} as it may cause UI lag. This includes 
- * any calls to the database.
- * 
- * @param <T> The type downloaded, parsed, and returned from {@link #onExecuteNetworking(Context)}.
- */
 public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritizableObserver<T>, ProcessingTask<T>, ProcessingPrioritizableObserver<T> {
 
 	protected static interface Messages {
@@ -93,53 +76,14 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	// ======================================================
 	
-	/**
-	 * This method must return a globally unique {@link RequestIdentifier}. This is used within
-	 * the {@link AuxiliaryExecutor} and ensures that if more than one {@link Task} is processing 
-	 * the same data, only one actually executes and the results are then shared among all 
-	 * {@link Operation}s "executing" that {@link Task}.
-	 * 
-	 * @return The unique {@link RequestIdentifier}
-	 */
 	public abstract RequestIdentifier<?> onCreateIdentifier();
-	
-	/**
-	 * This method is meant to execute network-dependent code (or anything that yields the 
-	 * {@link Thread} frequently and is light on the CPU). For example, this is where your 
-	 * model would download data from some API.</br>
-	 * </br>
-	 * Note: All processing should happen synchronously within this method.
-	 * 
-	 * @param context The context in which this {@link Task} is running
-	 * @return The result of the network request
-	 * @throws Exception
-	 */
+
 	public abstract T onExecuteNetworking(Context context) throws Exception;
 
-	/**
-	 * This method is meant to execute CPU-intensive processing requests. For example, this 
-	 * is where one would process a {@link String} or insert data into a {@link ContentProvider} 
-	 * backed by a {@link SQLiteDatabase} via the {@link ContentResolver}.</br>
-	 * </br>
-	 * Note: All processing should happen synchronously within this method.
-	 * 
-	 * @param context The context in which this {@link Task} is running
-	 * @param data The result returned from {@link #onExecuteNetworking(Context)}
-	 * @throws Exception
-	 */
 	public abstract void onExecuteProcessing(Context context, T data) throws Exception;
 
 	// ======================================================
 
-	/**
-	 * Adds a prerequisite. This {@link Task} will wait until all prerequisites are 
-	 * finished before executing.</br>
-	 * </br>
-	 * Note: By adding a prerequisite, the necessary dependants are also added 
-	 * to the task parameter.
-	 * 
-	 * @param task The prerequisite {@link Task}
-	 */
 	public final void addPrerequisite(final Task<?> task) {
 		synchronized (mTaskLock) {
 			if (!mPrerequisites.contains(task)) {
@@ -149,15 +93,6 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 		}
 	}
 
-	/**
-	 * Adds a dependant. The {@link Task} will notify all dependants when it has completed 
-	 * so that they may execute.</br>
-	 * </br>
-	 * Note: By adding a dependant, the necessary prerequisites are also added 
-	 * to the task parameter.
-	 * 
-	 * @param task The dependant {@link Task}
-	 */
 	public final void addDependant(final Task<?> task) {
 		synchronized (mTaskLock) {
 			if (!mDependants.contains(task)) {
@@ -169,13 +104,6 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	// ======================================================
 
-	/**
-	 * A callback for when a certain prerequisite has completed successfully.</br>
-	 * </br>
-	 * Note that this method is called on the {@link Thread} on which it is being executed.
-	 * 
-	 * @param task The completed prerequisite {@link Task}
-	 */
 	protected void onPrerequisiteComplete(final Task<?> task) {
 		synchronized (mTaskLock) {
 			mPrerequisites.remove(task);
@@ -183,14 +111,6 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 		}
 	}
 
-	/**
-	 * A callback for when a certain prerequisite has completed with an error.</br>
-	 * </br>
-	 * Note that this method is called on the {@link Thread} on which it is being executed.
-	 * 
-	 * @param task The failed prerequisite {@link Task}
-	 * @param error The {@link ServiceError} that has occurred
-	 */
 	protected void onPrerequisiteFailure(final Task<?> task, final ServiceError error) {
 		synchronized (mTaskLock) {
 			mPrerequisites.remove(task);

@@ -10,34 +10,14 @@ import android.net.Uri;
 
 import com.arca.provider.DatasetMatcher.DefaultMatcher;
 
-/**
- * The base {@link ContentProvider} class that delegates to a 
- * collection of {@link Dataset}s 
- * 
- * This class initializes a {@link DatasetMatcher} that acts as a router 
- * between a {@link Uri} and a {@link Dataset}.
- */
 public abstract class DatasetProvider extends ContentProvider {
 
 	private final DatasetMatcher mMatcher = new DefaultMatcher();
 	
-	/**
-	 * Provides access to the collection of {@link Dataset}s that have been registered 
-	 * with this provider.
-	 * 
-	 * @return A collection of {@link Dataset}s.
-	 */
 	protected final Collection<Dataset> getDatasets() {
 		return mMatcher.getDatasets();
 	}
 	
-	/**
-	 * Register a {@link Dataset} with this {@link ContentProvider} on the specified path.
-	 * 
-	 * @param authority The {@link ContentProvider}'s authority
-	 * @param path The path associated with this {@link Dataset}
-	 * @param datasetClass The {@link Dataset}'s class
-	 */
 	protected final void registerDataset(final String authority, final String path, final Class<? extends Dataset> datasetClass) {
 		mMatcher.register(authority, path, datasetClass);
 	}

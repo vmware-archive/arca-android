@@ -40,14 +40,6 @@ public enum Logger {
 		sTagName = tagName;
 	}
 
-	/**
-	 * prints to info log stream
-	 * 
-	 * @param message
-	 *            the message (including any possible format specifiers)
-	 * @param objects
-	 *            objects for objects (variable argument list - optional)
-	 */
 	public static void i(final String message, final Object... objects) {
 		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.INFO) {
 			final String formattedString = formatMessage(message, objects);
@@ -59,14 +51,6 @@ public enum Logger {
 		i(message, objects);
 	}
 
-	/**
-	 * prints to warning log stream
-	 * 
-	 * @param message
-	 *            the message (including any possible format specifiers)
-	 * @param objects
-	 *            objects for objects (variable argument list - optional)
-	 */
 	public static void w(final String message, final Object... objects) {
 		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.WARNING) {
 			final String formattedString = formatMessage(message, objects);
@@ -78,14 +62,6 @@ public enum Logger {
 		w(message, objects);
 	}
 
-	/**
-	 * prints to verbose log stream
-	 * 
-	 * @param message
-	 *            the message (including any possible format specifiers)
-	 * @param objects
-	 *            objects for objects (variable argument list - optional)
-	 */
 	public static void v(final String message, final Object... objects) {
 		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.VERBOSE) {
 			final String formattedString = formatMessage(message, objects);
@@ -97,14 +73,6 @@ public enum Logger {
 		v(message, objects);
 	}
 
-	/**
-	 * prints to debug log stream
-	 * 
-	 * @param message
-	 *            the message (including any possible format specifiers)
-	 * @param objects
-	 *            objects for objects (variable argument list - optional)
-	 */
 	public static void d(final String message, final Object... objects) {
 		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.DEBUG) {
 			final String formattedString = formatMessage(message, objects);
@@ -116,14 +84,6 @@ public enum Logger {
 		d(message, objects);
 	}
 
-	/**
-	 * prints to error log stream
-	 * 
-	 * @param message
-	 *            the message (including any possible format specifiers)
-	 * @param objects
-	 *            objects for objects (variable argument list - optional)
-	 */
 	public static void e(final String message, final Object... objects) {
 		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.ERROR) {
 			final String formattedString = formatMessage(message, objects);
@@ -135,14 +95,6 @@ public enum Logger {
 		e(message, objects);
 	}
 
-	/**
-	 * prints a message an exception and stack track to the error log stream
-	 * 
-	 * @param message
-	 *            the error message to log
-	 * @param tr
-	 *            the exception to print
-	 */
 	public static void ex(final String message, final Throwable tr) {
 		final String stackTrace = getMessageFromThrowable(tr);
 		final String fromattedMessage = formatMessage(message, new Object[] {});
@@ -163,12 +115,6 @@ public enum Logger {
 		ex(message, tr);
 	}
 
-	/**
-	 * prints an exception and stack track to the error log stream
-	 * 
-	 * @param tr
-	 *            the exception to print
-	 */
 	public static void ex(final Throwable tr) {
 		ex("", tr);
 	}

@@ -8,11 +8,6 @@ import com.arca.dispatcher.QueryListener;
 import com.arca.monitor.ArcaDispatcher;
 import com.arca.monitor.RequestMonitor;
 
-/**
- * This class provides a basic implementation of a single {@link ArcaDispatcher} 
- * for a fragment. Using this class, fragments can request data simply by calling 
- * {@link #execute(Query)}.
- */
 public abstract class ArcaQuerySupportFragment extends Fragment implements QueryListener {
 	
 	private ArcaDispatcher mDispatcher;

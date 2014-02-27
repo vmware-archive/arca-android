@@ -10,10 +10,6 @@ import android.widget.CursorAdapter;
 import com.arca.dispatcher.Error;
 import com.arca.dispatcher.QueryResult;
 
-/**
- * A {@link ArcaQueryFragment} that adds convenient support for 
- * a single item by wrapping a {@link CursorAdapter}.
- */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public abstract class ArcaItemFragment extends ArcaQueryFragment {
 

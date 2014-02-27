@@ -8,10 +8,6 @@ import android.view.View;
 import com.arca.dispatcher.Error;
 import com.arca.dispatcher.QueryResult;
 
-/**
- * A {@link ArcaQuerySupportFragment} that adds convenient support for 
- * a single item by wrapping a {@link CursorAdapter}.
- */
 public abstract class ArcaItemSupportFragment extends ArcaQuerySupportFragment {
 
 	public abstract CursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState);

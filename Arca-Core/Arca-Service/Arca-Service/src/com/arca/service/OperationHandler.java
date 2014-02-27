@@ -30,25 +30,10 @@ public class OperationHandler extends Handler implements OperationObserver {
 		mExecutor = executor;
 	}
 	
-	/**
-	 * Classes can listen for {@link HandlerState} change events by registering
-	 * an {@link OnStateChangeListener}. They will be notified when the handler
-	 * starts running and when it returns to an idle state.
-	 * 
-	 * @param listener
-	 */
 	public void setOnStateChangeListener(final OnStateChangeListener listener) {
 		mListener = listener;
 	}
 	
-	/**
-	 * Execute a given {@link Operation}. The operation will be given 
-	 * a {@link RequestExecutor}, {@link Context} and {@link OperationObserver}
-	 * before it is executed.    
-	 * 
-	 * @param operation
-	 * @return A boolean indicating whether the operation was executed.
-	 */
 	public boolean start(final Operation operation) {
 		if (mOperations.isEmpty()) {
 			notifyRunning();
@@ -65,14 +50,6 @@ public class OperationHandler extends Handler implements OperationObserver {
 		}
 	}
 
-	/**
-	 * A callback for when an {@link Operation} finishes.</br>
-	 * </br>
-	 * Note: This method gets executed on the main thread.
-	 * 
-	 * @param operation
-	 * @return A boolean indicating whether the handler is empty.
-	 */
 	public boolean finish(final Operation operation) {
 		mOperations.remove(operation);
 
@@ -84,23 +61,10 @@ public class OperationHandler extends Handler implements OperationObserver {
 		}
 	}
 	
-	/**
-	 * This method returns the list of currently executing operations.
-	 * 
-	 * @return A set of {@link Operation}s
-	 */
 	public Set<Operation> getOperations() {
 		return mOperations;
 	}
 
-	/**
-	 * A callback for when an operation completes. This method is called from the 
-	 * thread in which the operation was executed. At this point the handler will 
-	 * send itself a message so that it can perform {@link #finish(Operation)} 
-	 * on the main thread.
-	 * 
-	 * @param operation
-	 */
 	@Override
 	public void onOperationComplete(final Operation operation) {
 		final Message message = obtainMessage(MSG_NOTIFY_COMPLETE, operation);

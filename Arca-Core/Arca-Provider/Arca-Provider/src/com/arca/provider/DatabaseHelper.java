@@ -10,10 +10,6 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 
-/**
- * This class is an extension of the {@link SQLiteOpenHelper} that directly 
- * forwards events to its {@link SQLiteDataset}s.
- */
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	public static DatabaseHelper create(final Context context, final DatabaseConfiguration config, final Collection<SQLiteDataset> datasets) {

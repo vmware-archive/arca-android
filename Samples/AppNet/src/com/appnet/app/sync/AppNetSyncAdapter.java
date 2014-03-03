@@ -9,7 +9,7 @@ import android.os.Bundle;
 
 import com.appnet.app.operations.SyncPostsOperation;
 import com.appnet.app.providers.AppNetContentProvider;
-import com.arca.ArcaService;
+import com.arca.service.OperationService;
 import com.arca.sync.ArcaSyncAdapter;
 
 public class AppNetSyncAdapter extends ArcaSyncAdapter {
@@ -32,7 +32,7 @@ public class AppNetSyncAdapter extends ArcaSyncAdapter {
 	
 	@Override
 	protected boolean onPerformSync(final Uri uri, final Account account, final Bundle extras, final String authority, final ContentProviderClient provider) {
-		return ArcaService.start(getContext(), new SyncPostsOperation(uri));
+		return OperationService.start(getContext(), new SyncPostsOperation(uri));
 	}
 	
 	

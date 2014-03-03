@@ -34,7 +34,7 @@
         <activity android:name=".activities.MovieActivity" />
 
         <service
-            android:name="com.arca.ArcaService"
+            android:name="com.arca.service.OperationService"
             android:exported="false" />
         
         <service

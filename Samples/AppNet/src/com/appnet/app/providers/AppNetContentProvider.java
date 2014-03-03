@@ -3,9 +3,9 @@ package com.appnet.app.providers;
 import android.net.Uri;
 
 import com.appnet.app.datasets.PostTable;
-import com.arca.ArcaContentProvider;
+import com.arca.provider.DatabaseProvider;
 
-public class AppNetContentProvider extends ArcaContentProvider {
+public class AppNetContentProvider extends DatabaseProvider {
 
 	public static final String AUTHORITY = "com.appnet.app.providers.AppNetContentProvider";
 	
@@ -19,7 +19,6 @@ public class AppNetContentProvider extends ArcaContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-		super.onCreate();
         registerDataset(AUTHORITY, Paths.POSTS, PostTable.class);
 		registerDataset(AUTHORITY, Paths.POSTS + "/*", PostTable.class);
 		return true;

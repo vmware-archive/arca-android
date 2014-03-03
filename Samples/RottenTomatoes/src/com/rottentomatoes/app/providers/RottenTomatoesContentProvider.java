@@ -2,13 +2,13 @@ package com.rottentomatoes.app.providers;
 
 import android.net.Uri;
 
-import com.arca.ArcaContentProvider;
+import com.arca.provider.DatabaseProvider;
 import com.rottentomatoes.app.datasets.MovieItemView;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
 
-public class RottenTomatoesContentProvider extends ArcaContentProvider {
+public class RottenTomatoesContentProvider extends DatabaseProvider {
 	
 	public static final String AUTHORITY = "com.rottentomatoes.app.providers.RottenTomatoesContentProvider";
 	
@@ -24,7 +24,6 @@ public class RottenTomatoesContentProvider extends ArcaContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-		super.onCreate();
 		registerDataset(AUTHORITY, Paths.MOVIES, MovieTable.class);
 		registerDataset(AUTHORITY, Paths.MOVIES + "/*", MovieItemView.class);
 		registerDataset(AUTHORITY, Paths.MOVIE_TYPES, MovieTypeTable.class);

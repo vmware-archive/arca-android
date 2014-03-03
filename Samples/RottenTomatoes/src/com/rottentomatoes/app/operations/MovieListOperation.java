@@ -14,7 +14,7 @@ import com.arca.dispatcher.ErrorBroadcaster;
 import com.arca.service.Operation;
 import com.arca.service.ServiceError;
 import com.arca.service.Task;
-import com.arca.utils.Logger;
+import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
 
 public class MovieListOperation extends Operation {
 
@@ -42,16 +42,14 @@ public class MovieListOperation extends Operation {
 
 	@Override
 	public void onSuccess(final Context context, final List<Task<?>> completed) {
-		Logger.v("notifyChange : %s", getUri());
 		final ContentResolver resolver = context.getContentResolver();
-		resolver.notifyChange(getUri(), null, false);
+		resolver.notifyChange(RottenTomatoesContentProvider.Uris.MOVIES_URI, null, false);
+		resolver.notifyChange(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, null, false);
 	}
 
 	@Override
 	public void onFailure(final Context context, final ServiceError error) {
-		final int errorCode = error.getCode();
-		final String errorMessage = error.getMessage();
-		ErrorBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
+		ErrorBroadcaster.broadcast(context, getUri(), error.getCode(), error.getMessage());
 	}
 	
 	public static final Parcelable.Creator<MovieListOperation> CREATOR = new Parcelable.Creator<MovieListOperation>() {

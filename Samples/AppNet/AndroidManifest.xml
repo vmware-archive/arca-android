@@ -34,7 +34,7 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog"/>
 
         <service
-            android:name="com.arca.ArcaService"
+            android:name="com.arca.service.OperationService"
             android:exported="false" />
 
         <service

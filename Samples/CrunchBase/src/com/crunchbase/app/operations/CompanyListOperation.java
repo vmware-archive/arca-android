@@ -58,9 +58,7 @@ public class CompanyListOperation extends Operation {
 
 	@Override
 	public void onFailure(final Context context, final ServiceError error) {
-		final int errorCode = error.getCode();
-		final String errorMessage = error.getMessage();
-		ErrorBroadcaster.broadcast(context, getUri(), errorCode, errorMessage);
+		ErrorBroadcaster.broadcast(context, getUri(), error.getCode(), error.getMessage());
 	}
 	
 	public static final Parcelable.Creator<CompanyListOperation> CREATOR = new Parcelable.Creator<CompanyListOperation>() {

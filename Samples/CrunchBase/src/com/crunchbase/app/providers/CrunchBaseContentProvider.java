@@ -2,10 +2,10 @@ package com.crunchbase.app.providers;
 
 import android.net.Uri;
 
-import com.arca.ArcaContentProvider;
+import com.arca.provider.DatabaseProvider;
 import com.crunchbase.app.datasets.CompanyTable;
 
-public class CrunchBaseContentProvider extends ArcaContentProvider {
+public class CrunchBaseContentProvider extends DatabaseProvider {
 
 	public static final String AUTHORITY = "com.crunchbase.app.providers.CrunchBaseContentProvider";
 	
@@ -19,7 +19,6 @@ public class CrunchBaseContentProvider extends ArcaContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-		super.onCreate();
         registerDataset(AUTHORITY, Paths.COMPANIES, CompanyTable.class);
 		registerDataset(AUTHORITY, Paths.COMPANIES + "/*", CompanyTable.class);
 		return true;

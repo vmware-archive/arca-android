@@ -15,7 +15,7 @@ import com.arca.service.Operation;
 import com.arca.service.ServiceError;
 import com.arca.service.Task;
 import com.arca.sync.ArcaSyncBroadcaster;
-import com.arca.utils.Logger;
+import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
 
 public class SyncMoviesOperation extends Operation {
 
@@ -42,19 +42,23 @@ public class SyncMoviesOperation extends Operation {
 
 	@Override
 	public void onSuccess(final Context context, final List<Task<?>> completed) {
-		Logger.v("notifyChange : %s", getUri());
 		final ContentResolver resolver = context.getContentResolver();
-		resolver.notifyChange(getUri(), null, false);
+		resolver.notifyChange(RottenTomatoesContentProvider.Uris.MOVIES_URI, null, false);
+		resolver.notifyChange(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, null, false);
 		
 		ArcaSyncBroadcaster.broadcast(context, getUri(), new SyncStats());
 	}
 
 	@Override
 	public void onFailure(final Context context, final ServiceError error) {
+		final SyncStats stats = getSyncStatsError();
+		ArcaSyncBroadcaster.broadcast(context, getUri(), stats);
+	}
+
+	private static SyncStats getSyncStatsError() {
 		final SyncStats stats = new SyncStats();
 		stats.numIoExceptions++;
-		
-		ArcaSyncBroadcaster.broadcast(context, getUri(), stats);
+		return stats;
 	}
 
 	public static final Parcelable.Creator<SyncMoviesOperation> CREATOR = new Parcelable.Creator<SyncMoviesOperation>() {

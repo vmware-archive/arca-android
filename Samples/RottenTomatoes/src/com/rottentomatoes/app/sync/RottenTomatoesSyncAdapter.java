@@ -7,7 +7,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.arca.ArcaService;
+import com.arca.service.OperationService;
 import com.arca.sync.ArcaSyncAdapter;
 import com.rottentomatoes.app.operations.SyncMoviesOperation;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
@@ -35,7 +35,7 @@ public class RottenTomatoesSyncAdapter extends ArcaSyncAdapter {
 	
 	@Override
 	protected boolean onPerformSync(final Uri uri, final Account account, final Bundle extras, final String authority, final ContentProviderClient provider) {
-		return ArcaService.start(getContext(), new SyncMoviesOperation(uri));
+		return OperationService.start(getContext(), new SyncMoviesOperation(uri));
 	}
 	
 	

@@ -4,10 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.appnet.app.operations.PostListOperation;
-import com.arca.ArcaService;
 import com.arca.dispatcher.Query;
 import com.arca.dispatcher.QueryResult;
 import com.arca.monitor.RequestMonitor.AbstractRequestMonitor;
+import com.arca.service.OperationService;
 
 public class PostListMonitor extends AbstractRequestMonitor {
 
@@ -22,7 +22,7 @@ public class PostListMonitor extends AbstractRequestMonitor {
 	}
 
 	public boolean syncDataFromNetwork(final Context context, final Uri uri) {
-		final boolean isSyncing = ArcaService.start(context, new PostListOperation(uri));
+		final boolean isSyncing = OperationService.start(context, new PostListOperation(uri));
 		return isSyncing;
 	}
 }

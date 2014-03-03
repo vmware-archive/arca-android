@@ -48,10 +48,14 @@ public class SyncPostsOperation extends Operation {
 
 	@Override
 	public void onFailure(final Context context, final ServiceError error) {
+		final SyncStats stats = getSyncStatsError();
+		ArcaSyncBroadcaster.broadcast(context, getUri(), stats);
+	}
+
+	private static SyncStats getSyncStatsError() {
 		final SyncStats stats = new SyncStats();
 		stats.numIoExceptions++;
-		
-		ArcaSyncBroadcaster.broadcast(context, getUri(), stats);
+		return stats;
 	}
 
 	public static final Parcelable.Creator<SyncPostsOperation> CREATOR = new Parcelable.Creator<SyncPostsOperation>() {

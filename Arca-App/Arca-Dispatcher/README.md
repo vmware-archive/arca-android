@@ -12,9 +12,9 @@ Executing a Request is simple. First you need to create a Dispatcher. You can ha
 
 ```java
 public RequestDispatcher createDispatcher() {
-    final ContentResolver resolver = activity.getContentResolver();
-    final RequestExecutor executor = new DefaultRequestExecutor(resolver, activity);
-    return new ModernRequestDispatcher(executor, activity, activity.getLoaderManager());
+    final ContentResolver resolver = context.getContentResolver();
+    final RequestExecutor executor = new DefaultRequestExecutor(resolver);
+    return new ModernRequestDispatcher(executor, context, activity.getLoaderManager());
 }
 ```
 

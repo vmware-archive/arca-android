@@ -8,9 +8,7 @@ Each Dataset gets registered against a Uri and any requests into the provider fo
 
 ### DatabaseProvider
 
-If you are planning on persisting data to a SQLiteDatabase you should extend the DatabaseProvider class. The DatabaseProvider will ensure that a SQLiteDatabase gets injected into any SQLiteDatasets before the **query**, **update**, **insert** or **delete** request gets forwarded along.
-
-Your implementation might look something like the following:
+If you are planning on persisting data to a SQLiteDatabase you should extend the DatabaseProvider class. The DatabaseProvider will ensure that a SQLiteDatabase gets created and injected into any SQLiteDatasets before the **query**, **update**, **insert** or **delete** request gets forwarded along. Your implementation might look something like the following:
 
 ```java
 public class MyAppContentProvider extends DatabaseProvider {
@@ -37,15 +35,27 @@ public class MyAppContentProvider extends DatabaseProvider {
 	}
 }
 ```
+
+**Note:** *Don't forget to include your provider in your AndroidManifest.xml*
+
+```xml
+<provider
+	android:name=".providers.MyAppContentProvider"
+	android:authorities="com.mycompany.myapp.providers.MyAppContentProvider"
+	android:exported="false" />
+```
+
+#### Configuration
+
+You can override the ```onCreateDatabaseConfiguration()``` method in the DatabaseProvider class to define your own database name and version number. The default implementation of the DatabaseConfiguration grabs this information from your AndroidManifest.xml file.
+
 ### DatasetProvider
 
 If you don't want to persist data in a database but still want to take full advantage of all the benefits of using Datasets, you can extend the DatasetProvider class directly. You can create Datasets that store data in a HashMap, to disk, or using any other mechanism you like. Registering these Datasets with the provider is the similar to the example shown above.
 
 ### Datasets
 
-After the request has been filtered through the ContentProvider, an individual Dataset will handle the requested action. Lets see what a typical Dataset implementation might look like.
-
-If you are persisting data to a SQLiteDatabase you will need to to create your own SQLiteTable subclass. Notice in the example below that we are extending the SQLiteTable.Columns interface and adding our own set of columns. This makes it easy for you to refer back to these column values when querying for data (see [Arca-Dispatcher](../../Arca-App/Arca-Dispatcher)) or binding to views in your adapter (see [Arca-Adapters](../../Arca-App/Arca-Adapters)).
+After the request has been filtered through the ContentProvider, an individual Dataset will handle the requested action. If you are persisting data to a SQLiteDatabase you will need to to create your own SQLiteTable subclass. Notice in the example below that we are extending the SQLiteTable.Columns interface and adding our own set of columns. This makes it easy for you to refer back to these column values when querying for data (see [Arca-Dispatcher](../../Arca-App/Arca-Dispatcher)) or binding to views in your adapter (see [Arca-Adapters](../../Arca-App/Arca-Adapters)).
 
 ```java
 public class PostTable extends SQLiteTable {
@@ -70,21 +80,7 @@ public class PostTable extends SQLiteTable {
 }
 ```
 
-After your Dataset has been setup its ready to handle requests. The default implementation in the SQLiteDataset for handling queries looks something like the following:
-
-```java
-@Override
-public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
-    final SQLiteDatabase database = getDatabase();
-	if (database != null) {
-		return database.query(getName(), projection, selection, selectionArgs, null, null, sortOrder);
-	} else {
-		throw new IllegalStateException("Database is null.");
-	}
-}
-```
-
-You can override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and returning that single resource when required.
+After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and returning that single resource when required.
 
 ```java
 @Override

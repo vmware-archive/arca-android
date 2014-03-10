@@ -19,7 +19,7 @@ public abstract class Request<T> implements Parcelable {
 		}
 		
 		if (identifier < 1000) {
-			throw new IllegalArgumentException("Custom identifiers must be greater than 1000.");
+			throw new IllegalArgumentException("Custom identifiers cannot be less than 1000.");
 		}
 		
 		mIdentifier = identifier;

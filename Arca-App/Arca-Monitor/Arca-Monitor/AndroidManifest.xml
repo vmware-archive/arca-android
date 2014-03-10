@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.arca.verifier"
+    package="com.arca.monitor"
     android:versionCode="1"
     android:versionName="1.0" >
 

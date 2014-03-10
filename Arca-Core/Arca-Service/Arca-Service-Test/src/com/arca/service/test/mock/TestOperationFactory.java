@@ -56,22 +56,40 @@ public class TestOperationFactory {
 		return newOperationWithTasks(tasks);
 	}
 
-	public static TestOperation newOperationWithTaskDependants() {
+	public static TestOperation newOperationWithTaskDependencies() {
 		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithDependants());
+		tasks.addAll(TestTaskFactory.newTaskListWithDependencies());
 		return newOperationWithTasks(tasks);
 	}
 
-	public static TestOperation newOperationWithTaskDependantsThatThrowsNetworkingException(final Exception exception) {
+	public static TestOperation newOperationWithTaskDependenciesThatThrowsNetworkingException(final Exception exception) {
 		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithNetworkingException(exception));
+		tasks.addAll(TestTaskFactory.newTaskListWithDependenciesFirstTaskFailsWithNetworkingException(exception));
 		return newOperationWithTasks(tasks);
 	}
 
 
-	public static TestOperation newOperationWithTaskDependantsThatThrowsProcessingException(final Exception exception) {
+	public static TestOperation newOperationWithTaskDependenciesThatThrowsProcessingException(final Exception exception) {
 		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithProcessingException(exception));
+		tasks.addAll(TestTaskFactory.newTaskListWithDependenciesFirstTaskFailsWithProcessingException(exception));
+		return newOperationWithTasks(tasks);
+	}
+	
+	public static TestOperation newOperationWithDynamicTaskDependency() {
+		final Set<Task<?>> tasks = new HashSet<Task<?>>();
+		tasks.addAll(TestTaskFactory.newTaskListWithDynamicDependencies());
+		return newOperationWithTasks(tasks);
+	}
+	
+	public static TestOperation newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(final Exception exception) {
+		final Set<Task<?>> tasks = new HashSet<Task<?>>();
+		tasks.addAll(TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithNetworkingException(exception));
+		return newOperationWithTasks(tasks);
+	}
+	
+	public static TestOperation newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(final Exception exception) {
+		final Set<Task<?>> tasks = new HashSet<Task<?>>();
+		tasks.addAll(TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithProcessingException(exception));
 		return newOperationWithTasks(tasks);
 	}
 	

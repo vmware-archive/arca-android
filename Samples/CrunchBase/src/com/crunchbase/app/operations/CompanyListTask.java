@@ -16,10 +16,7 @@ import com.xtreme.threading.RequestIdentifier;
 
 public class CompanyListTask extends Task<List<Company>> {
 
-	private static final int PAGE_SIZE = 30;
-	
 	private final int mPage;
-	private SearchResponse mResponse;
 
 	public CompanyListTask(final int page) {
 		mPage = page;
@@ -32,8 +29,12 @@ public class CompanyListTask extends Task<List<Company>> {
 	
 	@Override
 	public List<Company> onExecuteNetworking(final Context context) throws Exception {
-		mResponse = CrunchBaseRequests.getSearchResults("toronto", mPage);
-		return mResponse.getResults();
+		final SearchResponse response = CrunchBaseRequests.getSearchResults("toronto", mPage);
+		final int page = response.getNextPage();
+		if (page > 0) {
+			addDependency(new CompanyListTask(page));
+		}
+		return response.getResults();
 	}
 
 	@Override
@@ -41,11 +42,5 @@ public class CompanyListTask extends Task<List<Company>> {
 		final ContentValues[] values = CompanyTable.getContentValues(data);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.bulkInsert(CrunchBaseContentProvider.Uris.COMPANIES_URI, values);
-	}
-
-	public int getNextPage() {
-		final int total = mResponse.getTotal();
-		final int page = mResponse.getPage();
-		return (PAGE_SIZE * page) < total ? page + 1 : -1;
 	}
 }

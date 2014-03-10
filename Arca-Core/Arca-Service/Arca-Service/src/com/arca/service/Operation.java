@@ -123,6 +123,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	@Override
 	public void onTaskComplete(final Task<?> task) {
 		moveTaskFromExecutingToCompleted(task);
+		handleTaskDependencies(task);
 		checkTaskCompletion();
 	}
 
@@ -148,8 +149,13 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		}
 	}
 	
+	private void handleTaskDependencies(final Task<?> task) {
+		final Set<Task<?>> tasks = task.getDependencies();
+		addTasksToPending(tasks);
+	}
+	
 	private void handleTaskFailure(final ServiceError error) {
-		// TODO handle task failures better
+		// TODO: handle task failures better
 		if (error != null) { 
 			mError = error;
 		}

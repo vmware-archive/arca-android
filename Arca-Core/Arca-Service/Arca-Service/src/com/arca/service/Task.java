@@ -16,7 +16,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	}
 	
 	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
-	private final Set<Task<?>> mDependants = new HashSet<Task<?>>();
+	private final Set<Task<?>> mDependencies = new HashSet<Task<?>>();
 	private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
 	private final Object mTaskLock = new Object();
 			
@@ -29,6 +29,14 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	@Override
 	public final RequestIdentifier<?> getIdentifier() {
 		return mIdentifier;
+	}
+	
+	public Set<Task<?>> getPrerequisites() {
+		return mPrerequisites;
+	}
+	
+	public Set<Task<?>> getDependencies() {
+		return mDependencies;
 	}
 
 	public void setContext(final Context context) {
@@ -88,15 +96,15 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 		synchronized (mTaskLock) {
 			if (!mPrerequisites.contains(task)) {
 				mPrerequisites.add(task);
-				task.addDependant(this);
+				task.addDependency(this);
 			}
 		}
 	}
 
-	public final void addDependant(final Task<?> task) {
+	public final void addDependency(final Task<?> task) {
 		synchronized (mTaskLock) {
-			if (!mDependants.contains(task)) {
-				mDependants.add(task);
+			if (!mDependencies.contains(task)) {
+				mDependencies.add(task);
 				task.addPrerequisite(this);
 			}
 		}
@@ -197,7 +205,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	private void notifyDependentsOfCompletion() {
 		synchronized (mTaskLock) {
-			for (final Task<?> dependant : mDependants) {
+			for (final Task<?> dependant : mDependencies) {
 				dependant.onPrerequisiteComplete(this);
 			}
 		}
@@ -205,7 +213,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	private void notifyDependentsOfFailure(final ServiceError error) {
 		synchronized (mTaskLock) {
-			for (final Task<?> dependant : mDependants) {
+			for (final Task<?> dependant : mDependencies) {
 				dependant.onPrerequisiteFailure(this, error);
 			}
 		}

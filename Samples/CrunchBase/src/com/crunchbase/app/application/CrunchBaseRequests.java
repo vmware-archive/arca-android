@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 
 import org.apache.http.client.ClientProtocolException;
 
+import com.arca.utils.Logger;
 import com.crunchbase.app.deserializers.ImageSizeDeserializer;
 import com.crunchbase.app.models.ImageSize;
 import com.crunchbase.app.models.SearchResponse;
@@ -35,6 +36,7 @@ public class CrunchBaseRequests {
 	}
 	
 	private static <T> T executeRequest(final NetworkRequest request, final Gson gson, final Type type) throws ClientProtocolException, IOException {
+		Logger.v("Request URL: %s", request.getUrl());
 		final INetworkRequestLauncher launcher = NetworkRequestLauncher.getInstance();
 		final NetworkResponse response = launcher.executeRequestSynchronously(request);
 		final InputStream inputStream = response.getInputStream();

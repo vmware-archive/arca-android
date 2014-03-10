@@ -9,13 +9,19 @@ public class TestTask extends Task<String> {
 
 	public static interface Messages extends Task.Messages {}
 	
-	private RequestIdentifier<?> mIdentifier;
-	private Exception mNetworkingException;
-	private Exception mProcessingException;
-	private String mNetworkResult;
+	private final RequestIdentifier<?> mIdentifier;
+	private final Exception mNetworkingException;
+	private final Exception mProcessingException;
+	private final String mNetworkResult;
+	private Task<?> mDependency;
 
 	public TestTask(final RequestIdentifier<?> identifier) {
 		this(identifier, null, null, null);
+	}
+	
+	public TestTask(final RequestIdentifier<?> identifier, final Task<?> task) {
+		this(identifier, null, null, null);
+		mDependency = task;
 	}
 	
 	public TestTask(final RequestIdentifier<?> identifier, final String networkResult) {
@@ -28,7 +34,7 @@ public class TestTask extends Task<String> {
 		mNetworkingException = networkingException;
 		mProcessingException = processingException;
 	}
-	
+
 	@Override
 	public RequestIdentifier<?> onCreateIdentifier() {
 		return mIdentifier;
@@ -39,6 +45,10 @@ public class TestTask extends Task<String> {
 		
 		if (mNetworkingException != null) {
 			throw mNetworkingException;
+		}
+		
+		if (mDependency != null) {
+			addDependency(mDependency);
 		}
 		
 		return mNetworkResult;

@@ -36,19 +36,6 @@ public class CompanyListOperation extends Operation {
 		set.add(new CompanyListTask(1));
 		return set;
 	}
-	
-	@Override
-	public void onTaskComplete(final Task<?> task) {
-		super.onTaskComplete(task);
-
-		if (task instanceof CompanyListTask) {
-			final CompanyListTask listTask = (CompanyListTask) task;
-			final int page = listTask.getNextPage();
-			if (page > 0) {
-				executeTask(new CompanyListTask(page));
-			}
-		}
-	}
 
 	@Override
 	public void onSuccess(final Context context, final List<Task<?>> completed) {

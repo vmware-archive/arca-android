@@ -792,9 +792,9 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskDependantsSuccess() {
+	public void testTaskDependenciesSuccess() {
 		final ObserverCounter latch = new ObserverCounter(2, 2, 0);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependants();
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependencies();
 
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -829,10 +829,10 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskDependantsFirstTaskFailsWithNetworkError() {
+	public void testTaskDependenciesFirstTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithNetworkingException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependenciesFirstTaskFailsWithNetworkingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -867,10 +867,10 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskDependantsSecondTaskFailsWithNetworkError() {
+	public void testTaskDependenciesSecondTaskFailsWithNetworkError() {
 		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsSecondTaskFailsWithNetworkingException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependenciesSecondTaskFailsWithNetworkingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -907,10 +907,10 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskDependantsFirstTaskFailsWithProcessingError() {
+	public void testTaskDependenciesFirstTaskFailsWithProcessingError() {
 		final ObserverCounter latch = new ObserverCounter(1, 0, 2);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsFirstTaskFailsWithProcessingException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependenciesFirstTaskFailsWithProcessingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -945,10 +945,10 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 	
-	public void testTaskDependantsSecondTaskFailsWithProcessingError() {
+	public void testTaskDependenciesSecondTaskFailsWithProcessingError() {
 		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
 		final Exception exception = new Exception(ERROR);
-		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependantsSecondTaskFailsWithProcessingException(exception);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependenciesSecondTaskFailsWithProcessingException(exception);
 		
 		final TaskObserver observer = new TaskObserver() {
 			
@@ -980,6 +980,120 @@ public class TaskTest extends AndroidTestCase {
 			task.setTaskObserver(observer);
 		
 		expectedOrder.get(1).execute();
+		expectedOrder.get(0).execute();
+		
+		latch.assertComplete();
+	}
+	
+	public void testTaskDynamicDependenciesSuccess() {
+		final ObserverCounter latch = new ObserverCounter(2, 2, 0);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDynamicDependencies();
+
+		final TaskObserver observer = new TaskObserver() {
+			
+			@Override
+			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
+				
+				assertEquals(expectedOrder.get(0), t);
+			}
+			
+			@Override
+			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
+				fail();
+			}
+			
+			@Override
+			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
+				assertEquals(expectedOrder.remove(0), t);
+			}
+		};
+		
+		for (final Task<?> task : expectedOrder) 
+			task.setTaskObserver(observer);
+
+		expectedOrder.get(0).execute();
+		
+		latch.assertComplete();
+	}
+	
+	public void testTaskDynamicDependenciesSecondTaskFailsWithNetworkError() {
+		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
+		final Exception exception = new Exception(ERROR);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithNetworkingException(exception);
+		
+		final TaskObserver observer = new TaskObserver() {
+			
+			@Override
+			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
+				
+				assertEquals(expectedOrder.get(0), t);
+			}
+			
+			@Override
+			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(0, expectedOrder.size());
+			}
+			
+			@Override
+			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(1, expectedOrder.size());
+			}
+		};
+		
+		for (final Task<?> task : expectedOrder) 
+			task.setTaskObserver(observer);
+		
+		expectedOrder.get(0).execute();
+		
+		latch.assertComplete();
+	}
+	
+	public void testTaskDynamicDependenciesSecondTaskFailsWithProcessingError() {
+		final ObserverCounter latch = new ObserverCounter(2, 1, 1);
+		final Exception exception = new Exception(ERROR);
+		final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithProcessingException(exception);
+		
+		final TaskObserver observer = new TaskObserver() {
+			
+			@Override
+			public void onTaskStarted(final Task<?> t) {
+				latch.onTaskStarted();
+				
+				assertEquals(expectedOrder.get(0), t);
+			}
+			
+			@Override
+			public void onTaskFailure(final Task<?> t, final ServiceError e) {
+				latch.onTaskFailure();
+				
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(0, expectedOrder.size());
+			}
+			
+			@Override
+			public void onTaskComplete(final Task<?> t) {
+				latch.onTaskComplete();
+				
+				assertEquals(expectedOrder.remove(0), t);
+				assertEquals(1, expectedOrder.size());
+			}
+		};
+		
+		for (final Task<?> task : expectedOrder) 
+			task.setTaskObserver(observer);
+		
 		expectedOrder.get(0).execute();
 		
 		latch.assertComplete();

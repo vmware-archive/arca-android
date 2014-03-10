@@ -41,6 +41,11 @@ public class MovieListFragment extends ArcaAdapterSupportFragment implements OnI
 	private ImageLoader mImageLoader;
 	
 	@Override
+	protected int getAdapterViewId() {
+		return R.id.movie_list;
+	}
+	
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_movie_list, container, false);
 	}
@@ -66,11 +71,6 @@ public class MovieListFragment extends ArcaAdapterSupportFragment implements OnI
 		super.onDestroyView();
 	}
 	
-	@Override
-	protected int getAdapterViewId() {
-		return R.id.movie_list;
-	}
-	
 	public void setType(final String type) {
 		mType = type;
 		refreshList();
@@ -87,11 +87,11 @@ public class MovieListFragment extends ArcaAdapterSupportFragment implements OnI
 		final Uri baseUri = RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI;
 		final Uri contentUri = Uri.withAppendedPath(baseUri, mType);
 		
-		final Query request = new Query(contentUri);
+		final Query request = new Query(contentUri, 1000);
 		request.setSortOrder("title asc");
 		execute(request);
 	}
-	
+
 	@Override
 	public void onContentError(final Error error) {
 		Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();

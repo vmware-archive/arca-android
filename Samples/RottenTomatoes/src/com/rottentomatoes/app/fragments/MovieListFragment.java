@@ -41,7 +41,7 @@ public class MovieListFragment extends ArcaAdapterSupportFragment implements OnI
 	private ImageLoader mImageLoader;
 	
 	@Override
-	protected int getAdapterViewId() {
+	public int getAdapterViewId() {
 		return R.id.movie_list;
 	}
 	

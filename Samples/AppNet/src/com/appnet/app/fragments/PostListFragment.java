@@ -75,7 +75,7 @@ public class PostListFragment extends ArcaAdapterSupportFragment implements OnIt
 	}
 	
 	@Override
-	protected int getAdapterViewId() {
+	public int getAdapterViewId() {
 		return R.id.post_list;
 	}
 	

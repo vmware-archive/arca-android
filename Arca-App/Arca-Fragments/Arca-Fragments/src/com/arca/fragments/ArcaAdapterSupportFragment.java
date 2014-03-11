@@ -10,8 +10,6 @@ import com.arca.dispatcher.QueryResult;
 
 public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragment {
 	
-	protected abstract int getAdapterViewId();
-	
 	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState);
 	
 	private AdapterView<CursorAdapter> mAdapterView;
@@ -25,9 +23,12 @@ public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragmen
 	
 	@SuppressWarnings("unchecked")
 	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
-		final int adapterViewId = getAdapterViewId();		
-		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(adapterViewId);
+		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(getAdapterViewId());
 		mAdapterView.setAdapter(onCreateAdapter(mAdapterView, savedInstanceState));
+	}
+	
+	public int getAdapterViewId() {
+		return android.R.id.list;
 	}
 	
 	public AdapterView<CursorAdapter> getAdapterView() {

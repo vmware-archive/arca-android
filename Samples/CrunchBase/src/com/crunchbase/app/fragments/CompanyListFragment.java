@@ -81,7 +81,7 @@ public class CompanyListFragment extends ArcaAdapterSupportFragment implements O
 	}
 	
 	@Override
-	protected int getAdapterViewId() {
+	public int getAdapterViewId() {
 		return R.id.company_list;
 	}
 	

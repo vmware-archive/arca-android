@@ -1,0 +1,47 @@
+{{$package := .PackageName}}
+{{$project := .ProjectName}}
+{{$path := "com/example"}}
+<<levo filename:AndroidManifest.xml directory:.>>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="{{$package}}"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="13"
+        android:targetSdkVersion="19" />
+        
+	<uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+        <activity android:name=".activities.LauncherActivity"
+        	android:theme="@android:style/Theme.Holo.NoActionBar"
+        	android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        {{range .Models}}!>
+        <activity android:name=".activities.{{titlecase .Name}}ListActivity" />
+        {{end}}!>
+        
+        <service
+            android:name="com.arca.service.OperationService"
+            android:exported="false" />
+        
+        <provider
+            android:name=".providers.{{titlecase $project}}ContentProvider"
+            android:authorities="{{$package}}.providers.{{titlecase $project}}ContentProvider"
+            android:exported="false" />
+        
+    </application>
+
+</manifest>
+<<levo>>

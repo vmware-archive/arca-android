@@ -1,0 +1,12 @@
+<<levo filename:{{snakecase .ProjectName}}.rb directory:server>>
+{{range .Models}}!>
+generate(:scaffold, "{{.Name}}!>
+	{{range .Properties}}!>
+		{{if ne .RemoteIdentifier "id"}}!>
+ {{snakecase .RemoteIdentifier}}:{{toRailsType .}}!>
+		{{end}}!>
+	{{end}}!>
+")
+{{end}}!>
+rake("db:migrate")
+<<levo>>

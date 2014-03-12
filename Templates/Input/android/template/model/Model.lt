@@ -1,0 +1,35 @@
+{{$package := .PackageName}}
+{{$path := .PackagePath}}
+{{range .Models}}
+<<levo filename:{{titlecase .Name}}.java directory:src/{{$path}}/models>>
+package {{$package}}.models;
+
+{{if hasListType .}}import java.util.List;{{end}}!>
+
+import com.google.gson.annotations.SerializedName;
+
+public class {{titlecase .Name}} {{if .Parent}}extends {{.Parent}} {{end}}{
+   
+	public static class Fields {
+	{{range .Properties}}!>
+		public static final String {{snakecase .RemoteIdentifier | upper}} = "{{.RemoteIdentifier}}";
+	{{end}}!>
+	}
+
+	{{range .Properties}}!>
+	@SerializedName(Fields.{{snakecase .RemoteIdentifier | upper}}) private {{toJavaType .}} m{{titlecase .LocalIdentifier}};
+	{{end}}!>
+
+	{{range .Properties}}!>
+	public {{toJavaType .}} get{{titlecase .LocalIdentifier}}() {
+		return m{{titlecase .LocalIdentifier}};
+	}
+
+	public void set{{titlecase .LocalIdentifier}}(final {{toJavaType .}} {{camelcase .LocalIdentifier}}) {
+		m{{titlecase .LocalIdentifier}} = {{camelcase .LocalIdentifier}};
+	}
+   
+	{{end}}!>
+}
+<<levo>>
+{{end}}

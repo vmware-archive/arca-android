@@ -1,0 +1,68 @@
+{{$package := .PackageName}}
+{{$project := .ProjectName}}
+{{$path := .PackagePath}}
+<<levo filename:{{titlecase $project}}Endpoint.java directory:src/{{$path}}/application>>
+package {{$package}}.application;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+
+import org.apache.http.client.ClientProtocolException;
+
+{{range .Models}}!>
+import {{$package}}.models.{{titlecase .Name}}ListResponse;
+{{end}}!>
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+import com.xtreme.network.INetworkRequestLauncher;
+import com.xtreme.network.NetworkRequest;
+import com.xtreme.network.NetworkRequest.RequestType;
+import com.xtreme.network.NetworkRequestLauncher;
+import com.xtreme.network.NetworkResponse;
+
+public class {{titlecase $project}}Endpoint {
+
+	private static final String BASE_URL = "http://10.0.2.2:3000/";
+	
+	private static final class Apis {
+		{{range .Models}}!>
+		public static final String {{pluralize .Name | snakecase | upper}} = BASE_URL + "{{pluralize .Name | snakecase}}.json";
+		{{end}}!>
+	}
+	
+	{{range .Models}}!>
+	public static {{titlecase .Name}}ListResponse get{{titlecase .Name}}List() throws ClientProtocolException, IOException {
+		final NetworkRequest request = new NetworkRequest(Apis.{{pluralize .Name | snakecase | upper}});
+		request.setRequestType(RequestType.GET);
+		return executeRequest(request, new Gson(), {{titlecase .Name}}ListResponse.class);
+	}
+	
+	{{end}}!>
+	
+	private static <T> T executeRequest(final NetworkRequest request, final Gson gson, final Type type) throws ClientProtocolException, IOException {
+		final INetworkRequestLauncher launcher = NetworkRequestLauncher.getInstance();
+		final NetworkResponse response = launcher.executeRequestSynchronously(request);
+		final InputStream inputStream = response.getInputStream();
+		final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+		final JsonReader jsonReader = new JsonReader(inputStreamReader);
+		final T list = gson.fromJson(jsonReader, type);
+		jsonReader.close();
+		return list;
+	}
+}
+<<levo>>
+{{range .Models}}
+<<levo filename:{{titlecase .Name}}ListResponse.java directory:src/{{$path}}/models>>
+package {{$package}}.models;
+
+import java.util.ArrayList;
+
+public class {{titlecase .Name}}ListResponse extends ArrayList<{{titlecase .Name}}> {
+
+	private static final long serialVersionUID = 1L;
+
+}
+<<levo>>
+{{end}}

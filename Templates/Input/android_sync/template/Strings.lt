@@ -1,0 +1,15 @@
+{{$project := .ProjectName}}
+<<levo filename:strings.xml directory:res/values>>
+<resources>
+
+    <string name="app_name">{{titlecase $project}}</string>
+
+	{{range .Models}}!>
+	<string name="title_{{pluralize .Name | snakecase}}">{{pluralize .Name | titlecase}}</string>
+	{{end}}!>
+
+	<!-- AccountActivity -->
+	<string name="add_account">Add Account</string>
+	
+</resources>
+<<levo>>

@@ -1,0 +1,58 @@
+{{$package := .PackageName}}
+{{$path := .PackagePath}}
+{{range .Models}}
+<<levo filename:{{titlecase .Name}}Table.java directory:src/{{$path}}/datasets>>
+package {{$package}}.datasets;
+
+import java.util.List;
+
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+
+import {{$package}}.models.{{.Name}};
+import com.arca.provider.Column;
+import com.arca.provider.ColumnUtils;
+import com.arca.provider.SQLiteTable;
+
+public class {{titlecase .Name}}Table extends SQLiteTable {
+   
+	public static interface Columns extends SQLiteTable.Columns {
+	{{range .Properties}}!>
+		{{if isSqliteType .}}!>
+		public static final Column {{snakecase .RemoteIdentifier | upper}} = Column.Type.{{toSqliteType .}}.newColumn("{{.LocalIdentifier}}");
+		{{end}}!>
+	{{end}}!>
+	}
+
+	@Override
+	public void onCreate(final SQLiteDatabase db) {
+		final String columns = ColumnUtils.toString(Columns.class);
+		final String unique = "UNIQUE (" + Columns.{{idProp .Properties}}.name + ") ON CONFLICT REPLACE";
+		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, unique));
+	}
+	
+	@Override
+	public void onDrop(final SQLiteDatabase db) {
+		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
+	}
+	
+	public static ContentValues[] getContentValues(final List<{{.Name}}> list) {
+		final ContentValues[] values = new ContentValues[list.size()];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = getContentValues(list.get(i));
+		}
+		return values;
+    }
+	
+	public static ContentValues getContentValues(final {{.Name}} item) {
+		final ContentValues value = new ContentValues();
+		{{range .Properties}}!>
+			{{if isSqliteType .}}!>
+        value.put(Columns.{{snakecase .RemoteIdentifier | upper}}.name, item.get{{titlecase .LocalIdentifier}}());
+        	{{end}}!>
+        {{end}}!>
+        return value;
+    }
+}
+<<levo>>
+{{end}}

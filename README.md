@@ -1,12 +1,12 @@
 # Arca
 
-The Arca library provides a comprehensive framework for caching and displaying data for any Android application. It is designed to be extremely modular and work seemlessly with other native Android components.
+The Arca library provides a comprehensive framework for caching and displaying data. It is modular by design and compatible with native Android components.
 
-The architecture of Arca is based on this [Google I/O talk](http://www.youtube.com/watch?v=xHXn3Kg2IQE).
+This [Google I/O talk](http://www.youtube.com/watch?v=xHXn3Kg2IQE) explains the basis of the architecture.
 
 # Overview
 
-Below is a list of all the major components within the Arca framework. Each major component has a variety of minor components. The framework is designed to all work together, however each component can also be used individually.
+Below is a list of all the major components within the Arca framework. Each major component has a variety of minor components. Each component can be used independently or as part of the entire framework.
 
 ##[Arca-Core](Arca-Core)
 

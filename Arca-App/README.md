@@ -3,7 +3,7 @@
 The Arca App package makes it really easy to fetch data from a ContentProvider and bind it to elements in your layout. This means your UI will always be up to date with the most recent data without having to write a single additional line of code.
 
 ## [Arca-Adapters](Arca-Adapters)
-Within the Android framework, adapters act as a bridge between your data and your UI. The Arca Adapters package builds off the standard CursorAdapter implementation in order to add a number of improvements.
+Within the Android framework, adapters act as a bridge between your data and your UI. The Arca Adapters package builds off the standard CursorAdapter implementation adding a number of improvements.
 
 ## [Arca-Dispatcher](Arca-Dispatcher)
 The Arca Dispatcher package makes it really easy for you to request data synchronously or asynchronously from a ContentProvider. It accepts Query, Update, Insert and Delete requests and returns a corresponding QueryResult, UpdateResult, InsertResult or DeleteResult.

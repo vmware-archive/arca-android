@@ -8,7 +8,7 @@ Each Dataset gets registered against a Uri and any requests into the provider fo
 
 ### DatabaseProvider
 
-If you are planning on persisting data to a SQLiteDatabase you should extend the DatabaseProvider class. The DatabaseProvider will ensure that a SQLiteDatabase gets created and injected into any SQLiteDatasets before the **query**, **update**, **insert** or **delete** request gets forwarded along. Your implementation might look something like the following:
+If you are planning on persisting data to a SQLiteDatabase you should extend the DatabaseProvider class. The DatabaseProvider will ensure that a SQLiteDatabase gets created and injected into any SQLiteDatasets before the **query**, **update**, **insert** or **delete** request gets called. Your implementation might look something like the following:
 
 ```java
 public class MyAppContentProvider extends DatabaseProvider {

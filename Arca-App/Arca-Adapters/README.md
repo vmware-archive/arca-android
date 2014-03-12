@@ -1,6 +1,6 @@
 # Arca-Adapters
 
-Within the Android framework, adapters act as a bridge between your data and your UI. The Arca Adapters package builds off the standard CursorAdapter implementation in order to add a number of improvements.
+Within the Android framework, adapters act as a bridge between your data and your UI. The Arca Adapters package builds off the standard CursorAdapter implementation adding a number of improvements.
 
 - It adds default support for the view holder pattern, which optimizes view access.
 - It makes the ViewBinder construct much more intuitive through the use of Bindings.

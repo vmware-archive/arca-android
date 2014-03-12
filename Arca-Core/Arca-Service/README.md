@@ -112,7 +112,7 @@ public class PostListTask extends Task<List<Post>> {
 	
 	@Override
 	public List<Post> onExecuteNetworking(final Context context) throws Exception {
-		final PostListResponse response = MyAppRequests.getPostList();
+		final PostListResponse response = MyAppEndpoint.getPostList();
 		return response.getPostList();
 	}
 

@@ -1,5 +1,4 @@
 {{$package := .PackageName}}
-{{$project := .ProjectName}}
 {{$path := .PackagePath}}
 {{$first := index .Models 0}}
 <<levo filename:LauncherActivity.java directory:src/{{$path}}/activities>>

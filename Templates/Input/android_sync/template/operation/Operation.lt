@@ -2,7 +2,7 @@
 {{$project := .ProjectName}}
 {{$path := .PackagePath}}
 {{range .Models}}
-<<levo filename:Sync{{titlecase .Name}}ListOperation.java directory:src/{{$path}}/operations>>
+<<levo filename:Get{{titlecase .Name}}ListOperation.java directory:src/{{$path}}/operations>>
 package {{$package}}.operations;
 
 import java.util.HashSet;
@@ -11,6 +11,7 @@ import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -18,15 +19,14 @@ import com.arca.dispatcher.ErrorBroadcaster;
 import com.arca.service.Operation;
 import com.arca.service.ServiceError;
 import com.arca.service.Task;
-import {{$package}}.providers.{{titlecase $project}}ContentProvider;
 
-public class Sync{{titlecase .Name}}ListOperation extends Operation {
+public class Get{{titlecase .Name}}ListOperation extends Operation {
 
-	public Sync{{titlecase .Name}}ListOperation() {
-		super({{titlecase $project}}ContentProvider.Uris.{{pluralize .Name | snakecase | upper}});
+	public Get{{titlecase .Name}}ListOperation(final Uri uri) {
+		super(uri);
 	}
 
-	public Sync{{titlecase .Name}}ListOperation(final Parcel in) {
+	public Get{{titlecase .Name}}ListOperation(final Parcel in) {
 		super(in);
 	}
 
@@ -38,9 +38,6 @@ public class Sync{{titlecase .Name}}ListOperation extends Operation {
 	@Override
 	public Set<Task<?>> onCreateTasks() {
 		final Set<Task<?>> set = new HashSet<Task<?>>();
-		// set.add(new Post{{titlecase .Name}}ListTask());
-		// set.add(new Update{{titlecase .Name}}ListTask());
-		// set.add(new Delete{{titlecase .Name}}ListTask());
 		set.add(new Get{{titlecase .Name}}ListTask());
 		return set;
 	}
@@ -56,15 +53,15 @@ public class Sync{{titlecase .Name}}ListOperation extends Operation {
 		ErrorBroadcaster.broadcast(context, getUri(), error.getCode(), error.getMessage());
 	}
 	
-	public static final Parcelable.Creator<Sync{{titlecase .Name}}ListOperation> CREATOR = new Parcelable.Creator<Sync{{titlecase .Name}}ListOperation>() {
+	public static final Parcelable.Creator<Get{{titlecase .Name}}ListOperation> CREATOR = new Parcelable.Creator<Get{{titlecase .Name}}ListOperation>() {
 		@Override
-		public Sync{{titlecase .Name}}ListOperation createFromParcel(final Parcel in) {
-			return new Sync{{titlecase .Name}}ListOperation(in);
+		public Get{{titlecase .Name}}ListOperation createFromParcel(final Parcel in) {
+			return new Get{{titlecase .Name}}ListOperation(in);
 		}
 
 		@Override
-		public Sync{{titlecase .Name}}ListOperation[] newArray(final int size) {
-			return new Sync{{titlecase .Name}}ListOperation[size];
+		public Get{{titlecase .Name}}ListOperation[] newArray(final int size) {
+			return new Get{{titlecase .Name}}ListOperation[size];
 		}
 	};
 }
@@ -72,21 +69,19 @@ public class Sync{{titlecase .Name}}ListOperation extends Operation {
 <<levo filename:Get{{titlecase .Name}}ListTask.java directory:src/{{$path}}/operations>>
 package {{$package}}.operations;
 
-import java.util.List;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 
 import com.arca.service.Task;
+import com.arca.provider.DataUtils;
 import {{$package}}.application.{{titlecase $project}}Api;
 import {{$package}}.datasets.{{titlecase .Name}}Table;
-import {{$package}}.models.{{titlecase .Name}};
 import {{$package}}.models.{{titlecase .Name}}ListResponse;
 import {{$package}}.providers.{{titlecase $project}}ContentProvider;
 import com.xtreme.threading.RequestIdentifier;
 
-public class Get{{titlecase .Name}}ListTask extends Task<List<{{titlecase .Name}}>> {
+public class Get{{titlecase .Name}}ListTask extends Task<ContentValues[]> {
 
 	public Get{{titlecase .Name}}ListTask() {}
 
@@ -96,14 +91,13 @@ public class Get{{titlecase .Name}}ListTask extends Task<List<{{titlecase .Name}
 	}
 	
 	@Override
-	public List<{{titlecase .Name}}> onExecuteNetworking(final Context context) throws Exception {
+	public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
 		final {{titlecase .Name}}ListResponse response = {{titlecase $project}}Api.get{{titlecase .Name}}List();
-		return response;
+		return DataUtils.getContentValues({{titlecase .Name}}Table.class, response);
 	}
 
 	@Override
-	public void onExecuteProcessing(final Context context, final List<{{titlecase .Name}}> data) throws Exception {
-		final ContentValues[] values = {{titlecase .Name}}Table.getContentValues(data);
+	public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.delete({{titlecase $project}}ContentProvider.Uris.{{pluralize .Name | snakecase | upper}}, null, null);
 		resolver.bulkInsert({{titlecase $project}}ContentProvider.Uris.{{pluralize .Name | snakecase | upper}}, values);

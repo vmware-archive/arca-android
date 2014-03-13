@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.xtreme.network.INetworkRequestLauncher;
 import com.xtreme.network.NetworkRequest;
-import com.xtreme.network.NetworkRequest.RequestType;
 import com.xtreme.network.NetworkRequestLauncher;
 import com.xtreme.network.NetworkResponse;
 
@@ -35,13 +34,12 @@ public class {{titlecase $project}}Api {
 	{{range .Models}}!>
 	public static {{titlecase .Name}}ListResponse get{{titlecase .Name}}List() throws ClientProtocolException, IOException {
 		final NetworkRequest request = new NetworkRequest(Endpoints.{{pluralize .Name | snakecase | upper}});
-		request.setRequestType(RequestType.GET);
-		return executeRequest(request, new Gson(), {{titlecase .Name}}ListResponse.class);
+		return execute(request, new Gson(), {{titlecase .Name}}ListResponse.class);
 	}
 	
 	{{end}}!>
 	
-	private static <T> T executeRequest(final NetworkRequest request, final Gson gson, final Type type) throws ClientProtocolException, IOException {
+	private static <T> T execute(final NetworkRequest request, final Gson gson, final Type type) throws ClientProtocolException, IOException {
 		final INetworkRequestLauncher launcher = NetworkRequestLauncher.getInstance();
 		final NetworkResponse response = launcher.executeRequestSynchronously(request);
 		final InputStream inputStream = response.getInputStream();

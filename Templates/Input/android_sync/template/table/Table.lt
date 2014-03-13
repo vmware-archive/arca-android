@@ -4,8 +4,6 @@
 <<levo filename:{{titlecase .Name}}Table.java directory:src/{{$path}}/datasets>>
 package {{$package}}.datasets;
 
-import java.util.List;
-
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -35,14 +33,6 @@ public class {{titlecase .Name}}Table extends SQLiteTable {
 	public void onDrop(final SQLiteDatabase db) {
 		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
 	}
-	
-	public static ContentValues[] getContentValues(final List<{{titlecase .Name}}> list) {
-		final ContentValues[] values = new ContentValues[list.size()];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = getContentValues(list.get(i));
-		}
-		return values;
-    }
 	
 	public static ContentValues getContentValues(final {{titlecase .Name}} item) {
 		final ContentValues value = new ContentValues();

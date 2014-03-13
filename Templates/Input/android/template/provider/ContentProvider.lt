@@ -13,7 +13,7 @@ import {{$package}}.datasets.{{titlecase .Name}}Table;
 
 public class {{titlecase $project}}ContentProvider extends DatabaseProvider {
 	
-	private static final String AUTHORITY = "{{$package}}.providers.{{titlecase $project}}ContentProvider";
+	public static final String AUTHORITY = "{{$package}}.providers.{{titlecase $project}}ContentProvider";
 	
 	public static final class Uris {
 		{{range .Models}}!>

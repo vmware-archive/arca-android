@@ -1,7 +1,7 @@
 {{$package := .PackageName}}
 {{$project := .ProjectName}}
 {{$path := .PackagePath}}
-<<levo filename:AccountActivity.java directory:src/{{$path}}/activities>>
+<<levo filename:LoginActivity.java directory:src/{{$path}}/activities>>
 package {{$package}}.activities;
 
 import android.accounts.Account;
@@ -17,19 +17,27 @@ import {{$package}}.R;
 import {{$package}}.auth.{{titlecase $project}}Authenticator;
 import {{$package}}.providers.{{titlecase $project}}ContentProvider;
 
-public class AccountActivity extends Activity {
+public class LoginActivity extends Activity {
 	
-	private static final int ONE_DAY_IN_SECONDS = 60 * 60 * 24;
+	private static final int ONE_DAY = 60 * 60 * 24;
 	
 	public static final void newInstance(final Context context) {
-		final Intent intent = new Intent(context, AccountActivity.class);
+		final Intent intent = new Intent(context, LoginActivity.class);
 		context.startActivity(intent);
 	}
 	
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_account);
+		setContentView(R.layout.activity_login);
+		
+		final String type = ChatAuthenticator.ACCOUNT_TYPE;
+		final AccountManager manager = AccountManager.get(this);
+		final Account[] accounts = manager.getAccountsByType(type);
+		
+		if (accounts.length > 0) {
+			finish();
+		}
 	}
 	
 	public void onAddAccountClicked(final View view) {
@@ -38,20 +46,23 @@ public class AccountActivity extends Activity {
 	}
 	
 	private static void setupAccount(final Context context) {
-		final String authority = TemplateContentProvider.AUTHORITY;
-		final Account account = TemplateAuthenticator.newAccount();
+		final String name = {{titlecase $project}}Authenticator.ACCOUNT_NAME;
+		final String type = {{titlecase $project}}Authenticator.ACCOUNT_TYPE;
+		final String authority = {{titlecase $project}}ContentProvider.AUTHORITY;
+		final Account account = new Account(name, type);
 		
 		ContentResolver.setIsSyncable(account, authority, 1);
 		ContentResolver.setSyncAutomatically(account, authority, true);
-		ContentResolver.addPeriodicSync(account, authority, Bundle.EMPTY, ONE_DAY_IN_SECONDS);
+		ContentResolver.addPeriodicSync(account, authority, Bundle.EMPTY, ONE_DAY);
 		
 		final AccountManager manager = AccountManager.get(context);
 		manager.addAccountExplicitly(account, null, null);
+		manager.setAuthToken(account, type, "");
 	}
 }
 <<levo>>
-<<levo filename:activity_account.xml directory:res/layout>>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<<levo filename:activity_login.xml directory:res/layout>>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -59,19 +70,18 @@ public class AccountActivity extends Activity {
     android:gravity="center">
     
     <TextView
-    	android:layout_weight="1"
     	android:layout_width="match_parent"
-    	android:layout_height="0dp"
+    	android:layout_height="match_parent"
 	    android:text="@string/app_name"
 	    android:gravity="center" />
 	    
     <Button
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:layout_margin="20dp"
+    	android:layout_margin="100dp"
 	    android:text="@string/add_account"
 	    android:onClick="onAddAccountClicked"
-	    android:gravity="center" />
+	    android:layout_gravity="center|bottom" />
     
-</LinearLayout>
+</FrameLayout>
 <<levo>>

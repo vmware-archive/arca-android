@@ -64,7 +64,7 @@ public class {{titlecase $project}}SyncService extends Service {
 <<levo>>
 <<levo filename:syncadapter.xml directory:res/xml>>
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="{{$package}}"
+    android:accountType="{{$package}}.account"
     android:allowParallelSyncs="false"
     android:contentAuthority="{{$package}}.providers.{{titlecase $project}}ContentProvider"
     android:isAlwaysSyncable="true"

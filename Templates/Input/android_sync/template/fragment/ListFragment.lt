@@ -122,7 +122,8 @@ public class {{titlecase .Name}}ListFragment extends ArcaAdapterFragment impleme
     }
 	
 	private void showError(final Error error) {
-        Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+        final String message = String.format("ERROR: %s", error.getMessage());
+		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -164,6 +165,7 @@ public class {{titlecase .Name}}ListViewBinder implements ViewBinder {
 package {{$package}}.monitors;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -186,10 +188,20 @@ public class {{titlecase .Name}}ListMonitor extends AbstractRequestMonitor {
 	}
 
 	public boolean startDataSync(final Context context, final Uri uri) {
-		final String authority = {{titlecase $project}}ContentProvider.AUTHORITY;
-		final Account account = {{titlecase $project}}Authenticator.newAccount();
-		ContentResolver.requestSync(account, authority, Bundle.EMPTY);
-		return true;
+		final String type = {{titlecase $project}}Authenticator.ACCOUNT_TYPE;
+		final AccountManager manager = AccountManager.get(context);
+		final Account[] accounts = manager.getAccountsByType(type);
+		return startAccountSync(accounts);
+	}
+	
+	public boolean startAccountSync(final Account[] accounts) {
+		if (accounts.length > 0) {
+			final String authority = {{titlecase $project}}ContentProvider.AUTHORITY;
+			ContentResolver.requestSync(accounts[0], authority, Bundle.EMPTY);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

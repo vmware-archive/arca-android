@@ -122,7 +122,8 @@ public class {{titlecase .Name}}ListFragment extends ArcaAdapterFragment impleme
     }
 	
 	private void showError(final Error error) {
-        Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+        final String message = String.format("ERROR: %s", error.getMessage());
+		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

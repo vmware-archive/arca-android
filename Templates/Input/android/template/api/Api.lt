@@ -1,7 +1,7 @@
 {{$package := .PackageName}}
 {{$project := .ProjectName}}
 {{$path := .PackagePath}}
-<<levo filename:{{titlecase $project}}Endpoint.java directory:src/{{$path}}/application>>
+<<levo filename:{{titlecase $project}}Api.java directory:src/{{$path}}/application>>
 package {{$package}}.application;
 
 import java.io.IOException;
@@ -22,11 +22,11 @@ import com.xtreme.network.NetworkRequest.RequestType;
 import com.xtreme.network.NetworkRequestLauncher;
 import com.xtreme.network.NetworkResponse;
 
-public class {{titlecase $project}}Endpoint {
+public class {{titlecase $project}}Api {
 
 	private static final String BASE_URL = "http://10.0.2.2:3000/";
 	
-	private static final class Apis {
+	private static final class Endpoints {
 		{{range .Models}}!>
 		public static final String {{pluralize .Name | snakecase | upper}} = BASE_URL + "{{pluralize .Name | snakecase}}.json";
 		{{end}}!>
@@ -34,7 +34,7 @@ public class {{titlecase $project}}Endpoint {
 	
 	{{range .Models}}!>
 	public static {{titlecase .Name}}ListResponse get{{titlecase .Name}}List() throws ClientProtocolException, IOException {
-		final NetworkRequest request = new NetworkRequest(Apis.{{pluralize .Name | snakecase | upper}});
+		final NetworkRequest request = new NetworkRequest(Endpoints.{{pluralize .Name | snakecase | upper}});
 		request.setRequestType(RequestType.GET);
 		return executeRequest(request, new Gson(), {{titlecase .Name}}ListResponse.class);
 	}

@@ -76,7 +76,7 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.arca.service.Task;
-import {{$package}}.application.{{titlecase $project}}Endpoint;
+import {{$package}}.application.{{titlecase $project}}Api;
 import {{$package}}.datasets.{{titlecase .Name}}Table;
 import {{$package}}.models.{{titlecase .Name}};
 import {{$package}}.models.{{titlecase .Name}}ListResponse;
@@ -94,7 +94,7 @@ public class Get{{titlecase .Name}}ListTask extends Task<List<{{titlecase .Name}
 	
 	@Override
 	public List<{{titlecase .Name}}> onExecuteNetworking(final Context context) throws Exception {
-		final {{titlecase .Name}}ListResponse response = {{titlecase $project}}Endpoint.get{{titlecase .Name}}List();
+		final {{titlecase .Name}}ListResponse response = {{titlecase $project}}Api.get{{titlecase .Name}}List();
 		return response;
 	}
 

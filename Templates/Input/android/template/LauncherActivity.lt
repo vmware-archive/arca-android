@@ -37,7 +37,7 @@ public class LauncherActivity extends Activity {
 	}
 
 	public void launch() {
-		{{$first.Name}}ListActivity.newInstance(this);
+		{{titlecase $first.Name}}ListActivity.newInstance(this);
 	}
 	
 	private static final class LaunchHandler extends Handler {

@@ -9,7 +9,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
-import {{$package}}.models.{{.Name}};
+import {{$package}}.models.{{titlecase .Name}};
 import com.arca.provider.Column;
 import com.arca.provider.ColumnUtils;
 import com.arca.provider.SQLiteTable;
@@ -36,7 +36,7 @@ public class {{titlecase .Name}}Table extends SQLiteTable {
 		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
 	}
 	
-	public static ContentValues[] getContentValues(final List<{{.Name}}> list) {
+	public static ContentValues[] getContentValues(final List<{{titlecase .Name}}> list) {
 		final ContentValues[] values = new ContentValues[list.size()];
 		for (int i = 0; i < values.length; i++) {
 			values[i] = getContentValues(list.get(i));
@@ -44,7 +44,7 @@ public class {{titlecase .Name}}Table extends SQLiteTable {
 		return values;
     }
 	
-	public static ContentValues getContentValues(final {{.Name}} item) {
+	public static ContentValues getContentValues(final {{titlecase .Name}} item) {
 		final ContentValues value = new ContentValues();
 		{{range .Properties}}!>
 			{{if isSqliteType .}}!>

@@ -31,7 +31,7 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		
-		final String type = ChatAuthenticator.ACCOUNT_TYPE;
+		final String type = {{titlecase $project}}Authenticator.ACCOUNT_TYPE;
 		final AccountManager manager = AccountManager.get(this);
 		final Account[] accounts = manager.getAccountsByType(type);
 		

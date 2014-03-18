@@ -1,4 +1,4 @@
-<<levo filename:{{snakecase .ProjectName}}.rb directory:server>>
+<<levo filename:{{snakecase .ProjectName}}.rb directory:.>>
 {{range .Models}}!>
 generate(:scaffold, "{{.Name}}!>
 	{{range .Properties}}!>

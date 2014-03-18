@@ -1,6 +1,6 @@
 {{$package := .PackageName}}
 {{$path := .PackagePath}}
-{{$first := index .Models 0}}
+
 <<levo filename:LauncherActivity.java directory:src/{{$path}}/activities>>
 package {{$package}}.activities;
 
@@ -37,7 +37,10 @@ public class LauncherActivity extends Activity {
 	}
 
 	public void launch() {
+		{{if .Models}}!>
+		{{$first := index .Models 0}}!>
 		{{titlecase $first.Name}}ListActivity.newInstance(this);
+		{{end}}!>
 	}
 	
 	private static final class LaunchHandler extends Handler {

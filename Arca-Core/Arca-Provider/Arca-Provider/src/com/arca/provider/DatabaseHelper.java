@@ -13,7 +13,7 @@ import android.os.Build;
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	public static DatabaseHelper create(final Context context, final DatabaseConfiguration config, final Collection<SQLiteDataset> datasets) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			return new DatabaseHelper(context, config.getDatabaseName(), config.getCursorFactory(), config.getDatabaseVersion(), datasets);
 		} else {
 			return new DatabaseHelper(context, config.getDatabaseName(), config.getCursorFactory(), config.getDatabaseVersion(), config.getErrorHandler(), datasets);

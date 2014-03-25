@@ -1,0 +1,43 @@
+{{$package := .PackageName}}
+{{$project := .ProjectName}}
+{{$path := .PackagePath}}
+<<levo filename:{{titlecase $project}}ContentProvider.java directory:src/{{$path}}/providers>>
+package {{$package}}.providers;
+
+import android.net.Uri;
+
+import com.arca.provider.DatabaseProvider;
+{{range .Models}}!>
+import {{$package}}.datasets.{{titlecase .Name}}Table;
+{{end}}!>
+
+public class {{titlecase $project}}ContentProvider extends DatabaseProvider {
+
+	public static final String AUTHORITY = "{{$package}}.providers.{{titlecase $project}}ContentProvider";
+
+	public static final class Uris {
+		{{range .Models}}!>
+		public static final Uri {{pluralize .Name | snakecase | upper}} = Uri.parse("content://" + AUTHORITY + "/" + Paths.{{pluralize .Name | snakecase | upper}});
+		{{end}}!>
+	}
+
+	private static final class Paths {
+		{{range .Models}}!>
+		public static final String {{pluralize .Name | snakecase | upper}} = "{{pluralize .Name | snakecase}}";
+		{{end}}!>
+	}
+
+	@Override
+	public boolean onCreate() {
+		{{range .Models}}!>
+		registerDataset(AUTHORITY, Paths.{{pluralize .Name | snakecase | upper}}, {{titlecase .Name}}Table.class);
+		registerDataset(AUTHORITY, Paths.{{pluralize .Name | snakecase | upper}} + "/*", {{titlecase .Name}}Table.class);
+		{{end}}!>
+		return true;
+	}
+
+}
+<<levo>>
+<<levo filename:arca-provider-v1.0-alpha.jar directory:libs>>
+{{template "arca-provider-v1.0-alpha.jar"}}
+<<levo>>

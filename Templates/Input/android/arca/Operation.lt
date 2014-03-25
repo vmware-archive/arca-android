@@ -1,0 +1,119 @@
+{{$package := .PackageName}}
+{{$project := .ProjectName}}
+{{$path := .PackagePath}}
+{{range .Models}}
+<<levo filename:Get{{titlecase .Name}}ListOperation.java directory:src/{{$path}}/operations>>
+package {{$package}}.operations;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.arca.dispatcher.ErrorBroadcaster;
+import com.arca.service.Operation;
+import com.arca.service.ServiceError;
+import com.arca.service.Task;
+
+public class Get{{titlecase .Name}}ListOperation extends Operation {
+
+	public Get{{titlecase .Name}}ListOperation(final Uri uri) {
+		super(uri);
+	}
+
+	public Get{{titlecase .Name}}ListOperation(final Parcel in) {
+		super(in);
+	}
+
+	@Override
+	public void writeToParcel(final Parcel dest, final int flags) {
+		super.writeToParcel(dest, flags);
+	}
+
+	@Override
+	public Set<Task<?>> onCreateTasks() {
+		final Set<Task<?>> set = new HashSet<Task<?>>();
+		set.add(new Get{{titlecase .Name}}ListTask());
+		return set;
+	}
+
+	@Override
+	public void onSuccess(final Context context, final List<Task<?>> completed) {
+		final ContentResolver resolver = context.getContentResolver();
+		resolver.notifyChange(getUri(), null);
+	}
+
+	@Override
+	public void onFailure(final Context context, final ServiceError error) {
+		ErrorBroadcaster.broadcast(context, getUri(), error.getCode(), error.getMessage());
+	}
+	
+	public static final Parcelable.Creator<Get{{titlecase .Name}}ListOperation> CREATOR = new Parcelable.Creator<Get{{titlecase .Name}}ListOperation>() {
+		@Override
+		public Get{{titlecase .Name}}ListOperation createFromParcel(final Parcel in) {
+			return new Get{{titlecase .Name}}ListOperation(in);
+		}
+
+		@Override
+		public Get{{titlecase .Name}}ListOperation[] newArray(final int size) {
+			return new Get{{titlecase .Name}}ListOperation[size];
+		}
+	};
+}
+<<levo>>
+<<levo filename:Get{{titlecase .Name}}ListTask.java directory:src/{{$path}}/operations>>
+package {{$package}}.operations;
+
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+
+import com.arca.service.Task;
+import com.arca.provider.DataUtils;
+import {{$package}}.application.{{titlecase $project}}Api;
+import {{$package}}.datasets.{{titlecase .Name}}Table;
+import {{$package}}.models.{{titlecase .Name}}ListResponse;
+import {{$package}}.providers.{{titlecase $project}}ContentProvider;
+import com.xtreme.threading.RequestIdentifier;
+
+public class Get{{titlecase .Name}}ListTask extends Task<ContentValues[]> {
+
+	public Get{{titlecase .Name}}ListTask() {}
+
+	@Override
+	public RequestIdentifier<?> onCreateIdentifier() {
+		return new RequestIdentifier<String>("get_{{snakecase .Name}}_list");
+	}
+	
+	@Override
+	public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
+		final {{titlecase .Name}}ListResponse response = {{titlecase $project}}Api.get{{titlecase .Name}}List();
+		return DataUtils.getContentValues({{titlecase .Name}}Table.class, response);
+	}
+
+	@Override
+	public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
+		final ContentResolver resolver = context.getContentResolver();
+		resolver.delete({{titlecase $project}}ContentProvider.Uris.{{pluralize .Name | snakecase | upper}}, null, null);
+		resolver.bulkInsert({{titlecase $project}}ContentProvider.Uris.{{pluralize .Name | snakecase | upper}}, values);
+	}
+}
+<<levo>>
+{{end}}
+<<levo filename:arca-service-v1.0-alpha.jar directory:libs>>
+{{template "arca-service-v1.0-alpha.jar"}}
+<<levo>>
+<<levo filename:arca-broadcaster-v1.0-alpha.jar directory:libs>>
+{{template "arca-broadcaster-v1.0-alpha.jar"}}
+<<levo>>
+<<levo filename:arca-utils-v1.0-alpha.jar directory:libs>>
+{{template "arca-utils-v1.0-alpha.jar"}}
+<<levo>>
+<<levo filename:threading-android-v1.1.1.jar directory:libs>>
+{{template "threading-android-v1.1.1.jar"}}
+<<levo>>

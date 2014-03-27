@@ -1,4 +1,5 @@
 {{$project := .ProjectName}}
+{{$features := .Features}}
 <<levo filename:strings.xml directory:res/values>>
 <resources>
 
@@ -8,8 +9,10 @@
 	<string name="title_{{pluralize .Name | snakecase}}">{{pluralize .Name | titlecase}}</string>
 	{{end}}!>
 	
+	{{if $features.sync}}!>
 	<!-- AccountActivity -->
 	<string name="add_account">Add Account</string>
+	{{end}}!>
 
 </resources>
 <<levo>>

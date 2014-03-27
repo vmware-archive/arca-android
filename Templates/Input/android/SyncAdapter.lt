@@ -1,6 +1,8 @@
 {{$package := .PackageName}}
 {{$project := .ProjectName}}
+{{$features := .Features}}
 {{$path := .PackagePath}}
+{{if $features.sync}}
 <<levo filename:{{titlecase $project}}SyncAdapter.java directory:src/{{$path}}/sync>>
 package {{$package}}.sync;
 
@@ -300,3 +302,4 @@ public class LoginActivity extends Activity {
 	
 </FrameLayout>
 <<levo>>
+{{end}}

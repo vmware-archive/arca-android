@@ -1,5 +1,6 @@
 {{$package := .PackageName}}
 {{$project := .ProjectName}}
+{{$features := .Features}}
 <<levo filename:AndroidManifest.xml directory:.>>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="{{$package}}"
@@ -11,10 +12,12 @@
 		android:targetSdkVersion="19" />
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	{{if $features.sync}}!>
 	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
 	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+	{{end}}!>
 
 	<application
 		android:allowBackup="true"
@@ -31,14 +34,17 @@
 			</intent-filter>
 		</activity>
 
+		{{if $features.sync}}!>
 		<activity android:name=".activities.LoginActivity" 
 			android:theme="@android:style/Theme.Holo.NoActionBar" 
 			android:noHistory="true" />
+		{{end}}!>
 
 		{{range .Models}}!>
 		<activity android:name=".activities.{{titlecase .Name}}ListActivity" />
 		{{end}}!>
 
+		{{if $features.sync}}!>
 		<service android:name="{{$package}}.auth.{{titlecase $project}}AuthenticatorService" 
 			android:permission="android.permission.ACCOUNT_MANAGER" >
 			<intent-filter>
@@ -58,6 +64,7 @@
 				android:name="android.content.SyncAdapter" 
 				android:resource="@xml/syncadapter" />
 		</service>
+		{{end}}!>
 
 		<service android:name="com.arca.service.OperationService" 
 			android:exported="false" />

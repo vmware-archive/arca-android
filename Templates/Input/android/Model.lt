@@ -33,3 +33,6 @@ public class {{titlecase .Name}} {{if .Parent}}extends {{.Parent}} {{end}}{
 }
 <<levo>>
 {{end}}
+<<levo filename:gson-2.2.4.jar directory:libs>>
+{{template "gson-2.2.4.jar"}}
+<<levo>>

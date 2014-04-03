@@ -24,7 +24,7 @@ public class RottenTomatoesRequests {
 
 
 	public static MoviesResponse getMovieList(final String type, final int limit, final String country) throws ClientProtocolException, IOException {
-		final String url = String.format(Locale.getDefault(), "%s/lists/movies/%s.json?limit=%d&country=%s&apikey=%s", BASE_URL, type, limit, country, API_KEY);
+		final String url = String.format(Locale.getDefault(), "%s/lists/movies/%s.json?page_limit=%d&country=%s&apikey=%s", BASE_URL, type, limit, country, API_KEY);
 		return executeRequest(new NetworkRequest(url), new Gson(), MoviesResponse.class);
 	}
 	

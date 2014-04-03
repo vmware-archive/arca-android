@@ -1,60 +1,49 @@
 package com.rottentomatoes.app.datasets;
 
-import java.util.List;
-
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
+import android.net.Uri;
 
 import com.arca.provider.Column;
 import com.arca.provider.Column.Type;
-import com.arca.provider.ColumnUtils;
 import com.arca.provider.SQLiteTable;
-import com.rottentomatoes.app.models.Movie;
+import com.arca.provider.Unique;
+import com.arca.provider.Unique.OnConflict;
+import com.arca.utils.ArrayUtils;
+import com.arca.utils.StringUtils;
 
 public class MovieTable extends SQLiteTable {
 	
+	public static interface ColumnNames {
+		public static final String ID = "id";
+		public static final String TITLE = "title";
+		public static final String YEAR = "year";
+		public static final String MPAA_RATING = "mpaa_rating";
+		public static final String RUNTIME = "runtime";
+		public static final String CRITICS_CONSENSUS = "critics_consensus";
+		public static final String SYNOPSIS = "synopsis";
+		public static final String IMAGE_URL = "image_url";
+	}
+	
 	public static interface Columns extends SQLiteTable.Columns {
-        public static final Column ID = Type.TEXT.newColumn("id");
-        public static final Column TITLE = Type.TEXT.newColumn("title");
-        public static final Column YEAR = Type.TEXT.newColumn("year");
-        public static final Column MPAA_RATING = Type.TEXT.newColumn("mpaa_rating");
-        public static final Column RUNTIME = Type.TEXT.newColumn("runtime");
-        public static final Column CRITICS_CONSENSUS = Type.TEXT.newColumn("critics_consensus");
-        public static final Column SYNOPSIS = Type.TEXT.newColumn("synopsis");
-        public static final Column IMAGE_URL = Type.TEXT.newColumn("image_url");
-	};
-	
-	@Override
-	public void onCreate(final SQLiteDatabase db) {
-		final String columns = ColumnUtils.toString(Columns.class);
-		final String unique = String.format("UNIQUE (%s) ON CONFLICT REPLACE", Columns.ID);
-		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, unique));
+		@Unique(OnConflict.REPLACE)
+		public static final Column ID = Type.TEXT.newColumn(ColumnNames.ID);
+		public static final Column TITLE = Type.TEXT.newColumn(ColumnNames.TITLE);
+		public static final Column YEAR = Type.TEXT.newColumn(ColumnNames.YEAR);
+		public static final Column MPAA_RATING = Type.TEXT.newColumn(ColumnNames.MPAA_RATING);
+		public static final Column RUNTIME = Type.TEXT.newColumn(ColumnNames.RUNTIME);
+		public static final Column CRITICS_CONSENSUS = Type.TEXT.newColumn(ColumnNames.CRITICS_CONSENSUS);
+		public static final Column SYNOPSIS = Type.TEXT.newColumn(ColumnNames.SYNOPSIS);
+		public static final Column IMAGE_URL = Type.TEXT.newColumn(ColumnNames.IMAGE_URL);
 	}
 	
 	@Override
-	public void onDrop(final SQLiteDatabase db) {
-		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
-	}
-	
-	public static ContentValues[] getContentValues(final List<Movie> list) {
-		final ContentValues[] values = new ContentValues[list.size()];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = getContentValues(list.get(i));
+	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
+		if (uri.getPathSegments().size() > 1) { 
+			final String selectionWithId = StringUtils.append(selection, Columns.ID + "=?", " AND ");
+			final String[] selectionArgsWithId = ArrayUtils.append(selectionArgs, new String[] { uri.getLastPathSegment() });
+			return super.query(uri, projection, selectionWithId, selectionArgsWithId, sortOrder);
+		} else {
+			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
-		return values;
-    }
-	
-	public static ContentValues getContentValues(final Movie item) {
-		final ContentValues value = new ContentValues();
-        value.put(Columns.ID.name, item.getId());
-        value.put(Columns.TITLE.name, item.getTitle());
-        value.put(Columns.YEAR.name, item.getYear());
-        value.put(Columns.MPAA_RATING.name, item.getMpaaRating());
-        value.put(Columns.RUNTIME.name, item.getRuntime());
-        value.put(Columns.CRITICS_CONSENSUS.name, item.getCriticsConsensus());
-        value.put(Columns.SYNOPSIS.name, item.getSynopsis());
-        value.put(Columns.IMAGE_URL.name, item.getImageUrl());
-        return value;
-    }
+	}
 }
-

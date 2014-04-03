@@ -4,41 +4,42 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.arca.provider.Column;
 import com.arca.provider.Column.Type;
-import com.arca.provider.ColumnUtils;
 import com.arca.provider.SQLiteTable;
+import com.arca.provider.Unique;
+import com.arca.provider.Unique.OnConflict;
 import com.arca.utils.ArrayUtils;
 import com.arca.utils.StringUtils;
 import com.crunchbase.app.models.Company;
 
 public class CompanyTable extends SQLiteTable {
 	
+	public static interface ColumnNames {
+		public static final String NAME = "name";
+        public static final String CATEGORY_CODE = "category_code";
+        public static final String DESCRIPTION = "description";
+        public static final String PERMALINK = "permalink";
+        public static final String CRUNCHBASE_URL = "crunchbase_url";
+        public static final String HOMEPAGE_URL = "homepage_url";
+        public static final String NAMESPACE = "namespace";
+        public static final String OVERVIEW = "overview";
+        public static final String IMAGE_URL = "image_url";
+	}
+	
 	public static interface Columns extends SQLiteTable.Columns {
-        public static final Column NAME = Type.TEXT.newColumn("name");
-        public static final Column CATEGORY_CODE = Type.TEXT.newColumn("categpry_code");
-        public static final Column DESCRIPTION = Type.TEXT.newColumn("descrption");
-        public static final Column PERMALINK = Type.TEXT.newColumn("permalink");
-        public static final Column CRUNCHBASE_URL = Type.TEXT.newColumn("crunchbase_url");
-        public static final Column HOMEPAGE_URL = Type.TEXT.newColumn("homepage_url");
-        public static final Column NAMESPACE = Type.TEXT.newColumn("namespace");
-        public static final Column OVERVIEW = Type.TEXT.newColumn("overview");
-        public static final Column IMAGE_URL = Type.TEXT.newColumn("image_url");
-	}
-	
-	@Override
-	public void onCreate(final SQLiteDatabase db) {
-		final String columns = ColumnUtils.toString(Columns.class);
-		final String constraint = "UNIQUE (" + Columns.NAME + ") ON CONFLICT REPLACE";
-		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, constraint));
-	}
-	
-	@Override
-	public void onDrop(final SQLiteDatabase db) {
-		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
+		@Unique(OnConflict.REPLACE)
+        public static final Column NAME = Type.TEXT.newColumn(ColumnNames.NAME);
+        public static final Column CATEGORY_CODE = Type.TEXT.newColumn(ColumnNames.CATEGORY_CODE);
+        public static final Column DESCRIPTION = Type.TEXT.newColumn(ColumnNames.DESCRIPTION);
+        public static final Column PERMALINK = Type.TEXT.newColumn(ColumnNames.PERMALINK);
+        public static final Column CRUNCHBASE_URL = Type.TEXT.newColumn(ColumnNames.CRUNCHBASE_URL);
+        public static final Column HOMEPAGE_URL = Type.TEXT.newColumn(ColumnNames.HOMEPAGE_URL);
+        public static final Column NAMESPACE = Type.TEXT.newColumn(ColumnNames.NAMESPACE);
+        public static final Column OVERVIEW = Type.TEXT.newColumn(ColumnNames.OVERVIEW);
+        public static final Column IMAGE_URL = Type.TEXT.newColumn(ColumnNames.IMAGE_URL);
 	}
 	
 	@Override
@@ -51,7 +52,7 @@ public class CompanyTable extends SQLiteTable {
 			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
 	}
-	
+
 	public static ContentValues[] getContentValues(final List<Company> list) {
 		final ContentValues[] values = new ContentValues[list.size()];
 		for (int i = 0; i < values.length; i++) {
@@ -59,7 +60,7 @@ public class CompanyTable extends SQLiteTable {
 		}
 		return values;
     }
-	
+
 	public static ContentValues getContentValues(final Company item) {
 		final ContentValues value = new ContentValues();
         value.put(Columns.NAME.name, item.getName());
@@ -72,6 +73,5 @@ public class CompanyTable extends SQLiteTable {
         value.put(Columns.OVERVIEW.name, item.getOverview());
         return value;
     }
-
 }
 

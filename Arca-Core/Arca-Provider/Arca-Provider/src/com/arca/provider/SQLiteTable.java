@@ -1,11 +1,25 @@
 package com.arca.provider;
 
+
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public abstract class SQLiteTable extends SQLiteDataset {
+	
+	@Override
+	public void onCreate(final SQLiteDatabase db) {
+		final String columns = DatasetUtils.getColumns(this);
+		final String create = String.format("CREATE TABLE IF NOT EXISTS %s (%s)", getName(), columns);
+		db.execSQL(create);
+	}
+
+	@Override
+	public void onDrop(final SQLiteDatabase db) {
+		final String drop = String.format("DROP TABLE IF EXISTS %s", getName());
+		db.execSQL(drop);
+	}
 	
 	@Override
 	public int update(final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {

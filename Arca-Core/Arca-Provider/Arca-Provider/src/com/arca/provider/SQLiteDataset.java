@@ -8,9 +8,14 @@ import com.arca.provider.Column.Type;
 
 public abstract class SQLiteDataset implements Dataset {
 
+	protected static interface ColumnNames {
+		public static final String _ID = "_id";
+		public static final String _STATE = "_state";
+	}
+	
 	protected static interface Columns {
-		public static final Column _ID = Type._ID.newColumn("_id");
-		public static final Column _STATE = Type._STATE.newColumn("_state");
+		public static final Column _ID = Type.INTEGER.newColumn(ColumnNames._ID, "PRIMARY KEY AUTOINCREMENT");
+		public static final Column _STATE = Type.INTEGER.newColumn(ColumnNames._STATE, "DEFAULT 0");
 	}
 	
 	public abstract void onCreate(final SQLiteDatabase db);
@@ -28,7 +33,13 @@ public abstract class SQLiteDataset implements Dataset {
 	}
 	
 	public String getName() {
-		return getClass().getSimpleName();
+		final Class<? extends SQLiteDataset> klass = getClass();
+		final DatasetName name = klass.getAnnotation(DatasetName.class);
+		if (name != null) {
+			return name.value();
+		} else {
+			return klass.getSimpleName();
+		}
 	}
 
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {

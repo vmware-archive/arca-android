@@ -3,8 +3,8 @@
 {{$features := .Features}}
 {{$path := .PackagePath}}
 {{if $features.sync}}
-<<levo filename:{{titlecase $project}}SyncAdapter.java directory:src/{{$path}}/sync>>
-package {{$package}}.sync;
+<<levo filename:{{titlecase $project}}SyncAdapter.java directory:src/{{$path}}/application>>
+package {{$package}}.application;
 
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
@@ -34,15 +34,15 @@ public class {{titlecase $project}}SyncAdapter extends AbstractThreadedSyncAdapt
 
 }
 <<levo>>
-<<levo filename:{{titlecase $project}}SyncService.java directory:src/{{$path}}/sync>>
-package {{$package}}.sync;
+<<levo filename:{{titlecase $project}}SyncAdapterService.java directory:src/{{$path}}/application>>
+package {{$package}}.application;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
-public class {{titlecase $project}}SyncService extends Service {
+public class {{titlecase $project}}SyncAdapterService extends Service {
 
 	private static {{titlecase $project}}SyncAdapter sSyncAdapter;
 	
@@ -74,8 +74,8 @@ public class {{titlecase $project}}SyncService extends Service {
 	android:supportsUploading="true"
 	android:userVisible="true" />
 <<levo>>
-<<levo filename:{{titlecase $project}}Authenticator.java directory:src/{{$path}}/auth>>
-package {{$package}}.auth;
+<<levo filename:{{titlecase $project}}Authenticator.java directory:src/{{$path}}/application>>
+package {{$package}}.application;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -185,8 +185,8 @@ public class {{titlecase $project}}Authenticator extends AbstractAccountAuthenti
 	}
 }
 <<levo>>
-<<levo filename:{{titlecase $project}}AuthenticatorService.java directory:src/{{$path}}/auth>>
-package {{$package}}.auth;
+<<levo filename:{{titlecase $project}}AuthenticatorService.java directory:src/{{$path}}/application>>
+package {{$package}}.application;
 
 import android.app.Service;
 import android.content.Intent;
@@ -231,7 +231,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import {{$package}}.R;
-import {{$package}}.auth.{{titlecase $project}}Authenticator;
+import {{$package}}.application.{{titlecase $project}}Authenticator;
 import {{$package}}.providers.{{titlecase $project}}ContentProvider;
 
 public class LoginActivity extends Activity {
@@ -248,13 +248,16 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		
+		if (getAccounts().length > 0) {
+			finish();
+		}
+	}
+	
+	private Account[] getAccounts() {
 		final String type = {{titlecase $project}}Authenticator.ACCOUNT_TYPE;
 		final AccountManager manager = AccountManager.get(this);
 		final Account[] accounts = manager.getAccountsByType(type);
-		
-		if (accounts.length > 0) {
-			finish();
-		}
+		return accounts;
 	}
 	
 	public void onAddAccountClicked(final View view) {

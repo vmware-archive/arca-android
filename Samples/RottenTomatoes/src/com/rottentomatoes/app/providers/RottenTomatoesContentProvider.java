@@ -3,7 +3,6 @@ package com.rottentomatoes.app.providers;
 import android.net.Uri;
 
 import com.arca.provider.DatabaseProvider;
-import com.rottentomatoes.app.datasets.MovieItemView;
 import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeTable;
 import com.rottentomatoes.app.datasets.MovieTypeView;
@@ -25,7 +24,7 @@ public class RottenTomatoesContentProvider extends DatabaseProvider {
 	@Override
 	public boolean onCreate() {
 		registerDataset(AUTHORITY, Paths.MOVIES, MovieTable.class);
-		registerDataset(AUTHORITY, Paths.MOVIES + "/*", MovieItemView.class);
+		registerDataset(AUTHORITY, Paths.MOVIES + "/*", MovieTable.class);
 		registerDataset(AUTHORITY, Paths.MOVIE_TYPES, MovieTypeTable.class);
 		registerDataset(AUTHORITY, Paths.MOVIE_TYPES + "/*", MovieTypeView.class);
 		return true;

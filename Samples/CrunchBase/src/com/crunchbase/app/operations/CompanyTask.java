@@ -31,7 +31,6 @@ public class CompanyTask extends Task<String> {
 
 	@Override
 	public void onExecuteProcessing(final Context context, final String data) throws Exception {
-		// TODO parse the response and insert into content provider
 		final Company item = new Gson().fromJson(data, Company.class);
 		final ContentValues values = CompanyTable.getContentValues(item);
 		final ContentResolver resolver = context.getContentResolver();

@@ -6,11 +6,12 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 
+import com.arca.provider.DataUtils;
 import com.arca.service.Task;
 import com.rottentomatoes.app.application.RottenTomatoesRequests;
-import com.rottentomatoes.app.datasets.MovieTable;
 import com.rottentomatoes.app.datasets.MovieTypeTable;
 import com.rottentomatoes.app.models.Movie;
+import com.rottentomatoes.app.models.MovieType;
 import com.rottentomatoes.app.models.MoviesResponse;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
 import com.xtreme.threading.RequestIdentifier;
@@ -38,14 +39,14 @@ public class MovieListTask extends Task<List<Movie>> {
 	public void onExecuteProcessing(final Context context, final List<Movie> data) throws Exception {
 		final ContentResolver resolver = context.getContentResolver();
 		
-		final ContentValues[] movieValues = MovieTable.getContentValues(data);
+		final ContentValues[] movieValues = DataUtils.getContentValues(data);
 		resolver.bulkInsert(RottenTomatoesContentProvider.Uris.MOVIES_URI, movieValues);
 		
 		final String whereClause = MovieTypeTable.Columns.TYPE + "=?";
 		final String[] whereArgs = new String[] { mType };
 		resolver.delete(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, whereClause, whereArgs);
 
-		final ContentValues[] movieTypeValues = MovieTypeTable.getContentValues(data, mType);
+		final ContentValues[] movieTypeValues = MovieType.getContentValues(data, mType);
 		resolver.bulkInsert(RottenTomatoesContentProvider.Uris.MOVIE_TYPES_URI, movieTypeValues);
 	}
 }

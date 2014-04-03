@@ -5,16 +5,22 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
+import android.annotation.TargetApi;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.test.AndroidTestCase;
 
+import com.arca.provider.Column;
+import com.arca.provider.Column.Type;
 import com.arca.provider.DatabaseConfiguration;
 import com.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import com.arca.provider.DatabaseHelper;
 import com.arca.provider.SQLiteDataset;
 import com.arca.provider.SQLiteTable;
 import com.arca.provider.SQLiteView;
+import com.arca.provider.Select;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DatabaseHelperTest extends AndroidTestCase {
 
 	
@@ -125,30 +131,17 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	// =======================================
 	
 	
-	private static class TestSQLiteTable extends SQLiteTable {
+	public static class TestSQLiteTable extends SQLiteTable {
 		
-		@Override
-		public void onCreate(final SQLiteDatabase db) {
-			db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (id TEXT);", getName()));
-		}
-		
-		@Override
-		public void onDrop(final SQLiteDatabase db) {
-			db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
+		public static interface Columns {
+			public static final Column ID = Type.TEXT.newColumn("id");
 		}
 	}
 	
-	private static class TestSQLiteView extends SQLiteView {
+	public static class TestSQLiteView extends SQLiteView {
 
-		@Override
-		public void onCreate(final SQLiteDatabase db) {
-			db.execSQL(String.format("CREATE VIEW IF NOT EXISTS %s AS SELECT * FROM %s;", getName(), TestSQLiteTable.class.getSimpleName()));
-		}
-		
-		@Override
-		public void onDrop(final SQLiteDatabase db) {
-			db.execSQL(String.format("DROP VIEW IF EXISTS %s;", getName()));
-		}
+		@Select("SELECT * FROM (TestSQLiteTable)")
+		public static interface Columns extends TestSQLiteTable.Columns{}
 		
 	}
 	

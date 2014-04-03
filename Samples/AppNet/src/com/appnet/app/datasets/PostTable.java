@@ -4,20 +4,21 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.appnet.app.models.Post;
 import com.arca.provider.Column;
 import com.arca.provider.Column.Type;
-import com.arca.provider.ColumnUtils;
 import com.arca.provider.SQLiteTable;
+import com.arca.provider.Unique;
+import com.arca.provider.Unique.OnConflict;
 import com.arca.utils.ArrayUtils;
 import com.arca.utils.StringUtils;
 
 public class PostTable extends SQLiteTable {
 	
 	public static interface Columns extends SQLiteTable.Columns {
+		@Unique(OnConflict.REPLACE)
         public static final Column ID = Column.Type.TEXT.newColumn("id");
         public static final Column CREATED_AT = Type.TEXT.newColumn("created_at");
         public static final Column TEXT = Type.TEXT.newColumn("text");
@@ -27,17 +28,6 @@ public class PostTable extends SQLiteTable {
         public static final Column IMAGE_URL = Type.TEXT.newColumn("image_url");
 	}
 	
-	@Override
-	public void onCreate(final SQLiteDatabase db) {
-		final String columns = ColumnUtils.toString(Columns.class);
-		final String constraint = "UNIQUE (" + Columns.ID + ") ON CONFLICT REPLACE";
-		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, constraint));
-	}
-	
-	@Override
-	public void onDrop(final SQLiteDatabase db) {
-		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
-	}
 	
 	@Override
 	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
@@ -49,7 +39,7 @@ public class PostTable extends SQLiteTable {
 			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
 	}
-	
+
 	public static ContentValues[] getContentValues(final List<Post> list) {
 		final ContentValues[] values = new ContentValues[list.size()];
 		for (int i = 0; i < values.length; i++) {
@@ -57,7 +47,7 @@ public class PostTable extends SQLiteTable {
 		}
 		return values;
     }
-	
+
 	public static ContentValues getContentValues(final Post item) {
 		final ContentValues value = new ContentValues();
         value.put(Columns.ID.name, item.getId());
@@ -69,6 +59,5 @@ public class PostTable extends SQLiteTable {
         value.put(Columns.IMAGE_URL.name, item.getImageUrl());
         return value;
     }
-
 }
 

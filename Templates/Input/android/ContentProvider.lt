@@ -42,44 +42,30 @@ public class {{titlecase $project}}ContentProvider extends DatabaseProvider {
 <<levo filename:{{titlecase .Name}}Table.java directory:src/{{$path}}/datasets>>
 package {{$package}}.datasets;
 
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-
-import {{$package}}.models.{{titlecase .Name}};
 import com.arca.provider.Column;
-import com.arca.provider.ColumnUtils;
 import com.arca.provider.SQLiteTable;
+import com.arca.provider.Unique;
+import com.arca.provider.Unique.OnConflict;
 
 public class {{titlecase .Name}}Table extends SQLiteTable {
 
-	public static interface Columns extends SQLiteTable.Columns {
+	public static interface ColumnNames {
 	{{range .Properties}}!>
 		{{if isSqliteType .}}!>
-		public static final Column {{snakecase .RemoteIdentifier | upper}} = Column.Type.{{toSqliteType .}}.newColumn("{{.LocalIdentifier}}");
+		public static final String {{snakecase .LocalIdentifier | upper}} = "{{.LocalIdentifier}}";
 		{{end}}!>
 	{{end}}!>
 	}
 
-	@Override
-	public void onCreate(final SQLiteDatabase db) {
-		final String columns = ColumnUtils.toString(Columns.class);
-		final String unique = "UNIQUE (" + Columns.{{idProp .Properties}}.name + ") ON CONFLICT REPLACE";
-		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, unique));
-	}
-	
-	@Override
-	public void onDrop(final SQLiteDatabase db) {
-		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
-	}
-	
-	public static ContentValues getContentValues(final {{titlecase .Name}} item) {
-		final ContentValues value = new ContentValues();
-		{{range .Properties}}!>
-			{{if isSqliteType .}}!>
-		value.put(Columns.{{snakecase .RemoteIdentifier | upper}}.name, item.get{{titlecase .LocalIdentifier}}());
+	public static interface Columns extends SQLiteTable.Columns {
+	{{range $index, $prop := .Properties}}!>
+		{{if isSqliteType .}}!>
+			{{if eq $index 0}}!>
+		@Unique(OnConflict.REPLACE)
 			{{end}}!>
+		public static final Column {{snakecase .LocalIdentifier | upper}} = Column.Type.{{toSqliteType .}}.newColumn(ColumnNames.{{snakecase .LocalIdentifier | upper}});
 		{{end}}!>
-		return value;
+	{{end}}!>
 	}
 }
 <<levo>>

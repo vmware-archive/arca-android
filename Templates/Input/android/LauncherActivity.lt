@@ -1,5 +1,6 @@
 {{$package := .PackageName}}
 {{$path := .PackagePath}}
+{{$features := .Features}}
 <<levo filename:LauncherActivity.java directory:src/{{$path}}/activities>>
 package {{$package}}.activities;
 
@@ -39,6 +40,9 @@ public class LauncherActivity extends Activity {
 		{{if .Models}}!>
 		{{$first := index .Models 0}}!>
 		{{titlecase $first.Name}}ListActivity.newInstance(this);
+		{{end}}!>
+		{{if $features.sync}}!>
+		LoginActivity.newInstance(this);
 		{{end}}!>
 	}
 

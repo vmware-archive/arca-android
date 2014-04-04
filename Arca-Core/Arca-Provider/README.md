@@ -59,28 +59,25 @@ After the request has been filtered through the ContentProvider, an individual D
 
 ```java
 public class PostTable extends SQLiteTable {
-    
+
+	public static interface ColumnNames {
+		public static final String ID = "id";
+		public static final String TEXT = "text";
+		public static final String USER_ID = "user_id";
+		public static final String DATE = "date";
+	}
+
 	public static interface Columns extends SQLiteTable.Columns {
-        public static final Column ID = Column.Type.TEXT.newColumn("id");
-        public static final Column TEXT = Column.Type.TEXT.newColumn("text");
-        public static final Column CREATED_AT = Column.Type.TEXT.newColumn("created_at");
-	}
-	
-	@Override
-	public void onCreate(final SQLiteDatabase db) {
-		final String columns = ColumnUtils.toString(Columns.class);
-		final String constraint = "UNIQUE (" + Columns.ID + ") ON CONFLICT REPLACE";
-		db.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s (%s, %s);", getName(), columns, constraint));
-	}
-	
-	@Override
-	public void onDrop(final SQLiteDatabase db) {
-		db.execSQL(String.format("DROP TABLE IF EXISTS %s;", getName()));
+		@Unique(OnConflict.REPLACE)
+		public static final Column ID = Column.Type.INTEGER.newColumn(ColumnNames.ID);
+		public static final Column TEXT = Column.Type.TEXT.newColumn(ColumnNames.TEXT);
+		public static final Column USER_ID = Column.Type.INTEGER.newColumn(ColumnNames.USER_ID);
+		public static final Column DATE = Column.Type.INTEGER.newColumn(ColumnNames.DATE);
 	}
 }
 ```
 
-After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and returning that single resource when required.
+After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and ammending the where arguments to return that single resource when required.
 
 ```java
 @Override
@@ -95,22 +92,33 @@ public Cursor query(final Uri uri, final String[] projection, final String selec
 }
 ```
 
-Lastly its convenient to add methods that can convert between a model and a ContentValues object which can easily be inserted into the database.
+### ContentValues
+
+There are convenience method that make it easy to convert a list of models into an array of ContentValues.
 
 ```java
-public static ContentValues[] getContentValues(final List<Post> list) {
-	final ContentValues[] values = new ContentValues[list.size()];
-	for (int i = 0; i < values.length; i++) {
-		values[i] = getContentValues(list.get(i));
-	}
-	return values;
-}
+final ContentValues values = DataUtils.getContentValues(Object object);
+final ContentValues[] values = DataUtils.getContentValues(List<?> objects);
+```
 
-public static ContentValues getContentValues(final Post item) {
-	final ContentValues value = new ContentValues();
-    value.put(Columns.ID.name, item.getId());
-    value.put(Columns.TEXT.name, item.getText());
-    value.put(Columns.CREATED_AT.name, item.getCreatedAt());
-    return value;
+All you need to do in order to take advantage of these methods is add a `@ColumnName` annotation on each field or method you want persisted.
+
+```java
+public class Post {
+	
+	@ColumnName(ColumnNames.ID)
+	private long mId;
+	
+	@ColumnName(ColumnNames.TEXT)
+	private String mText;
+	
+	@ColumnName(ColumnNames.USER_ID)
+	private long mUserId;
+
+	@ColumnName(ColumnNames.DATE)
+	public long getDate() {
+		return System.currentTimeMillis();
+	}
 }
 ```
+

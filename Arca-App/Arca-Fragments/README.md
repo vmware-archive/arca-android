@@ -2,7 +2,7 @@
 
 The Arca Fragments package manages an Arca Dispatcher object which lets you easily execute a Query, Update, Insert or Delete request. It also allows you to register an Arca Monitor to observe callbacks before and after each request is executed.
 
-The ArcaAdapterFragment has a convenience method that lets you execute Queries and automatically takes care of the the QueryResult by ripping out the cursor and swapping it in your adapter. It is recommend that you use the Arca Adapters package to take full adavantage of data bindings.
+The ArcaAdapterFragment has a convenience method that lets you execute Queries and automatically takes care of the the QueryResult by ripping out the cursor and swapping it in your adapter.
 
 ## Usage
 
@@ -15,16 +15,12 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT.name),
 		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT.name),
 	});
-
-	@Override
-	public int getAdapterViewId() {
-		return R.id.post_list;
-	}
 	
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_post_list, container, false);
-		((AbsListView) view.findViewById(R.id.post_list)).setOnItemClickListener(this);
+		final AbsListView list = (AbsListView) view.findViewById(getAdapterViewId());
+		list.setOnItemClickListener(this);
 		return view;
 	}
 	
@@ -66,36 +62,53 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 }
 ```
 
-If you need full control over the state of your UI, you can also take advantage of the various callbacks for content state changes.
+If you need full control over the state of your UI, you can also take advantage of the various callbacks for content state changes. This simple implementation allows you hide and show content when results are present:
 
 ```java
 @Override
 public void onContentChanged(final QueryResult result) {
-	// Our adapter already has the new cursor
 	final CursorAdapter adapter = getCursorAdapter();
 	if (adapter.getCount() > 0) {
 		showResults();
+	} else if (!result.isSyncing()) {
+		showNoResults();
 	}
 }
 
 @Override
 public void onContentError(final Error error) {
-	hideEverything();
+	showNoResults();
 	showError(error);
 }
 
-private void showError(final Error error) {
-	Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+private View getLoadingView() {
+	return getView().findViewById(R.id.loading);
 }
 
-private void hideEverything() {
-	getView().findViewById(R.id.post_list).setVisibility(View.INVISIBLE);
-	getView().findViewById(R.id.loading).setVisibility(View.INVISIBLE);
+private View getEmptyView() {
+	return getView().findViewById(R.id.empty);
+}
+
+private void showLoading() {
+	getAdapterView().setVisibility(View.INVISIBLE);
+	getLoadingView().setVisibility(View.VISIBLE);
+	getEmptyView().setVisibility(View.INVISIBLE);
 }
 
 private void showResults() {
-	getView().findViewById(R.id.post_list).setVisibility(View.VISIBLE);
-	getView().findViewById(R.id.loading).setVisibility(View.INVISIBLE);
+	getAdapterView().setVisibility(View.VISIBLE);
+	getLoadingView().setVisibility(View.INVISIBLE);
+	getEmptyView().setVisibility(View.INVISIBLE);
 }
 
+private void showNoResults() {
+	getAdapterView().setVisibility(View.INVISIBLE);
+	getLoadingView().setVisibility(View.INVISIBLE);
+	getEmptyView().setVisibility(View.VISIBLE);
+}
+
+private void showError(final Error error) {
+	final String message = String.format("ERROR: %s", error.getMessage());
+	Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+}
 ```

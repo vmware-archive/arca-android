@@ -14,7 +14,6 @@ Within the Android framework, adapters act as a bridge between your data and you
 In the simple case, you do not need to create your own adapter. You can use one of the standard adapters available in this package. All you need to do is define a collection of bindings and pass it into the adapter's constructor.
 
 ```java
-
 private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
     new Binding(R.id.list_item_custom_title, PostTable.Columns.TITLE.name),
 	new Binding(R.id.list_item_custom_date, PostTable.Columns.DATE.name),
@@ -79,7 +78,7 @@ public class MyViewBinder implements ViewBinder {
 }
 ```
 
-By returning **true** from the `setViewValue()` method your are telling the adapter that you have successfully bound the data. Otherwise, returning **false** means you are delegating control of the binding to the default ViewBinder. 
+By returning **true** from the `setViewValue()` method your are telling the adapter that you have successfully bound the necessary data. Otherwise, returning **false** means you are delegating control of the binding to the default ViewBinder. 
 
 **Note:** *An exception will be thrown if the default ViewBinder cannot bind the given view.*
 

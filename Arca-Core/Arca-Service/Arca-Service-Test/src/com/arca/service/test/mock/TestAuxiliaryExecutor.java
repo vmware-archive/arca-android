@@ -8,11 +8,11 @@ import java.util.concurrent.BlockingQueue;
 import com.arca.threading.AuxiliaryExecutor;
 import com.arca.threading.AuxiliaryExecutorObserver;
 import com.arca.threading.PrioritizableRequest;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 
-	private final Set<RequestIdentifier<?>> mIdentifiers = new HashSet<RequestIdentifier<?>>();
+	private final Set<Identifier<?>> mIdentifiers = new HashSet<Identifier<?>>();
 	private final AuxiliaryExecutorObserver mObserver;
 	
 	public TestAuxiliaryExecutor(final AuxiliaryExecutorObserver observer) {
@@ -23,10 +23,10 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 	public void execute(final Runnable command) {
 		
 		final PrioritizableRequest request = (PrioritizableRequest) command;
-		final RequestIdentifier<?> identifier = request.getIdentifier();
+		final Identifier<?> identifier = request.getIdentifier();
 		
 		if (identifier == null) {
-			throw new IllegalStateException("RequestIdentifier cannot be null.");
+			throw new IllegalStateException("Identifier cannot be null.");
 		}
 		
 		if (!mIdentifiers.contains(identifier)) {
@@ -45,7 +45,7 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 	}
 
 	@Override
-	public void notifyRequestComplete(final RequestIdentifier<?> identifier) {
+	public void notifyRequestComplete(final Identifier<?> identifier) {
 		mIdentifiers.remove(identifier);
 	}
 

@@ -15,7 +15,7 @@ import com.arca.service.TaskObserver;
 import com.arca.service.test.mock.TestTask;
 import com.arca.service.test.mock.TestTaskFactory;
 import com.arca.service.test.utils.AssertionLatch;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public class TaskTest extends AndroidTestCase {
 
@@ -69,7 +69,7 @@ public class TaskTest extends AndroidTestCase {
 	
 	public void testTaskExecutesNetworkingRequestWithIdentifier() {
 		final RequestCounter latch = new RequestCounter(1, 0);
-		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
+		final Identifier<String> identifier = new Identifier<String>(IDENTIFIER);
 		final TestTask task = TestTaskFactory.newTaskWithIdentifier(identifier);
 		task.setRequestExecutor(new RequestExecutor() {
 
@@ -234,7 +234,7 @@ public class TaskTest extends AndroidTestCase {
 	
 	public void testTaskExecutesProcessingRequestWithIdentifier() {
 		final RequestCounter latch = new RequestCounter(1, 1);
-		final RequestIdentifier<String> identifier = new RequestIdentifier<String>(IDENTIFIER);
+		final Identifier<String> identifier = new Identifier<String>(IDENTIFIER);
 		final TestTask task = TestTaskFactory.newTaskWithIdentifier(identifier);
 		task.setRequestExecutor(new RequestExecutor() {
 

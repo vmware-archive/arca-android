@@ -8,7 +8,7 @@ import com.appnet.app.datasets.PostTable;
 import com.appnet.app.models.Post;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.arca.service.Task;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 import com.google.gson.Gson;
 
 public class PostTask extends Task<String> {
@@ -20,8 +20,8 @@ public class PostTask extends Task<String> {
 	}
 
 	@Override
-	public RequestIdentifier<?> onCreateIdentifier() {
-		return new RequestIdentifier<String>(String.format("post::%s", mId));
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>(String.format("post::%s", mId));
 	}
 	
 	@Override

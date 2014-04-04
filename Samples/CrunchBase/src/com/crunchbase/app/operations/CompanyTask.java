@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.arca.service.Task;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 import com.crunchbase.app.datasets.CompanyTable;
 import com.crunchbase.app.models.Company;
 import com.crunchbase.app.providers.CrunchBaseContentProvider;
@@ -20,8 +20,8 @@ public class CompanyTask extends Task<String> {
 	}
 
 	@Override
-	public RequestIdentifier<?> onCreateIdentifier() {
-		return new RequestIdentifier<String>(String.format("company::%s", mId));
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>(String.format("company::%s", mId));
 	}
 	
 	@Override

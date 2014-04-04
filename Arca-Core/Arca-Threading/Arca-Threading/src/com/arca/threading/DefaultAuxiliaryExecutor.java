@@ -30,7 +30,7 @@ public class DefaultAuxiliaryExecutor extends ThreadPoolExecutor implements Auxi
 	}
 
 	@Override
-	public void notifyRequestComplete(final RequestIdentifier<?> identifier) {
+	public void notifyRequestComplete(final Identifier<?> identifier) {
 		mQueuingMaps.onComplete(identifier);
 	}
 

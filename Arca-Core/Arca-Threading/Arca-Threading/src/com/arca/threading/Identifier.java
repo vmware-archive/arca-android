@@ -1,10 +1,10 @@
 package com.arca.threading;
 
-public class RequestIdentifier<T> {
+public class Identifier<T> {
 	private final T mData;
 	private final int mHashCode;
 
-	public RequestIdentifier(final T data) {
+	public Identifier(final T data) {
 		mData = data;
 		mHashCode = data.hashCode();
 	}
@@ -23,9 +23,9 @@ public class RequestIdentifier<T> {
 		if (o == null) {
 			return false;
 		}
-		if (!(o instanceof RequestIdentifier)) {
+		if (!(o instanceof Identifier)) {
 			return false;
 		}
-		return mData.equals(((RequestIdentifier<?>) o).mData);
+		return mData.equals(((Identifier<?>) o).mData);
 	}
 }

@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 public interface AuxiliaryExecutor {
 
-	public void notifyRequestComplete(final RequestIdentifier<?> identifier);
+	public void notifyRequestComplete(final Identifier<?> identifier);
 
 	public BlockingQueue<Runnable> getQueue();
 

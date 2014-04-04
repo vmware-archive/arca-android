@@ -1,7 +1,7 @@
 package com.arca.service.test.mock;
 
 import com.arca.service.NetworkingPrioritizable;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public class TestNetworkingPrioritizable extends NetworkingPrioritizable<String> {
 
@@ -10,8 +10,8 @@ public class TestNetworkingPrioritizable extends NetworkingPrioritizable<String>
 	}
 	
 	@Override
-	public RequestIdentifier<?> getIdentifier() {
-		return new RequestIdentifier<String>("empty");
+	public Identifier<?> getIdentifier() {
+		return new Identifier<String>("empty");
 	}
 
 	@Override

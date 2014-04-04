@@ -4,7 +4,7 @@ public abstract class Prioritizable {
 	private volatile boolean mIsCancelled = false;
 	private volatile boolean mCancelable = true;
 
-	public abstract RequestIdentifier<?> getIdentifier();
+	public abstract Identifier<?> getIdentifier();
 
 	public abstract void execute();
 

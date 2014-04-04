@@ -33,7 +33,7 @@ public class PrioritizableRequest implements Runnable {
 		return mPrioritizable.isCancelled();
 	}
 
-	public RequestIdentifier<?> getIdentifier() {
+	public Identifier<?> getIdentifier() {
 		return mPrioritizable.getIdentifier();
 	}
 

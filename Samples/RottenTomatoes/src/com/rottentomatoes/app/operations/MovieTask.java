@@ -6,7 +6,7 @@ import android.content.Context;
 
 import com.arca.provider.DataUtils;
 import com.arca.service.Task;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 import com.google.gson.Gson;
 import com.rottentomatoes.app.models.Movie;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
@@ -20,8 +20,8 @@ public class MovieTask extends Task<String> {
 	}
 
 	@Override
-	public RequestIdentifier<?> onCreateIdentifier() {
-		return new RequestIdentifier<String>(String.format("movie::%s", mId));
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>(String.format("movie::%s", mId));
 	}
 	
 	@Override

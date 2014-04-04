@@ -12,15 +12,15 @@ import com.appnet.app.models.Post;
 import com.appnet.app.models.PostsResponse;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.arca.service.Task;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public class PostListTask extends Task<List<Post>> {
 
 	public PostListTask() {}
 
 	@Override
-	public RequestIdentifier<?> onCreateIdentifier() {
-		return new RequestIdentifier<String>("post_list");
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>("post_list");
 	}
 	
 	@Override

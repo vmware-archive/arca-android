@@ -1,7 +1,7 @@
 package com.arca.service;
 
+import com.arca.threading.Identifier;
 import com.arca.threading.Prioritizable;
-import com.arca.threading.RequestIdentifier;
 import com.arca.utils.Logger;
 
 public class ProcessingPrioritizable<T> extends Prioritizable {
@@ -17,7 +17,7 @@ public class ProcessingPrioritizable<T> extends Prioritizable {
 	}
 
 	@Override
-	public RequestIdentifier<?> getIdentifier() {
+	public Identifier<?> getIdentifier() {
 		return mTask.getIdentifier();
 	}
 

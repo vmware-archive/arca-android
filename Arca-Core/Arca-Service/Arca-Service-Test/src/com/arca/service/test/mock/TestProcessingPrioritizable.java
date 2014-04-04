@@ -1,7 +1,7 @@
 package com.arca.service.test.mock;
 
 import com.arca.service.ProcessingPrioritizable;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public class TestProcessingPrioritizable extends ProcessingPrioritizable<String> {
 
@@ -10,8 +10,8 @@ public class TestProcessingPrioritizable extends ProcessingPrioritizable<String>
 	}
 	
 	@Override
-	public RequestIdentifier<?> getIdentifier() {
-		return new RequestIdentifier<String>("empty");
+	public Identifier<?> getIdentifier() {
+		return new Identifier<String>("empty");
 	}
 
 	@Override

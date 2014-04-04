@@ -10,11 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class QueuingMaps {
 
-	private final Set<RequestIdentifier<?>> mRunningRequests = Collections.newSetFromMap(new ConcurrentHashMap<RequestIdentifier<?>, Boolean>());
-	private final Map<RequestIdentifier<?>, List<PrioritizableRequest>> mRequestListeners = new ConcurrentHashMap<RequestIdentifier<?>, List<PrioritizableRequest>>();
+	private final Set<Identifier<?>> mRunningRequests = Collections.newSetFromMap(new ConcurrentHashMap<Identifier<?>, Boolean>());
+	private final Map<Identifier<?>, List<PrioritizableRequest>> mRequestListeners = new ConcurrentHashMap<Identifier<?>, List<PrioritizableRequest>>();
 
 	public synchronized void put(final PrioritizableRequest request) {
-		final RequestIdentifier<?> identifier = request.getIdentifier();
+		final Identifier<?> identifier = request.getIdentifier();
 
 		if (mRunningRequests.contains(identifier)) {
 			request.cancel();
@@ -29,12 +29,12 @@ public class QueuingMaps {
 		list.add(request);
 	}
 
-	public synchronized void onComplete(final RequestIdentifier<?> request) {
+	public synchronized void onComplete(final Identifier<?> request) {
 		mRunningRequests.remove(request);
 	}
 
 	public synchronized void notifyExecuting(final PrioritizableRequest request) {
-		final RequestIdentifier<?> identifier = request.getIdentifier();
+		final Identifier<?> identifier = request.getIdentifier();
 
 		if (mRunningRequests.contains(identifier)) {
 			request.cancel();
@@ -51,7 +51,7 @@ public class QueuingMaps {
 	}
 
 	public synchronized boolean cancel(final PrioritizableRequest request) {
-		final RequestIdentifier<?> identifier = request.getIdentifier();
+		final Identifier<?> identifier = request.getIdentifier();
 		final List<PrioritizableRequest> list = mRequestListeners.get(identifier);
 		if (list != null) {
 			list.remove(request);
@@ -64,7 +64,7 @@ public class QueuingMaps {
 
 	public synchronized void cancelAll() {
 		final List<PrioritizableRequest> requestList = new ArrayList<PrioritizableRequest>();
-		for (final Entry<RequestIdentifier<?>, List<PrioritizableRequest>> entry : mRequestListeners.entrySet()) {
+		for (final Entry<Identifier<?>, List<PrioritizableRequest>> entry : mRequestListeners.entrySet()) {
 			for (final PrioritizableRequest request : entry.getValue()) {
 				requestList.add(request);
 			}

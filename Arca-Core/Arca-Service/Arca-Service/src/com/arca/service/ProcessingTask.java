@@ -1,9 +1,9 @@
 package com.arca.service;
 
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 
 public interface ProcessingTask<T> {
-	public RequestIdentifier<?> getIdentifier();
+	public Identifier<?> getIdentifier();
 	public void executeProcessing(T data) throws Exception;
 }

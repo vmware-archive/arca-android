@@ -7,7 +7,7 @@ import java.util.Set;
 
 import android.content.Context;
 
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritizableObserver<T>, ProcessingTask<T>, ProcessingPrioritizableObserver<T> {
 
@@ -23,11 +23,11 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	private Priority mPriority = Priority.MEDIUM;
 	private TaskObserver mObserver;
 	private RequestExecutor mExecutor;
-	private RequestIdentifier<?> mIdentifier;
+	private Identifier<?> mIdentifier;
 	private Context mContext;
 	
 	@Override
-	public final RequestIdentifier<?> getIdentifier() {
+	public final Identifier<?> getIdentifier() {
 		return mIdentifier;
 	}
 	
@@ -84,7 +84,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	// ======================================================
 	
-	public abstract RequestIdentifier<?> onCreateIdentifier();
+	public abstract Identifier<?> onCreateIdentifier();
 
 	public abstract T onExecuteNetworking(Context context) throws Exception;
 

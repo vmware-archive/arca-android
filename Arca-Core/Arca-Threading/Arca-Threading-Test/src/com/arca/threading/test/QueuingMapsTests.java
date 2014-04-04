@@ -5,7 +5,7 @@ import android.test.AndroidTestCase;
 import com.arca.threading.Prioritizable;
 import com.arca.threading.PrioritizableRequest;
 import com.arca.threading.QueuingMaps;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public class QueuingMapsTests extends AndroidTestCase {
 	private QueuingMaps mMaps;
@@ -25,8 +25,8 @@ public class QueuingMapsTests extends AndroidTestCase {
 	}
 
 	public void testPrioritizableEquality() {
-		final RequestIdentifier<?> r1 = new RequestIdentifier<String>("hello");
-		final RequestIdentifier<?> r2 = new RequestIdentifier<String>("hello");
+		final Identifier<?> r1 = new Identifier<String>("hello");
+		final Identifier<?> r2 = new Identifier<String>("hello");
 
 		assertFalse(r1 == r2);
 		assertTrue(r1.equals(r2));
@@ -67,7 +67,7 @@ public class QueuingMapsTests extends AndroidTestCase {
 	public void testingExecutionOfPostCompletionRequest() {
 		mMaps.put(mTestPrioritizable1);
 		mMaps.notifyExecuting(mTestPrioritizable1);
-		mMaps.onComplete(new RequestIdentifier<String>("request1"));
+		mMaps.onComplete(new Identifier<String>("request1"));
 		mMaps.put(mTestPrioritizable2);
 
 		assertFalse(mTestPrioritizable2.isCancelled());
@@ -87,8 +87,8 @@ public class QueuingMapsTests extends AndroidTestCase {
 			}
 
 			@Override
-			public RequestIdentifier<?> getIdentifier() {
-				return new RequestIdentifier<String>(request);
+			public Identifier<?> getIdentifier() {
+				return new Identifier<String>(request);
 			}
 		}, 0);
 	}

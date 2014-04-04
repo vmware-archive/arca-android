@@ -3,32 +3,32 @@ package com.arca.service.test.mock;
 import android.content.Context;
 
 import com.arca.service.Task;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 
 public class TestTask extends Task<String> {
 
 	public static interface Messages extends Task.Messages {}
 	
-	private final RequestIdentifier<?> mIdentifier;
+	private final Identifier<?> mIdentifier;
 	private final Exception mNetworkingException;
 	private final Exception mProcessingException;
 	private final String mNetworkResult;
 	private Task<?> mDependency;
 
-	public TestTask(final RequestIdentifier<?> identifier) {
+	public TestTask(final Identifier<?> identifier) {
 		this(identifier, null, null, null);
 	}
 	
-	public TestTask(final RequestIdentifier<?> identifier, final Task<?> task) {
+	public TestTask(final Identifier<?> identifier, final Task<?> task) {
 		this(identifier, null, null, null);
 		mDependency = task;
 	}
 	
-	public TestTask(final RequestIdentifier<?> identifier, final String networkResult) {
+	public TestTask(final Identifier<?> identifier, final String networkResult) {
 		this(identifier, networkResult, null, null);
 	}
 	
-	public TestTask(final RequestIdentifier<?> identifier, final String networkResult, final Exception networkingException, final Exception processingException) {
+	public TestTask(final Identifier<?> identifier, final String networkResult, final Exception networkingException, final Exception processingException) {
 		mIdentifier = identifier;
 		mNetworkResult = networkResult;
 		mNetworkingException = networkingException;
@@ -36,7 +36,7 @@ public class TestTask extends Task<String> {
 	}
 
 	@Override
-	public RequestIdentifier<?> onCreateIdentifier() {
+	public Identifier<?> onCreateIdentifier() {
 		return mIdentifier;
 	}
 	

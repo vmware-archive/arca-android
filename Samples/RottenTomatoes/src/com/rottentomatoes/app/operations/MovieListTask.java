@@ -8,7 +8,7 @@ import android.content.Context;
 
 import com.arca.provider.DataUtils;
 import com.arca.service.Task;
-import com.arca.threading.RequestIdentifier;
+import com.arca.threading.Identifier;
 import com.rottentomatoes.app.application.RottenTomatoesRequests;
 import com.rottentomatoes.app.datasets.MovieTypeTable;
 import com.rottentomatoes.app.models.Movie;
@@ -25,8 +25,8 @@ public class MovieListTask extends Task<List<Movie>> {
 	}
 
 	@Override
-	public RequestIdentifier<?> onCreateIdentifier() {
-		return new RequestIdentifier<String>("movie_list:" + mType);
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>("movie_list:" + mType);
 	}
 	
 	@Override

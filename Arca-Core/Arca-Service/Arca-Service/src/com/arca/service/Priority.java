@@ -1,8 +1,8 @@
 package com.arca.service;
 
-import com.xtreme.threading.PriorityAccessor;
-import com.xtreme.threading.QueuePriorityAccessor;
-import com.xtreme.threading.StackPriorityAccessor;
+import com.arca.threading.PriorityAccessor;
+import com.arca.threading.QueuePriorityAccessor;
+import com.arca.threading.StackPriorityAccessor;
 
 public enum Priority {
 	LIVE, HIGH, MEDIUM, LOW;

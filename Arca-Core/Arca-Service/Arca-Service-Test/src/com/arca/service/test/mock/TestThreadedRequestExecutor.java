@@ -1,7 +1,7 @@
 package com.arca.service.test.mock;
 
 import com.arca.service.RequestExecutor.ThreadedRequestExecutor;
-import com.xtreme.threading.AuxiliaryExecutor;
+import com.arca.threading.AuxiliaryExecutor;
 
 public class TestThreadedRequestExecutor extends ThreadedRequestExecutor {
 	

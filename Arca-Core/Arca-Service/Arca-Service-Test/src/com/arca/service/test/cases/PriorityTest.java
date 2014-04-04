@@ -3,7 +3,7 @@ package com.arca.service.test.cases;
 import android.test.AndroidTestCase;
 
 import com.arca.service.Priority;
-import com.xtreme.threading.PriorityAccessor;
+import com.arca.threading.PriorityAccessor;
 
 public class PriorityTest extends AndroidTestCase {
 

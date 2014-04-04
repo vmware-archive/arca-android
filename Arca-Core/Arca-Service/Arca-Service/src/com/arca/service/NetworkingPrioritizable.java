@@ -1,8 +1,8 @@
 package com.arca.service;
 
+import com.arca.threading.Prioritizable;
+import com.arca.threading.RequestIdentifier;
 import com.arca.utils.Logger;
-import com.xtreme.threading.Prioritizable;
-import com.xtreme.threading.RequestIdentifier;
 
 public class NetworkingPrioritizable<T> extends Prioritizable {
 

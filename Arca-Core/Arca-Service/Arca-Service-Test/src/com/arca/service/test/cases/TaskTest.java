@@ -15,7 +15,7 @@ import com.arca.service.TaskObserver;
 import com.arca.service.test.mock.TestTask;
 import com.arca.service.test.mock.TestTaskFactory;
 import com.arca.service.test.utils.AssertionLatch;
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.RequestIdentifier;
 
 public class TaskTest extends AndroidTestCase {
 

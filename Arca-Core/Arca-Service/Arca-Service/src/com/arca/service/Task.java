@@ -7,7 +7,7 @@ import java.util.Set;
 
 import android.content.Context;
 
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.RequestIdentifier;
 
 public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritizableObserver<T>, ProcessingTask<T>, ProcessingPrioritizableObserver<T> {
 

@@ -3,7 +3,7 @@ package com.arca.service.test.mock;
 import android.content.Context;
 
 import com.arca.service.Task;
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.RequestIdentifier;
 
 public class TestTask extends Task<String> {
 

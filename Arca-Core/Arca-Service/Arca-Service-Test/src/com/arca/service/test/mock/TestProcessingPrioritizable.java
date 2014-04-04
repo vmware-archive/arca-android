@@ -1,7 +1,7 @@
 package com.arca.service.test.mock;
 
 import com.arca.service.ProcessingPrioritizable;
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.RequestIdentifier;
 
 public class TestProcessingPrioritizable extends ProcessingPrioritizable<String> {
 

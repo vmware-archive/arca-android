@@ -1,6 +1,7 @@
 package com.arca.service;
 
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.RequestIdentifier;
+
 
 public interface ProcessingTask<T> {
 	public RequestIdentifier<?> getIdentifier();

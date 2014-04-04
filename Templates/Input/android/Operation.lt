@@ -75,10 +75,10 @@ import android.content.Context;
 
 import com.arca.service.Task;
 import com.arca.provider.DataUtils;
+import com.arca.threading.RequestIdentifier;
 import {{$package}}.application.{{titlecase $project}}Api;
 import {{$package}}.models.{{titlecase .Name}}ListResponse;
 import {{$package}}.providers.{{titlecase $project}}ContentProvider;
-import com.xtreme.threading.RequestIdentifier;
 
 public class Get{{titlecase .Name}}ListTask extends Task<ContentValues[]> {
 
@@ -113,6 +113,6 @@ public class Get{{titlecase .Name}}ListTask extends Task<ContentValues[]> {
 <<levo filename:arca-utils-v1.0-alpha.jar directory:libs>>
 {{template "arca-utils-v1.0-alpha.jar"}}
 <<levo>>
-<<levo filename:threading-android-v1.1.1.jar directory:libs>>
-{{template "threading-android-v1.1.1.jar"}}
+<<levo filename:arca-threading-v1.0-alpha.jar directory:libs>>
+{{template "arca-threading-v1.0-alpha.jar"}}
 <<levo>>

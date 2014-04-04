@@ -3,10 +3,10 @@ package com.arca.service;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.xtreme.threading.AuxiliaryExecutor;
-import com.xtreme.threading.AuxiliaryExecutorObserver;
-import com.xtreme.threading.PrioritizableRequest;
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.AuxiliaryExecutor;
+import com.arca.threading.AuxiliaryExecutorObserver;
+import com.arca.threading.PrioritizableRequest;
+import com.arca.threading.RequestIdentifier;
 
 public interface RequestExecutor {
 	public void executeNetworkingRequest(NetworkingRequest<?> request);

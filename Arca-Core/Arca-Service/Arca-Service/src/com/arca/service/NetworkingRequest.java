@@ -1,6 +1,6 @@
 package com.arca.service;
 
-import com.xtreme.threading.PrioritizableRequest;
+import com.arca.threading.PrioritizableRequest;
 
 public class NetworkingRequest<T> extends PrioritizableRequest {
 

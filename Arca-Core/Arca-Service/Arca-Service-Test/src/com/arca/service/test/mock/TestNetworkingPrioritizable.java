@@ -1,7 +1,7 @@
 package com.arca.service.test.mock;
 
 import com.arca.service.NetworkingPrioritizable;
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.RequestIdentifier;
 
 public class TestNetworkingPrioritizable extends NetworkingPrioritizable<String> {
 

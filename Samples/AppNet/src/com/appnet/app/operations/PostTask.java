@@ -8,8 +8,8 @@ import com.appnet.app.datasets.PostTable;
 import com.appnet.app.models.Post;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.arca.service.Task;
+import com.arca.threading.RequestIdentifier;
 import com.google.gson.Gson;
-import com.xtreme.threading.RequestIdentifier;
 
 public class PostTask extends Task<String> {
 

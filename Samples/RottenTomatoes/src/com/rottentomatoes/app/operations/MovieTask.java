@@ -6,10 +6,10 @@ import android.content.Context;
 
 import com.arca.provider.DataUtils;
 import com.arca.service.Task;
+import com.arca.threading.RequestIdentifier;
 import com.google.gson.Gson;
 import com.rottentomatoes.app.models.Movie;
 import com.rottentomatoes.app.providers.RottenTomatoesContentProvider;
-import com.xtreme.threading.RequestIdentifier;
 
 public class MovieTask extends Task<String> {
 

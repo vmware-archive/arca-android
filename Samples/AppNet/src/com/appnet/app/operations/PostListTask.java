@@ -12,7 +12,7 @@ import com.appnet.app.models.Post;
 import com.appnet.app.models.PostsResponse;
 import com.appnet.app.providers.AppNetContentProvider;
 import com.arca.service.Task;
-import com.xtreme.threading.RequestIdentifier;
+import com.arca.threading.RequestIdentifier;
 
 public class PostListTask extends Task<List<Post>> {
 

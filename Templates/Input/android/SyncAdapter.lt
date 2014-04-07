@@ -87,7 +87,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import {{$package}}.activities.LauncherActivity;
+import {{$package}}.activities.LoginActivity;
 
 public class {{titlecase $project}}Authenticator extends AbstractAccountAuthenticator {
 
@@ -142,7 +142,7 @@ public class {{titlecase $project}}Authenticator extends AbstractAccountAuthenti
 	
 	
 	private static Bundle newAccountBundle(final Context context, final AccountAuthenticatorResponse response) {
-		final Intent intent = new Intent(context, LauncherActivity.class);
+		final Intent intent = new Intent(context, LoginActivity.class);
 		intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 		final Bundle bundle = new Bundle();
 		bundle.putParcelable(AccountManager.KEY_INTENT, intent);

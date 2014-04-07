@@ -101,7 +101,7 @@ final ContentValues values = DataUtils.getContentValues(Object object);
 final ContentValues[] values = DataUtils.getContentValues(List<?> objects);
 ```
 
-All you need to do in order to take advantage of these methods is add a `@ColumnName` annotation on each field or method you want persisted.
+In order to take advantage of these methods you need to add the `@ColumnName` annotation to any field or method you want persisted. Annotating methods is a convenient way to transform and customize your data before persisting it to the datastore.
 
 ```java
 public class Post {

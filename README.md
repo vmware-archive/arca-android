@@ -4,6 +4,14 @@ The Arca library provides a comprehensive framework for caching and displaying d
 
 This [Google I/O talk](http://www.youtube.com/watch?v=xHXn3Kg2IQE) explains the basis of the architecture.
 
+# Getting Started
+
+The easiest way to get started with the Arca library is to scaffold a project with the [levo](https://github.com/cfmobile/levo) command line tool. Once you've finished the installation run the following command:
+
+```bash
+levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string age:int"
+```
+
 # Overview
 
 Below is a list of all the major components within the Arca framework. Each major component has a variety of minor components. Each component can be used independently or as part of the entire framework.

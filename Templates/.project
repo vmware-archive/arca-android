@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Templates-Input</name>
+	<name>Templates</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -13,7 +13,13 @@
 					<key>LaunchConfigHandle</key>
 					<value>&lt;project&gt;/.externalToolBuilders/Levo Builder.launch</value>
 				</dictionary>
+				<dictionary>
+					<key>incclean</key>
+					<value>true</value>
+				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
+	<natures>
+	</natures>
 </projectDescription>

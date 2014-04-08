@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.provider;
 
 import java.lang.reflect.Field;
@@ -19,13 +34,13 @@ public class DatasetUtils {
 			return "";
 		}
 	}
-	
+
 	private static String getSelect(final Class<?> klass) throws Exception {
 		final Select select = klass.getAnnotation(Select.class);
 		if (select != null) {
 			return select.value();
 		}
-		
+
 		final Class<?>[] klasses = klass.getDeclaredClasses();
 		for (int i = 0; i < klasses.length; i++) {
 			final String declared = getSelect(klasses[i]);
@@ -33,33 +48,30 @@ public class DatasetUtils {
 				return declared;
 			}
 		}
-		
+
 		return "";
 	}
-	
-	
+
 	// =================================================
-	
-	
 
 	public static String getColumns(final SQLiteTable table) {
 		final Class<?> klass = table.getClass();
-		
+
 		final StringBuilder builder = new StringBuilder();
 		final ConcatMap uniqueMap = new ConcatMap(",");
-		
+
 		try {
 			getColumns(klass, builder, uniqueMap);
 		} catch (final Exception e) {
 			Logger.ex(e);
 		}
-	
+
 		builder.append(getUnique(uniqueMap));
-		
+
 		if (builder.length() > 0) {
 			builder.deleteCharAt(builder.length() - 1);
 		}
-		
+
 		return builder.toString();
 	}
 
@@ -68,7 +80,7 @@ public class DatasetUtils {
 		for (final Field field : fields) {
 			getColumn(field, builder, uniqueMap);
 		}
-		
+
 		final Class<?>[] klasses = klass.getDeclaredClasses();
 		for (int i = 0; i < klasses.length; i++) {
 			getColumns(klasses[i], builder, uniqueMap);
@@ -77,14 +89,14 @@ public class DatasetUtils {
 
 	private static void getColumn(final Field field, final StringBuilder builder, final ConcatMap uniqueMap) throws Exception {
 		if (field.getType().isAssignableFrom(Column.class)) {
-			
+
 			final Column column = (Column) field.get(null);
-			
+
 			final Unique annotation = field.getAnnotation(Unique.class);
 			if (annotation != null) {
 				uniqueMap.put(annotation.value().name(), column.name);
 			}
-			
+
 			if (TextUtils.isEmpty(column.options)) {
 				builder.append(String.format("%s %s,", column.name, column.type));
 			} else {
@@ -92,7 +104,7 @@ public class DatasetUtils {
 			}
 		}
 	}
-	
+
 	private static String getUnique(final Map<String, String> uniqueMap) {
 		final StringBuilder builder = new StringBuilder();
 		for (final String key : uniqueMap.keySet()) {

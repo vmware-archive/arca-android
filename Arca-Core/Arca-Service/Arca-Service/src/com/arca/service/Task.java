@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.service;
 
 import java.util.ArrayList;
@@ -14,27 +29,27 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	protected static interface Messages {
 		public static final String NO_EXECUTOR = "Cannot execute request. No request executor found.";
 	}
-	
+
 	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
 	private final Set<Task<?>> mDependencies = new HashSet<Task<?>>();
 	private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
 	private final Object mTaskLock = new Object();
-			
+
 	private Priority mPriority = Priority.MEDIUM;
 	private TaskObserver mObserver;
 	private RequestExecutor mExecutor;
 	private Identifier<?> mIdentifier;
 	private Context mContext;
-	
+
 	@Override
 	public final Identifier<?> getIdentifier() {
 		return mIdentifier;
 	}
-	
+
 	public Set<Task<?>> getPrerequisites() {
 		return mPrerequisites;
 	}
-	
+
 	public Set<Task<?>> getDependencies() {
 		return mDependencies;
 	}
@@ -50,11 +65,11 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	public void setTaskObserver(final TaskObserver observer) {
 		mObserver = observer;
 	}
-	
+
 	public void setRequestExecutor(final RequestExecutor executor) {
 		mExecutor = executor;
 	}
-	
+
 	public void execute() {
 		mIdentifier = onCreateIdentifier();
 		checkPrerequisites();
@@ -63,7 +78,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	private void checkPrerequisites() {
 		if (allPrerequisitesComplete()) {
 			checkExecution();
-		}	
+		}
 	}
 
 	private boolean allPrerequisitesComplete() {
@@ -74,7 +89,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	private void checkExecution() {
 		if (!mErrors.isEmpty()) {
-			final ServiceError error = mErrors.get(0); 
+			final ServiceError error = mErrors.get(0);
 			notifyFailure(error);
 		} else {
 			notifyStarted();
@@ -83,7 +98,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	}
 
 	// ======================================================
-	
+
 	public abstract Identifier<?> onCreateIdentifier();
 
 	public abstract T onExecuteNetworking(Context context) throws Exception;
@@ -126,7 +141,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 			checkPrerequisites();
 		}
 	}
-	
+
 	// ======================================================
 
 	private void startNetworkingRequest() {
@@ -188,14 +203,14 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 			mObserver.onTaskStarted(this);
 		}
 	}
-	
+
 	private void notifyComplete() {
 		if (mObserver != null) {
 			mObserver.onTaskComplete(this);
 		}
 		notifyDependentsOfCompletion();
 	}
-	
+
 	private void notifyFailure(final ServiceError error) {
 		if (mObserver != null) {
 			mObserver.onTaskFailure(this, error);

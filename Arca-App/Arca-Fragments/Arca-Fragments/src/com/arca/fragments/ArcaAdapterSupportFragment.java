@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.fragments;
 
 import android.os.Bundle;
@@ -9,32 +24,32 @@ import com.arca.dispatcher.Error;
 import com.arca.dispatcher.QueryResult;
 
 public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragment {
-	
+
 	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState);
-	
+
 	private AdapterView<CursorAdapter> mAdapterView;
-	
+
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		
+
 		setupAdapterView(view, savedInstanceState);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
 		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(getAdapterViewId());
 		mAdapterView.setAdapter(onCreateAdapter(mAdapterView, savedInstanceState));
 	}
-	
+
 	public int getAdapterViewId() {
 		return android.R.id.list;
 	}
-	
+
 	public AdapterView<CursorAdapter> getAdapterView() {
 		return mAdapterView;
 	}
-	
+
 	public CursorAdapter getCursorAdapter() {
 		final AdapterView<CursorAdapter> adapterView = getAdapterView();
 		if (adapterView != null) {
@@ -43,7 +58,7 @@ public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragmen
 			return null;
 		}
 	}
-	
+
 	@Override
 	public void onRequestComplete(final QueryResult result) {
 		if (result.hasError()) {
@@ -53,14 +68,19 @@ public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragmen
 			onContentChanged(result);
 		}
 	}
-	
+
 	@Override
 	public void onRequestReset() {
 		getCursorAdapter().swapCursor(null);
 		onContentReset();
 	}
-	
-	protected void onContentChanged(final QueryResult result) {}
-	protected void onContentError(final Error error) {}
-	protected void onContentReset() {}
+
+	protected void onContentChanged(final QueryResult result) {
+	}
+
+	protected void onContentError(final Error error) {
+	}
+
+	protected void onContentReset() {
+	}
 }

@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.service;
 
 import android.app.Service;
@@ -15,12 +30,12 @@ public class OperationService extends Service implements OnStateChangeListener {
 	public static enum Action {
 		START, CANCEL;
 	}
-	
+
 	protected static interface Extras {
 		public static final String ACTION = "action";
 		public static final String OPERATION = "operation";
 	}
-	
+
 	public static boolean start(final Context context, final Operation operation) {
 		return startService(context, operation, Action.START);
 	}
@@ -48,7 +63,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 	public void onCreate() {
 		super.onCreate();
 		Logger.v("Created service %s", this.getClass());
-		
+
 		mHandler = onCreateOperationHandler();
 	}
 
@@ -59,18 +74,18 @@ public class OperationService extends Service implements OnStateChangeListener {
 		handler.setOnStateChangeListener(this);
 		return handler;
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		Logger.v("Destroyed service %s", this.getClass());
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public IBinder onBind(final Intent intent) {
 		return null;
 	}
-	
+
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		Logger.v("Started service %s", this.getClass());
@@ -87,7 +102,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 			handleAction(action, operation);
 		}
 	}
-	
+
 	protected void handleAction(final Action action, final Operation operation) {
 		if (action == Action.START) {
 			handleStart(operation);
@@ -99,7 +114,7 @@ public class OperationService extends Service implements OnStateChangeListener {
 	protected void handleStart(final Operation operation) {
 		mHandler.start(operation);
 	}
-	
+
 	@Override
 	public void onStateChanged(final HandlerState state) {
 		if (state == HandlerState.IDLE) {

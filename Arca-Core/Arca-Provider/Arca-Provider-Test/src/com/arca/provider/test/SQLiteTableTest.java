@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.provider.test;
 
 import java.util.ArrayList;
@@ -24,15 +39,15 @@ public class SQLiteTableTest extends AndroidTestCase {
 	private static final ContentValues VALUES = new ContentValues();
 	private static final TestSQLiteTable TABLE = new TestSQLiteTable();
 	private static final Collection<SQLiteDataset> DATASETS = new ArrayList<SQLiteDataset>();
-	
+
 	static {
 		VALUES.put("id", "test");
 	}
-	
+
 	static {
 		DATASETS.add(TABLE);
 	}
-	
+
 	private SQLiteDatabase mDatabase;
 
 	@Override
@@ -47,10 +62,10 @@ public class SQLiteTableTest extends AndroidTestCase {
 		closeDatabase();
 		deleteDatabase();
 	}
-	
+
 	public void testSQLiteTableQuery() {
 		testSQLiteTableInsert();
-		
+
 		TABLE.setDatabase(mDatabase);
 		final Cursor cursor = TABLE.query(URI, null, null, null, null);
 		assertEquals(1, cursor.getCount());
@@ -60,7 +75,7 @@ public class SQLiteTableTest extends AndroidTestCase {
 
 	public void testSQLiteTableUpdate() {
 		testSQLiteTableInsert();
-		
+
 		TABLE.setDatabase(mDatabase);
 		final int updated = TABLE.update(URI, VALUES, null, null);
 		assertEquals(1, updated);
@@ -81,66 +96,64 @@ public class SQLiteTableTest extends AndroidTestCase {
 
 	public void testSQLiteTableDelete() {
 		testSQLiteTableInsert();
-		
+
 		TABLE.setDatabase(mDatabase);
 		final int deleted = TABLE.delete(URI, null, null);
 		assertEquals(1, deleted);
 	}
-	
+
 	public void testSQLiteTableQueryThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.query(null, null, null, null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			assertEquals("Database is null.", e.getLocalizedMessage());
 		}
 	}
-	
+
 	public void testSQLiteTableUpdateThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.update(null, null, null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			assertEquals("Database is null.", e.getLocalizedMessage());
 		}
 	}
-	
+
 	public void testSQLiteTableInsertThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.insert(null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			assertEquals("Database is null.", e.getLocalizedMessage());
 		}
 	}
-	
+
 	public void testSQLiteTableBulkInsertThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.bulkInsert(null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			assertEquals("Database is null.", e.getLocalizedMessage());
 		}
 	}
-	
+
 	public void testSQLiteTableDeleteThrowsExceptionWithoutDatabase() {
 		try {
 			TABLE.setDatabase(null);
 			TABLE.delete(null, null, null);
 			Assert.fail();
-		} catch(final IllegalStateException e) {
+		} catch (final IllegalStateException e) {
 			assertEquals("Database is null.", e.getLocalizedMessage());
 		}
 	}
-	
-	
+
 	// ====================================
 
-	
 	public void createDatabase() {
 		final DatabaseConfiguration config = new DefaultDatabaseConfiguration(getContext());
 		final DatabaseHelper helper = DatabaseHelper.create(getContext(), config, DATASETS);
@@ -153,12 +166,11 @@ public class SQLiteTableTest extends AndroidTestCase {
 	}
 
 	public void closeDatabase() {
-		if (mDatabase.isOpen()) { 
+		if (mDatabase.isOpen()) {
 			mDatabase.close();
 			mDatabase = null;
 		}
 	}
-	
 
 	// ====================================
 
@@ -167,7 +179,7 @@ public class SQLiteTableTest extends AndroidTestCase {
 		public static interface Columns {
 			public static final Column ID = Type.TEXT.newColumn("id");
 		}
-		
+
 		@Override
 		public void setDatabase(final SQLiteDatabase db) {
 			super.setDatabase(db);

@@ -86,15 +86,19 @@ A Task consists of two components: networking and processing. A Task is consider
 
 #### Networking
 
-The `onExecuteNetworking()` method is meant to execute network-dependent code (or anything that yields its Thread frequently and is light on the CPU). For example, this is where you would download data from an API. **Note:** *All networking should happen synchronously within this method.*
+The `onExecuteNetworking()` method is meant to execute network-dependent code (or anything that yields its Thread frequently and is light on the CPU). For example, this is where you would download data from an API. 
+
+**Note:** *All networking should happen synchronously within this method.*
 
 #### Processing
 
-The `onExecuteProcessing()` method is meant to execute CPU-intensive processing requests. For example, this is where one would insert data into a ContentProvider (backed by a SQLiteDatabase). **Note:** *All processing should happen synchronously within this method.*
+The `onExecuteProcessing()` method is meant to execute CPU-intensive processing requests. For example, this is where one would insert data into a ContentProvider (backed by a SQLiteDatabase). 
+
+**Note:** *All processing should happen synchronously within this method.*
 
 #### Uniqueness
 
-The `onCreateIdentifier()` method must return a globally unique RequestIdentifier. This is used within the backing executor and ensures that if more than one Task is requesting the same data, only one actually executes. The results are then shared among all similar Tasks.
+The `onCreateIdentifier()` method must return a globally unique Identifier. This is used within the backing executor and ensures that if more than one Task is requesting the same data, only one actually executes. The results are then shared among all similar Tasks.
 
 #### Simple Example
 
@@ -106,8 +110,8 @@ public class PostListTask extends Task<List<Post>> {
 	public PostListTask() {}
 
 	@Override
-	public RequestIdentifier<?> onCreateIdentifier() {
-		return new RequestIdentifier<String>("post_list");
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>("post_list");
 	}
 	
 	@Override
@@ -118,7 +122,7 @@ public class PostListTask extends Task<List<Post>> {
 
 	@Override
 	public void onExecuteProcessing(final Context context, final List<Post> data) throws Exception {
-		final ContentValues[] values = PostTable.getContentValues(data);
+		final ContentValues[] values = DataUtils.getContentValues(data);
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.bulkInsert(MyAppContentProvider.Uris.POSTS, values);
 	}

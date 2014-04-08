@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.dispatcher;
 
 import android.database.Cursor;
@@ -6,7 +21,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Query extends Request<Cursor> implements Parcelable {
-	
+
 	private String[] mProjection;
 	private String mWhereClause;
 	private String[] mWhereArgs;
@@ -16,11 +31,11 @@ public class Query extends Request<Cursor> implements Parcelable {
 	public Query(final Uri uri) {
 		super(uri);
 	}
-	
+
 	public Query(final Uri uri, final int identifier) {
 		super(uri, identifier);
 	}
-	
+
 	public Query(final Parcel in) {
 		super(in);
 		mProjection = in.createStringArray();
@@ -60,23 +75,23 @@ public class Query extends Request<Cursor> implements Parcelable {
 	public boolean shouldForceUpdate() {
 		return mForceUpdate;
 	}
-	
+
 	public String[] getProjection() {
 		return mProjection;
 	}
-	
+
 	public String getWhereClause() {
 		return mWhereClause;
 	}
-	
+
 	public String[] getWhereArgs() {
 		return mWhereArgs;
 	}
-	
+
 	public String getSortOrder() {
 		return mSortOrder;
 	}
-	
+
 	public static final Parcelable.Creator<Query> CREATOR = new Parcelable.Creator<Query>() {
 		@Override
 		public Query createFromParcel(final Parcel in) {

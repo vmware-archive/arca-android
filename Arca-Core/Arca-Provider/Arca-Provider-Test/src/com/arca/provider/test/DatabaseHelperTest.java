@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.provider.test;
 
 import java.util.ArrayList;
@@ -23,59 +38,57 @@ import com.arca.provider.Select;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DatabaseHelperTest extends AndroidTestCase {
 
-	
 	public void testDatabaseHelperUpgradeDataset() {
 		final AssertionLatch latch = new AssertionLatch(1);
 		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
 		datasets.add(new TestSQLiteTable() {
-			
+
 			@Override
 			public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 				latch.countDown();
-				
+
 				assertEquals(0, oldVersion);
 				assertEquals(1, newVersion);
 			}
-			
+
 		});
 		final DatabaseConfiguration config = new DefaultDatabaseConfiguration(getContext());
 		final DatabaseHelper helper = DatabaseHelper.create(getContext(), config, datasets);
 		helper.onUpgrade(null, 0, 1);
 		latch.assertComplete();
 	}
-	
+
 	public void testDatabaseHelperUpgradeMultipleDatasets() {
 		final AssertionLatch latch = new AssertionLatch(2);
 		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
 		datasets.add(new TestSQLiteTable() {
-			
+
 			@Override
 			public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 				latch.countDown();
-				
+
 				assertEquals(0, oldVersion);
 				assertEquals(1, newVersion);
 			}
-			
+
 		});
 		datasets.add(new TestSQLiteView() {
-			
+
 			@Override
 			public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 				latch.countDown();
-				
+
 				assertEquals(0, oldVersion);
 				assertEquals(1, newVersion);
 			}
-			
+
 		});
 		final DatabaseConfiguration config = new DefaultDatabaseConfiguration(getContext());
 		final DatabaseHelper helper = DatabaseHelper.create(getContext(), config, datasets);
 		helper.onUpgrade(null, 0, 1);
 		latch.assertComplete();
 	}
-	
-	
+
 	public void testDatabaseHelperDowngradeDataset() {
 		final AssertionLatch latch = new AssertionLatch(1);
 		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
@@ -84,18 +97,18 @@ public class DatabaseHelperTest extends AndroidTestCase {
 			@Override
 			public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 				latch.countDown();
-				
+
 				assertEquals(1, oldVersion);
 				assertEquals(0, newVersion);
 			}
-			
+
 		});
 		final DatabaseConfiguration config = new DefaultDatabaseConfiguration(getContext());
 		final DatabaseHelper helper = DatabaseHelper.create(getContext(), config, datasets);
 		helper.onDowngrade(null, 1, 0);
 		latch.assertComplete();
 	}
-	
+
 	public void testDatabaseHelperDowngradeMultipleDatasets() {
 		final AssertionLatch latch = new AssertionLatch(2);
 		final ArrayList<SQLiteDataset> datasets = new ArrayList<SQLiteDataset>();
@@ -104,57 +117,54 @@ public class DatabaseHelperTest extends AndroidTestCase {
 			@Override
 			public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 				latch.countDown();
-				
+
 				assertEquals(1, oldVersion);
 				assertEquals(0, newVersion);
 			}
-			
+
 		});
 		datasets.add(new TestSQLiteView() {
 
 			@Override
 			public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 				latch.countDown();
-				
+
 				assertEquals(1, oldVersion);
 				assertEquals(0, newVersion);
 			}
-			
+
 		});
 		final DatabaseConfiguration config = new DefaultDatabaseConfiguration(getContext());
 		final DatabaseHelper helper = DatabaseHelper.create(getContext(), config, datasets);
 		helper.onDowngrade(null, 1, 0);
 		latch.assertComplete();
 	}
-	
-	
+
 	// =======================================
-	
-	
+
 	public static class TestSQLiteTable extends SQLiteTable {
-		
+
 		public static interface Columns {
 			public static final Column ID = Type.TEXT.newColumn("id");
 		}
 	}
-	
+
 	public static class TestSQLiteView extends SQLiteView {
 
 		@Select("SELECT * FROM (TestSQLiteTable)")
-		public static interface Columns extends TestSQLiteTable.Columns{}
-		
+		public static interface Columns extends TestSQLiteTable.Columns {
+		}
+
 	}
-	
-	
+
 	// =======================================
-	
-	
+
 	public class AssertionLatch extends CountDownLatch {
 
 		public AssertionLatch(final int count) {
 			super(count);
 		}
-		
+
 		@Override
 		public void countDown() {
 			final long count = getCount();
@@ -164,7 +174,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 				super.countDown();
 			}
 		}
-		
+
 		public void assertComplete() {
 			try {
 				Assert.assertTrue(await(0, TimeUnit.SECONDS));

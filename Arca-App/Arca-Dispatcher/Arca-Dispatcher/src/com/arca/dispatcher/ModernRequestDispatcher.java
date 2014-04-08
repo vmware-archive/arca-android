@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.dispatcher;
 
 import android.annotation.TargetApi;
@@ -27,7 +42,7 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 		final LoaderCallbacks<?> callbacks = new QueryLoaderCallbacks(listener);
 		execute(request, callbacks);
 	}
-	
+
 	@Override
 	public void execute(final Update request, final UpdateListener listener) {
 		final LoaderCallbacks<?> callbacks = new UpdateLoaderCallbacks(listener);
@@ -46,20 +61,16 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 		execute(request, callbacks);
 	}
 
-	
 	private void execute(final Request<?> request, final LoaderCallbacks<?> callbacks) {
 		final int identifier = request.getIdentifier();
 		final Bundle bundle = createRequestBundle(request);
 		mLoaderManager.restartLoader(identifier, bundle, callbacks);
 	}
-	
-	
-	// ========================================
-	
 
+	// ========================================
 
 	private class QueryLoaderCallbacks extends NotifierCallbacks<QueryResult> {
-		
+
 		public QueryLoaderCallbacks(final QueryListener listener) {
 			super(listener);
 		}
@@ -71,9 +82,9 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 			return new ModernQueryLoader(mContext, executor, request);
 		}
 	}
-	
+
 	private class UpdateLoaderCallbacks extends NotifierCallbacks<UpdateResult> {
-		
+
 		public UpdateLoaderCallbacks(final UpdateListener listener) {
 			super(listener);
 		}
@@ -85,9 +96,9 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 			return new ModernUpdateLoader(mContext, executor, request);
 		}
 	}
-	
+
 	private class InsertLoaderCallbacks extends NotifierCallbacks<InsertResult> {
-		
+
 		public InsertLoaderCallbacks(final InsertListener listener) {
 			super(listener);
 		}
@@ -99,9 +110,9 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 			return new ModernInsertLoader(mContext, executor, request);
 		}
 	}
-	
+
 	private class DeleteLoaderCallbacks extends NotifierCallbacks<DeleteResult> {
-		
+
 		public DeleteLoaderCallbacks(final DeleteListener listener) {
 			super(listener);
 		}
@@ -113,9 +124,9 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 			return new ModernDeleteLoader(mContext, executor, request);
 		}
 	}
-	
+
 	private abstract class NotifierCallbacks<T extends Result<?>> implements LoaderCallbacks<T> {
-		
+
 		private final RequestListener<T> mListener;
 
 		public NotifierCallbacks(final RequestListener<T> listener) {

@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.provider;
 
 import java.util.Collection;
@@ -13,11 +28,11 @@ import com.arca.provider.DatasetMatcher.DefaultMatcher;
 public abstract class DatasetProvider extends ContentProvider {
 
 	private final DatasetMatcher mMatcher = new DefaultMatcher();
-	
+
 	protected final Collection<Dataset> getDatasets() {
 		return mMatcher.getDatasets();
 	}
-	
+
 	protected final void registerDataset(final String authority, final String path, final Class<? extends Dataset> datasetClass) {
 		mMatcher.register(authority, path, datasetClass);
 	}
@@ -51,7 +66,7 @@ public abstract class DatasetProvider extends ContentProvider {
 		final int numRowsAffected = dataset.update(uri, values, selection, selectionArgs);
 		return numRowsAffected;
 	}
-	
+
 	@Override
 	public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
 		final Dataset dataset = getDatasetOrThrowException(uri);
@@ -65,9 +80,9 @@ public abstract class DatasetProvider extends ContentProvider {
 		final Cursor cursor = dataset.query(uri, projection, selection, selectionArgs, sortOrder);
 		return cursor;
 	}
-	
+
 	// ======================================================
-	
+
 	protected Dataset getDatasetOrThrowException(final Uri uri) {
 		final Dataset dataset = mMatcher.matchDataset(uri);
 		if (dataset == null) {

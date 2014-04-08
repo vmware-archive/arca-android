@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.service;
 
 import java.util.ArrayList;
@@ -13,7 +28,7 @@ import android.os.Parcelable;
 
 @SuppressLint("ParcelCreator")
 public abstract class Operation implements Parcelable, TaskObserver {
-	
+
 	private final Set<Task<?>> mPendingTasks = new HashSet<Task<?>>();
 	private final Set<Task<?>> mExecutingTasks = new HashSet<Task<?>>();
 	private final List<Task<?>> mCompletedTasks = new ArrayList<Task<?>>();
@@ -24,7 +39,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
 	private OperationObserver mObserver;
 	private RequestExecutor mExecutor;
-	
+
 	private Context mContext;
 	private ServiceError mError;
 
@@ -45,7 +60,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	public final Uri getUri() {
 		return mUri;
 	}
-	
+
 	public final ServiceError getError() {
 		return mError;
 	}
@@ -57,7 +72,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	public void setOperationObserver(final OperationObserver observer) {
 		mObserver = observer;
 	}
-	
+
 	public void setRequestExecutor(final RequestExecutor executor) {
 		mExecutor = executor;
 	}
@@ -87,7 +102,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 			executeTaskNow(task);
 		}
 	}
-	
+
 	private void executeTaskNow(final Task<?> task) {
 		task.setContext(mContext);
 		task.setPriority(mPriority);
@@ -103,7 +118,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	public abstract void onSuccess(Context context, List<Task<?>> completed);
 
 	public abstract void onFailure(Context context, ServiceError error);
-	
+
 	// ======================================================
 
 	protected void executeTask(final Task<?> task) {
@@ -135,8 +150,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	}
 
 	// ======================================================
-	
-	
+
 	private void checkTaskCompletion() {
 		if (allTasksComplete()) {
 			notifyComplete();
@@ -148,46 +162,46 @@ public abstract class Operation implements Parcelable, TaskObserver {
 			return mExecutingTasks.isEmpty() && mPendingTasks.isEmpty();
 		}
 	}
-	
+
 	private void handleTaskDependencies(final Task<?> task) {
 		final Set<Task<?>> tasks = task.getDependencies();
 		addTasksToPending(tasks);
 	}
-	
+
 	private void handleTaskFailure(final ServiceError error) {
 		// TODO: handle task failures better
-		if (error != null) { 
+		if (error != null) {
 			mError = error;
 		}
 	}
-	
+
 	private void addTaskToPending(final Task<?> task) {
 		synchronized (mTaskLock) {
 			mPendingTasks.add(task);
 		}
 	}
-	
+
 	private void moveTaskFromPendingToExecuting(final Task<?> task) {
 		synchronized (mTaskLock) {
 			mPendingTasks.remove(task);
 			mExecutingTasks.add(task);
 		}
 	}
-	
+
 	private void moveTaskFromExecutingToCompleted(final Task<?> task) {
 		synchronized (mTaskLock) {
 			mExecutingTasks.remove(task);
 			mCompletedTasks.add(task);
 		}
 	}
-	
+
 	private void removeTaskFromExecutingAndPending(final Task<?> task) {
 		synchronized (mTaskLock) {
 			mExecutingTasks.remove(task);
 			mPendingTasks.remove(task);
 		}
 	}
-	
+
 	private void notifyComplete() {
 		if (mError == null) {
 			onSuccess(mContext, mCompletedTasks);
@@ -200,7 +214,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	}
 
 	// ======================================================
-	
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -211,5 +225,5 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		dest.writeParcelable(mUri, flags);
 		dest.writeSerializable(mPriority);
 	}
-	
+
 }

@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arca.utils;
 
 import java.util.Locale;
@@ -24,13 +39,13 @@ public enum Logger {
 	private static boolean sIsDebuggable = false;
 	private static String sTagName = "Logger";
 
-	private Logger() {}
-	
+	private Logger() {
+	}
+
 	/**
-	 * Sets the debuggable flag in the logger and assigns a tag to the log message.</br>
-	 * </br> 
-	 * If set to 'true' then all messages will be logged.</br> 
-	 * If set to 'false' then only error messages will be logged.
+	 * Sets the debuggable flag in the logger and assigns a tag to the log
+	 * message.</br> </br> If set to 'true' then all messages will be
+	 * logged.</br> If set to 'false' then only error messages will be logged.
 	 * 
 	 * @param isDebuggable
 	 * @param tagName
@@ -46,7 +61,7 @@ public enum Logger {
 			Log.i(sTagName, formattedString);
 		}
 	}
-	
+
 	public static void info(final String message, final Object... objects) {
 		i(message, objects);
 	}
@@ -57,7 +72,7 @@ public enum Logger {
 			Log.w(sTagName, formattedString);
 		}
 	}
-	
+
 	public static void warning(final String message, final Object... objects) {
 		w(message, objects);
 	}
@@ -68,7 +83,7 @@ public enum Logger {
 			Log.v(sTagName, formattedString);
 		}
 	}
-	
+
 	public static void verbose(final String message, final Object... objects) {
 		v(message, objects);
 	}
@@ -79,7 +94,7 @@ public enum Logger {
 			Log.d(sTagName, formattedString);
 		}
 	}
-	
+
 	public static void debug(final String message, final Object... objects) {
 		d(message, objects);
 	}
@@ -90,7 +105,7 @@ public enum Logger {
 			Log.e(sTagName, formattedString);
 		}
 	}
-	
+
 	public static void error(final String message, final Object... objects) {
 		e(message, objects);
 	}
@@ -110,7 +125,7 @@ public enum Logger {
 			return stackTrace;
 		}
 	}
-	
+
 	public static void exception(final String message, final Throwable tr) {
 		ex(message, tr);
 	}
@@ -118,15 +133,13 @@ public enum Logger {
 	public static void ex(final Throwable tr) {
 		ex("", tr);
 	}
-	
+
 	public static void exception(final Throwable tr) {
 		ex(tr);
 	}
 
-	
 	// ========================================
-	
-	
+
 	private static boolean isUiThread() {
 		return Looper.myLooper() == Looper.getMainLooper();
 	}
@@ -142,14 +155,14 @@ public enum Logger {
 	private static String formatMessage(final String message) {
 		final String threadInfo = formatThreadInfo();
 		final String stackTraceInfo = formatStackTraceInfo();
-		
+
 		return String.format(Locale.getDefault(), "*%s* [%s] %s", threadInfo, stackTraceInfo, message);
 	}
-	
+
 	private static String formatThreadInfo() {
 		final String threadName = isUiThread() ? UI_THREAD : BG_THREAD;
 		final long threadId = Thread.currentThread().getId();
-		
+
 		return String.format(Locale.getDefault(), "%s:%d", threadName, threadId);
 	}
 
@@ -158,12 +171,12 @@ public enum Logger {
 		final String className = element.getClassName();
 		final String methodName = element.getMethodName();
 		final int lineNumber = element.getLineNumber();
-		
+
 		return String.format(Locale.getDefault(), "%s:%s:%d", className, methodName, lineNumber);
 	}
 
 	private static StackTraceElement getCallingStackTraceElement() {
-		
+
 		final StackTraceElement[] elements = Thread.currentThread().getStackTrace();
 		final String loggerClassName = INSTANCE.getClass().getName();
 

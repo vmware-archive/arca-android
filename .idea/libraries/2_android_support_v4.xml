@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="2_android-support-v4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/arca-app/arca-fragments/build/exploded-aar/arca-android.arca-app/arca-monitor/unspecified/libs/android-support-v4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -16,17 +16,13 @@ levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string 
 
 Below is a list of all the major components within the Arca framework. Each major component has a variety of minor components. Each component can be used independently or as part of the entire framework.
 
-##[Arca-Core](Arca-Core)
+##[arca-core](arca-core)
 
 The Arca Core package provides all the groundwork for caching data within a ContentProvider and interacting with a remote store using a Service (i.e. outside the context of your Fragments/Activities). This means your application can use less battery, less bandwidth and provide a much more responsive user experience.
 
-##[Arca-App](Arca-App)
+##[arca-app](arca-app)
 
 The Arca App package makes it really easy to fetch data from a ContentProvider and bind it to elements in your layout. This means your UI will always be up to date with the most recent data without having to write a single additional line of code.
-
-##[Arca-Sync](Arca-Sync)
-
-The Arca Sync package builds off SyncAdapters to ensure your cached data is always up to date.
 
 # Further Reading
 

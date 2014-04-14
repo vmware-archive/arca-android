@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
-        <option name="GRADLE_PROJECT_PATH" value=":arca-app:arca-fragments" />
+        <option name="GRADLE_PROJECT_PATH" value=":arca-app:arca-adapters" />
       </configuration>
     </facet>
     <facet type="android" name="Android">
@@ -72,10 +72,6 @@
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="android-support-v4" level="project" />
-    <orderEntry type="library" exported="" name="1_android-support-v4" level="project" />
-    <orderEntry type="library" exported="" name="2_android-support-v4" level="project" />
-    <orderEntry type="module" module-name="arca-monitor" exported="" />
-    <orderEntry type="module" module-name="arca-dispatcher" exported="" />
   </component>
 </module>
 

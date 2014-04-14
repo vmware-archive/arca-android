@@ -1,6 +1,0 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item name="test_id_1" type="id">1</item>
-    <item name="test_id_2" type="id">2</item>
-
-</resources>

@@ -1,6 +1,6 @@
 # Arca-Service
 
-The Arca Service package lets you offload long running operations away from the lifecycle of your Activities and Fragments. It provides a Service implementation which accepts Operations, where each Operation is designed to encapsulate all the networking and storage required by an individual Dataset (see [Arca-Provider](../Arca-Provider)). 
+The Arca Service package lets you offload long running operations away from the lifecycle of your Activities and Fragments. It provides a Service implementation which accepts Operations, where each Operation is designed to encapsulate all the networking and storage required by an individual Dataset (see [Arca-Provider](../arca-provider)). 
 
 Within each Operation you can have multiple Tasks, where each Task is responsible for requesting data from a particular endpoint. Often you may have an Operation which contains only a single Task, however, you may also need to aggregate data from multiple sources in order to fullfill the requirements of your Dataset.
 

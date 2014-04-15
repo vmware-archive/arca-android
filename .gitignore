@@ -1,12 +1,16 @@
+*.DS_Store
+
 # ==================================
 # Local configuration files
 # ==================================
 local.properties
-*.DS_Store
 
 # ==================================
 # Gradle files
 # ==================================
 .gradle
-/.idea/workspace.xml
 
+# ==================================
+# Android Studio files
+# ==================================
+/.idea/workspace.xml

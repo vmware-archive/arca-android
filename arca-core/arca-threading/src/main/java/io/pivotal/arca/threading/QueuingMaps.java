@@ -1,0 +1,92 @@
+/* 
+ * Copyright (C) 2014 Pivotal Software, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.pivotal.arca.threading;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class QueuingMaps {
+
+	private final Set<Identifier<?>> mRunningRequests = Collections.newSetFromMap(new ConcurrentHashMap<Identifier<?>, Boolean>());
+	private final Map<Identifier<?>, List<PrioritizableRequest>> mRequestListeners = new ConcurrentHashMap<Identifier<?>, List<PrioritizableRequest>>();
+
+	public synchronized void put(final PrioritizableRequest request) {
+		final Identifier<?> identifier = request.getIdentifier();
+
+		if (mRunningRequests.contains(identifier)) {
+			request.cancel();
+			return;
+		}
+
+		List<PrioritizableRequest> list = mRequestListeners.get(identifier);
+		if (list == null) {
+			list = new ArrayList<PrioritizableRequest>();
+			mRequestListeners.put(identifier, list);
+		}
+		list.add(request);
+	}
+
+	public synchronized void onComplete(final Identifier<?> request) {
+		mRunningRequests.remove(request);
+	}
+
+	public synchronized void notifyExecuting(final PrioritizableRequest request) {
+		final Identifier<?> identifier = request.getIdentifier();
+
+		if (mRunningRequests.contains(identifier)) {
+			request.cancel();
+		} else {
+			mRunningRequests.add(identifier);
+			final List<PrioritizableRequest> prioritizables = mRequestListeners.remove(identifier);
+			if (prioritizables != null) {
+				for (final PrioritizableRequest r : prioritizables) {
+					if (r != request)
+						r.cancel();
+				}
+			}
+		}
+	}
+
+	public synchronized boolean cancel(final PrioritizableRequest request) {
+		final Identifier<?> identifier = request.getIdentifier();
+		final List<PrioritizableRequest> list = mRequestListeners.get(identifier);
+		if (list != null) {
+			list.remove(request);
+			if (list.size() == 0)
+				mRequestListeners.remove(identifier);
+		}
+		request.cancel();
+		return mRunningRequests.contains(identifier);
+	}
+
+	public synchronized void cancelAll() {
+		final List<PrioritizableRequest> requestList = new ArrayList<PrioritizableRequest>();
+		for (final Entry<Identifier<?>, List<PrioritizableRequest>> entry : mRequestListeners.entrySet()) {
+			for (final PrioritizableRequest request : entry.getValue()) {
+				requestList.add(request);
+			}
+		}
+
+		for (final PrioritizableRequest request : requestList) {
+			cancel(request);
+		}
+	}
+}

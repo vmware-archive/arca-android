@@ -1,5 +1,8 @@
 apply plugin: 'android-library'
 
+version = '1.0.0-beta'
+group = 'io.pivotal'
+
 android {
     compileSdkVersion 19
     buildToolsVersion "19.0.3"
@@ -25,4 +28,12 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+task jar(type: Jar) {
+    from fileTree(dir: 'build/classes/release')
+}
+
+artifacts {
+    archives jar
 }

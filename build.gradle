@@ -10,7 +10,15 @@ buildscript {
 }
 
 allprojects {
+    apply plugin : 'maven'
+
     repositories {
         mavenCentral()
+    }
+
+    uploadArchives {
+        repositories.mavenDeployer {
+            repository(url: "https://maven.xtremelabs.com/artifactory/libs-release-local")
+        }
     }
 }

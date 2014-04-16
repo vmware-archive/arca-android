@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.arca.adapters">
+    package="io.pivotal.arca.adapters">
 
     <application android:allowBackup="true"
         android:label="@string/app_name"

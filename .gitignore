@@ -14,3 +14,4 @@ local.properties
 # Android Studio files
 # ==================================
 /.idea/workspace.xml
+build

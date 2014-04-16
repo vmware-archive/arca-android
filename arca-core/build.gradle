@@ -1,0 +1,12 @@
+apply plugin : 'java'
+
+version = '1.0.0-beta'
+group = 'io.pivotal'
+
+dependencies {
+    compile project(":arca-core:arca-broadcaster")
+    compile project(":arca-core:arca-provider")
+    compile project(":arca-core:arca-service")
+    compile project(":arca-core:arca-threading")
+    compile project(":arca-core:arca-utils")
+}

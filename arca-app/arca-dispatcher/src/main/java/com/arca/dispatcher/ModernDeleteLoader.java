@@ -15,8 +15,11 @@
  */
 package com.arca.dispatcher;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ModernDeleteLoader extends ModernResultLoader<DeleteResult> {
 
 	public ModernDeleteLoader(final Context context, final RequestExecutor executor, final Delete request) {

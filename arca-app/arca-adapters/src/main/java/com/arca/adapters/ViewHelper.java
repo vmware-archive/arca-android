@@ -15,6 +15,7 @@
  */
 package com.arca.adapters;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
@@ -38,6 +39,7 @@ class ViewHelper {
 		}
 	}
 
+    @SuppressLint("ViewTag")
 	private static View getViewAndSetTag(final View container, final int viewId) {
 		final View view = container.findViewById(viewId);
 		container.setTag(viewId, view);

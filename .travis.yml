@@ -1,0 +1,30 @@
+language: java
+jdk: oraclejdk7
+
+branches:
+    only:
+        - dev
+        - master
+
+env:
+    global:
+        - secure: MB+NPBzzkKD4LOQVkWvndBJbS/Sq2uE1bdDRALpnkjYqrjyb9NR4FtMq3TfeC4vSo33k3PL6fVsWLgMXeXLkBi9ax7cOf/gn0/lm8XymCHZuBhHomd4Czd+KQ6/9/qYoYNwZrJeCJU700Y8hpy5W37rQYMSptWAGxxbI3snh4Zs=
+        - secure: jeKvPRe9wbPCxbDHuw9PFtc/QfIWyNlMazOILos1bqkc9kt+iyC22G793HOaeSAoHyM9OMKUvOljDf4kEaFMKQyLbhO57+iAQi5mB4UceUIc2e/MSMkpp6hfnOgsrfhbBg9tOOEkvIRtZBNozPnwdHY/FfUgkdY0V1wKSVluItM=
+
+before_install:
+    # Install base Android SDK
+    - sudo apt-get update -qq
+    - sudo apt-get install -qq libstdc++6:i386 lib32z1
+    - export COMPONENTS=build-tools-19.0.3,android-19,sysimg-19,extra-android-support
+    - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-1/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
+    - source ~/.android-sdk-installer/env
+
+    # Create and start emulator
+    - echo no | android create avd --force --name test-avd --target android-19 --abi armeabi-v7a
+    - emulator -avd test-avd -no-skin -no-audio -no-window &
+
+before_script:
+    - ./wait_for_emulator
+
+script:
+    - ./gradlew connectedCheck upload

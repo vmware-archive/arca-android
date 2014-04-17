@@ -12,13 +12,18 @@ buildscript {
 allprojects {
     apply plugin : 'maven'
 
+    version = '1.0.0-beta-SNAPSHOT'
+    group = 'io.pivotal'
+
     repositories {
         mavenCentral()
     }
 
     uploadArchives {
         repositories.mavenDeployer {
-            repository(url: "https://maven.xtremelabs.com/artifactory/libs-release-local")
+            repository(url: "https://maven.xtremelabs.com/artifactory/libs-snapshot-local") {
+                authentication(userName: System.getenv()['MAVEN_USER'], password: System.getenv()['MAVEN_PASS'])
+            }
         }
     }
 }

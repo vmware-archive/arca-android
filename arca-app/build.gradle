@@ -1,8 +1,5 @@
 apply plugin: 'java'
 
-version = '1.0.0-beta'
-group = 'io.pivotal'
-
 dependencies {
     compile project(":arca-app:arca-adapters")
     compile project(":arca-app:arca-dispatcher")

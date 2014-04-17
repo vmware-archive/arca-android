@@ -37,6 +37,12 @@ task jar(type: Jar) {
     from fileTree(dir: 'build/classes/release')
 }
 
+task jarSources(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java
+}
+
 artifacts {
     archives jar
+    archives jarSources
 }

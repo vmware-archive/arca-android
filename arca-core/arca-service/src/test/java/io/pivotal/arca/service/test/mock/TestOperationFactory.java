@@ -17,14 +17,14 @@ package io.pivotal.arca.service.test.mock;
 
 import android.net.Uri;
 
-import io.pivotal.arca.service.Task;
-
 import java.util.HashSet;
 import java.util.Set;
 
+import io.pivotal.arca.service.Task;
+
 public class TestOperationFactory {
 
-	public static TestOperation newOperationWithUri(final Uri uri) {
+    public static TestOperation newOperationWithUri(final Uri uri) {
 		final TestOperation operation = new TestOperation(uri, null);
 		operation.setContext(null);
 		return operation;
@@ -90,26 +90,28 @@ public class TestOperationFactory {
 	}
 
 	public static TestOperation newOperationWithDynamicTaskDependency() {
-		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithDynamicDependencies());
+        final Task<?> firstTaskInChain = TestTaskFactory.newTaskListWithDynamicDependencies().get(0);
+        final Set<Task<?>> tasks = new HashSet<Task<?>>();
+        tasks.add(firstTaskInChain);
 		return newOperationWithTasks(tasks);
 	}
 
 	public static TestOperation newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(final Exception exception) {
-		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithNetworkingException(exception));
+        final Task<?> firstTaskInChain = TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithNetworkingException(exception).get(0);
+        final Set<Task<?>> tasks = new HashSet<Task<?>>();
+        tasks.add(firstTaskInChain);
 		return newOperationWithTasks(tasks);
 	}
 
 	public static TestOperation newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(final Exception exception) {
-		final Set<Task<?>> tasks = new HashSet<Task<?>>();
-		tasks.addAll(TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithProcessingException(exception));
+        final Task<?> firstTaskInChain = TestTaskFactory.newTaskListWithDynamicDependenciesSecondTaskFailsWithProcessingException(exception).get(0);
+        final Set<Task<?>> tasks = new HashSet<Task<?>>();
+        tasks.add(firstTaskInChain);
 		return newOperationWithTasks(tasks);
 	}
 
 	private static TestOperation newOperationWithTasks(final Set<Task<?>> tasks) {
 		final TestOperation operation = new TestOperation(tasks);
-		operation.setContext(null);
 		return operation;
 	}
 

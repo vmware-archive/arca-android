@@ -45,6 +45,9 @@ public class TestTask extends Task<String> {
 	}
 
 	public TestTask(final Identifier<?> identifier, final String networkResult, final Exception networkingException, final Exception processingException) {
+        if (identifier == null) {
+            throw new IllegalStateException("Identifier cannot be null.");
+        }
 		mIdentifier = identifier;
 		mNetworkResult = networkResult;
 		mNetworkingException = networkingException;

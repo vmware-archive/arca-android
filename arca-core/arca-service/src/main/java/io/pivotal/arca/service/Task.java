@@ -17,33 +17,38 @@ package io.pivotal.arca.service;
 
 import android.content.Context;
 
-import io.pivotal.arca.threading.Identifier;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.pivotal.arca.threading.Identifier;
+
 public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritizableObserver<T>, ProcessingTask<T>, ProcessingPrioritizableObserver<T> {
 
-	protected static interface Messages {
+    protected static interface Messages {
 		public static final String NO_EXECUTOR = "Cannot execute request. No request executor found.";
 	}
 
-	private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
-	private final Set<Task<?>> mDependencies = new HashSet<Task<?>>();
-	private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
-	private final Object mTaskLock = new Object();
+    private final Object mTaskLock = new Object();
+    private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
+    private final Set<Task<?>> mDependencies = new HashSet<Task<?>>();
+    private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
 
-	private Priority mPriority = Priority.MEDIUM;
-	private TaskObserver mObserver;
-	private RequestExecutor mExecutor;
-	private Identifier<?> mIdentifier;
+    private Priority mPriority = Priority.MEDIUM;
+    private Identifier<?> mIdentifier;
+    private boolean mFinished;
+
+    private TaskObserver mObserver;
+    private RequestExecutor mExecutor;
 	private Context mContext;
 
 	@Override
 	public final Identifier<?> getIdentifier() {
-		return mIdentifier;
+        if (mIdentifier == null) {
+            mIdentifier = onCreateIdentifier();
+        }
+        return mIdentifier;
 	}
 
 	public Set<Task<?>> getPrerequisites() {
@@ -71,29 +76,24 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	}
 
 	public void execute() {
-		mIdentifier = onCreateIdentifier();
-		checkPrerequisites();
-	}
+        checkExecution();
+    }
 
-	private void checkPrerequisites() {
-		if (allPrerequisitesComplete()) {
-			checkExecution();
-		}
-	}
+    private void checkExecution() {
+        if (!mFinished && allPrerequisitesComplete()) {
+            if (!mErrors.isEmpty()) {
+                final ServiceError error = mErrors.get(0);
+                notifyFailure(error);
+            } else {
+                notifyStarted();
+                startNetworkingRequest();
+            }
+        }
+    }
 
-	private boolean allPrerequisitesComplete() {
+    private boolean allPrerequisitesComplete() {
 		synchronized (mTaskLock) {
 			return mPrerequisites.isEmpty();
-		}
-	}
-
-	private void checkExecution() {
-		if (!mErrors.isEmpty()) {
-			final ServiceError error = mErrors.get(0);
-			notifyFailure(error);
-		} else {
-			notifyStarted();
-			startNetworkingRequest();
 		}
 	}
 
@@ -130,7 +130,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	protected void onPrerequisiteComplete(final Task<?> task) {
 		synchronized (mTaskLock) {
 			mPrerequisites.remove(task);
-			checkPrerequisites();
+            checkExecution();
 		}
 	}
 
@@ -138,7 +138,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 		synchronized (mTaskLock) {
 			mPrerequisites.remove(task);
 			mErrors.add(error);
-			checkPrerequisites();
+            checkExecution();
 		}
 	}
 
@@ -146,8 +146,8 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	private void startNetworkingRequest() {
 		if (mExecutor != null) {
-			final NetworkingPrioritizable<T> prioritzable = new NetworkingPrioritizable<T>(this);
-			final NetworkingRequest<T> request = new NetworkingRequest<T>(prioritzable, mPriority.ordinal(), this);
+			final NetworkingPrioritizable<T> prioritizable = new NetworkingPrioritizable<T>(this);
+			final NetworkingRequest<T> request = new NetworkingRequest<T>(prioritizable, mPriority.ordinal(), this);
 			mExecutor.executeNetworkingRequest(request);
 		} else {
 			notifyFailure(new ServiceError(Messages.NO_EXECUTOR));
@@ -201,20 +201,24 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	private void notifyStarted() {
 		if (mObserver != null) {
 			mObserver.onTaskStarted(this);
-		}
+        }
 	}
 
 	private void notifyComplete() {
-		if (mObserver != null) {
+        mFinished = true;
+
+        if (mObserver != null) {
 			mObserver.onTaskComplete(this);
-		}
+        }
 		notifyDependentsOfCompletion();
 	}
 
 	private void notifyFailure(final ServiceError error) {
-		if (mObserver != null) {
+        mFinished = true;
+
+        if (mObserver != null) {
 			mObserver.onTaskFailure(this, error);
-		}
+        }
 		notifyDependentsOfFailure(error);
 	}
 

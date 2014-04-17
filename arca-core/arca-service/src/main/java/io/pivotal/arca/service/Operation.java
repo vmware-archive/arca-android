@@ -92,23 +92,15 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	}
 
 	private void addTasksToPending(final Set<Task<?>> tasks) {
-		for (final Task<?> task : tasks) {
-			addTaskToPending(task);
+        for (final Task<?> task : tasks) {
+            addTaskToPending(task);
 		}
 	}
 
 	private void executeTasks(final Set<Task<?>> tasks) {
 		for (final Task<?> task : tasks) {
-			executeTaskNow(task);
+            task.execute();
 		}
-	}
-
-	private void executeTaskNow(final Task<?> task) {
-		task.setContext(mContext);
-		task.setPriority(mPriority);
-		task.setTaskObserver(this);
-		task.setRequestExecutor(mExecutor);
-		task.execute();
 	}
 
 	// ======================================================
@@ -121,25 +113,16 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
 	// ======================================================
 
-	protected void executeTask(final Task<?> task) {
-		if (task != null) {
-			addTaskToPending(task);
-			executeTaskNow(task);
-		} else {
-			notifyComplete();
-		}
-	}
-
 	@Override
 	public void onTaskStarted(final Task<?> task) {
-		moveTaskFromPendingToExecuting(task);
+        moveTaskFromPendingToExecuting(task);
 	}
 
 	@Override
 	public void onTaskComplete(final Task<?> task) {
-		moveTaskFromExecutingToCompleted(task);
-		handleTaskDependencies(task);
-		checkTaskCompletion();
+        moveTaskFromExecutingToCompleted(task);
+        handleTaskDependencies(task);
+        checkTaskCompletion();
 	}
 
 	@Override
@@ -177,6 +160,10 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
 	private void addTaskToPending(final Task<?> task) {
 		synchronized (mTaskLock) {
+            task.setTaskObserver(this);
+            task.setRequestExecutor(mExecutor);
+            task.setPriority(mPriority);
+            task.setContext(mContext);
 			mPendingTasks.add(task);
 		}
 	}

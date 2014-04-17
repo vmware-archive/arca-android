@@ -15,13 +15,12 @@
  */
 package io.pivotal.arca.service.test.mock;
 
-import io.pivotal.arca.service.Task;
-import io.pivotal.arca.threading.Identifier;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import io.pivotal.arca.service.RequestExecutor;
+import io.pivotal.arca.service.Task;
+import io.pivotal.arca.threading.Identifier;
 
 public class TestTaskFactory {
 
@@ -225,7 +224,7 @@ public class TestTaskFactory {
 		final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new Identifier<String>("task2"));
 		task2.setRequestExecutor(executor);
 
-		final TestTask task1 = TestTaskFactory.newTaskWithDynamicDependency(new Identifier<String>("task1"), task2);
+        final TestTask task1 = TestTaskFactory.newTaskWithDynamicDependency(new Identifier<String>("task1"), task2);
 		task1.setRequestExecutor(executor);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -239,9 +238,9 @@ public class TestTaskFactory {
 		final RequestExecutor.SerialRequestExecutor executor = new RequestExecutor.SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsNetworkingException(exception);
-		task2.setRequestExecutor(executor);
+        task2.setRequestExecutor(executor);
 
-		final TestTask task1 = TestTaskFactory.newTaskWithDynamicDependency(new Identifier<String>("task1"), task2);
+        final TestTask task1 = TestTaskFactory.newTaskWithDynamicDependency(new Identifier<String>("task1"), task2);
 		task1.setRequestExecutor(executor);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
@@ -255,9 +254,9 @@ public class TestTaskFactory {
 		final RequestExecutor.SerialRequestExecutor executor = new RequestExecutor.SerialRequestExecutor();
 
 		final TestTask task2 = TestTaskFactory.newTaskThatThrowsProcessingException(exception);
-		task2.setRequestExecutor(executor);
+        task2.setRequestExecutor(executor);
 
-		final TestTask task1 = TestTaskFactory.newTaskWithDynamicDependency(new Identifier<String>("task1"), task2);
+        final TestTask task1 = TestTaskFactory.newTaskWithDynamicDependency(new Identifier<String>("task1"), task2);
 		task1.setRequestExecutor(executor);
 
 		final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();

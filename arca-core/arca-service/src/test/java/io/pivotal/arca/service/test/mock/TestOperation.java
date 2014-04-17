@@ -19,12 +19,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 
+import java.util.List;
+import java.util.Set;
+
 import io.pivotal.arca.service.Operation;
 import io.pivotal.arca.service.ServiceError;
 import io.pivotal.arca.service.Task;
-
-import java.util.List;
-import java.util.Set;
 
 public class TestOperation extends Operation {
 
@@ -47,11 +47,6 @@ public class TestOperation extends Operation {
 	@Override
 	public Set<Task<?>> onCreateTasks() {
 		return mTasks;
-	}
-
-	@Override
-	public void executeTask(final Task<?> task) {
-		super.executeTask(task);
 	}
 
 	@Override

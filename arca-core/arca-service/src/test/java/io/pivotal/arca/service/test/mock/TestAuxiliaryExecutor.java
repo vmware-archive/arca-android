@@ -15,15 +15,15 @@
  */
 package io.pivotal.arca.service.test.mock;
 
-import io.pivotal.arca.threading.AuxiliaryExecutor;
-import io.pivotal.arca.threading.AuxiliaryExecutorObserver;
-import io.pivotal.arca.threading.Identifier;
-import io.pivotal.arca.threading.PrioritizableRequest;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import io.pivotal.arca.threading.AuxiliaryExecutor;
+import io.pivotal.arca.threading.AuxiliaryExecutorObserver;
+import io.pivotal.arca.threading.Identifier;
+import io.pivotal.arca.threading.PrioritizableRequest;
 
 public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 
@@ -39,10 +39,6 @@ public class TestAuxiliaryExecutor implements AuxiliaryExecutor {
 
 		final PrioritizableRequest request = (PrioritizableRequest) command;
 		final Identifier<?> identifier = request.getIdentifier();
-
-		if (identifier == null) {
-			throw new IllegalStateException("Identifier cannot be null.");
-		}
 
 		if (!mIdentifiers.contains(identifier)) {
 			mIdentifiers.add(identifier);

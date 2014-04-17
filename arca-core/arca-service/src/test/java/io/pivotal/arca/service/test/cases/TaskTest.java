@@ -17,6 +17,10 @@ package io.pivotal.arca.service.test.cases;
 
 import android.test.AndroidTestCase;
 
+import junit.framework.Assert;
+
+import java.util.List;
+
 import io.pivotal.arca.service.NetworkingRequest;
 import io.pivotal.arca.service.ProcessingRequest;
 import io.pivotal.arca.service.RequestExecutor;
@@ -28,10 +32,6 @@ import io.pivotal.arca.service.test.mock.TestTask;
 import io.pivotal.arca.service.test.mock.TestTaskFactory;
 import io.pivotal.arca.service.test.utils.AssertionLatch;
 import io.pivotal.arca.threading.Identifier;
-
-import junit.framework.Assert;
-
-import java.util.List;
 
 public class TaskTest extends AndroidTestCase {
 

@@ -1,44 +1,7 @@
 apply plugin: 'android-library'
 
-android {
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
-
-    defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
-    }
-
-    sourceSets {
-        androidTest.setRoot('src/test')
-    }
-
-    buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
-}
-
 dependencies {
     compile project(":arca-app:arca-dispatcher")
     compile 'com.android.support:support-v4:19.1.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
-}
-
-task jar(type: Jar) {
-    from fileTree(dir: 'build/classes/release')
-}
-
-task jarSources(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java
-}
-
-artifacts {
-    archives jar
-    archives jarSources
 }

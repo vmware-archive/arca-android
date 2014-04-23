@@ -1,4 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'java'
+
+dependencies {
+    compile project(":arca-app")
+    compile project(":arca-core")
+}
 
 buildscript {
     repositories {
@@ -10,10 +16,10 @@ buildscript {
 }
 
 allprojects {
-    apply plugin : 'maven'
+    apply plugin: 'maven'
 
-    version = '1.0.0-beta-SNAPSHOT'
     group = 'io.pivotal'
+    version = '1.0.0-beta-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -21,8 +27,13 @@ allprojects {
 
     uploadArchives {
         repositories.mavenDeployer {
-            repository(url: "https://maven.xtremelabs.com/artifactory/libs-snapshot-local") {
-                authentication(userName: System.getenv()['MAVEN_USER'], password: System.getenv()['MAVEN_PASS'])
+            def userName = System.getenv('MAVEN_USER')
+            def password = System.getenv('MAVEN_PASS')
+
+            def url = 'https://maven.xtremelabs.com/artifactory/libs-snapshot-local'
+
+            repository(url: url) {
+                authentication(userName: userName, password: password)
             }
         }
     }

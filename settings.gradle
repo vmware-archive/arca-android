@@ -1,3 +1,5 @@
+rootProject.name = 'arca'
+
 include ':arca-core:arca-broadcaster'
 include ':arca-core:arca-provider'
 include ':arca-core:arca-service'
@@ -7,4 +9,3 @@ include ':arca-app:arca-adapters'
 include ':arca-app:arca-dispatcher'
 include ':arca-app:arca-fragments'
 include ':arca-app:arca-monitor'
-

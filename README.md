@@ -5,14 +5,6 @@ The Arca library provides a comprehensive framework for caching and displaying d
 
 This [Google I/O talk](http://www.youtube.com/watch?v=xHXn3Kg2IQE) explains the basis of the architecture.
 
-# Getting Started
-
-The easiest way to get started with the Arca library is to scaffold a project with the [levo](https://github.com/cfmobile/levo) command line tool. Once you've finished the installation run the following command:
-
-```bash
-levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string age:int"
-```
-
 # Overview
 
 Below is a list of all the major components within the Arca framework. Each major component has a variety of minor components. Each component can be used independently or as part of the entire framework.
@@ -24,6 +16,32 @@ The Arca Core package provides all the groundwork for caching data within a Cont
 ##[Arca-App](arca-app)
 
 The Arca App package makes it really easy to fetch data from a ContentProvider and bind it to elements in your layout. This means your UI will always be up to date with the most recent data without having to write a single additional line of code.
+
+# Getting Started
+
+### Levo
+
+The easiest way to get started with the Arca library is to scaffold a project with the [levo command line tool](https://github.com/cfmobile/levo).
+
+```bash
+levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string age:int"
+```
+
+### Maven
+
+```xml
+<dependency>
+  <groupId>io.pivotal</groupId>
+  <artifactId>arca</artifactId>
+  <version>1.0.0-beta</version>
+</dependency>
+```
+
+### Gradle
+
+```groovy
+compile 'io.pivotal:arca:1.0.0-beta'
+```
 
 # Further Reading
 

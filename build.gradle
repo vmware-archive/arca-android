@@ -36,13 +36,39 @@ allprojects {
 
     uploadArchives {
         repositories.mavenDeployer {
+
             def userName = System.getenv('MAVEN_USER')
             def password = System.getenv('MAVEN_PASS')
 
-            def url = 'https://maven.xtremelabs.com/artifactory/libs-snapshot-local'
-
-            repository(url: url) {
+            repository(url: 'https://maven.xtremelabs.com/artifactory/libs-snapshot-local') {
                 authentication(userName: userName, password: password)
+            }
+
+            pom.project {
+                name 'Arca Android'
+                description 'A comprehensive framework for caching and displaying data.'
+                url 'https://github.com/cfmobile/arca-android'
+
+                scm {
+                    url 'git@github.com:cfmobile/arca-android.git'
+                    connection 'scm:git:git@github.com:cfmobile/arca-android.git'
+                    developerConnection 'scm:git:git@github.com:cfmobile/arca-android.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'jwinters'
+                        name 'Joshua Winters'
+                        email 'jwinters@gopivotal.com'
+                    }
+                }
             }
         }
     }

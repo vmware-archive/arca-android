@@ -1,9 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply plugin: 'java'
+apply plugin: 'maven'
 
 dependencies {
     compile project(":arca-app")
     compile project(":arca-core")
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.whenConfigured {
+            pom -> pom.packaging = "pom";
+        }
+    }
 }
 
 buildscript {
@@ -19,7 +28,7 @@ allprojects {
     apply plugin: 'maven'
 
     group = 'io.pivotal'
-    version = '1.0.0-beta-SNAPSHOT'
+    version = '1.0-beta-SNAPSHOT'
 
     repositories {
         mavenCentral()

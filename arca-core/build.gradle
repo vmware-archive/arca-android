@@ -1,4 +1,5 @@
-apply plugin : 'java'
+apply plugin: 'java'
+apply plugin: 'maven'
 
 dependencies {
     compile project(":arca-core:arca-broadcaster")
@@ -6,6 +7,14 @@ dependencies {
     compile project(":arca-core:arca-service")
     compile project(":arca-core:arca-threading")
     compile project(":arca-core:arca-utils")
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.whenConfigured {
+            pom -> pom.packaging = "pom";
+        }
+    }
 }
 
 subprojects { project ->
@@ -36,8 +45,14 @@ subprojects { project ->
         from android.sourceSets.main.java
     }
 
+    task jarJavadoc(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
     artifacts {
         archives jarClasses
         archives jarSources
+        archives jarJavadoc
     }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/background_list_item"
+    android:padding="5dp" >
+
+    <ImageView
+        android:id="@+id/list_item_movie_image"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        android:background="#ccc"
+        android:cropToPadding="true"
+        android:padding="1dp"
+        android:layout_margin="5dp" />
+
+    <TextView
+        android:id="@+id/list_item_movie_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:lines="2"
+        android:gravity="center"
+        android:padding="5dp"
+        android:textColor="#aaa"
+        android:textStyle="bold" />
+
+</LinearLayout>

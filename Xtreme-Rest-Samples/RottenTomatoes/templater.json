@@ -1,0 +1,92 @@
+[
+  {
+    "templater_version": "2.0",
+    "model_schema": "schema.json",
+    "templater_config": "templates/xl-rest_lib-android-v3.0.0/templater.conf",
+    "tasks": [
+      {
+        "model_name": "Movie",
+        "templates": [
+          "_NAME_Fragment.java",
+          "list_item__name_.xml",
+          "_NAME_.java",
+          "_NAME_Activity.java",
+          "_NAME_ContentProvider.java",
+          "fragment__name_.xml",
+          "activity__name_.xml",
+          "_NAME_Validator.java",
+          "_NAME_Application.java",
+          "_NAME_Table.java",
+          "_NAME_ListActivity.java",
+          "_NAME_ListValidator.java",
+          "Abs_NAME_.java",
+          "fragment__name__list.xml",
+          "_NAME_ListFragment.java",
+          "activity__name__list.xml",
+          "Abs_NAME_Table.java"
+        ]
+      },
+      {
+        "model_name": "Posters",
+        "templates": [
+          "_NAME_.java",
+          "Abs_NAME_.java"
+        ]
+      },
+      {
+        "model_name": "Cast",
+        "templates": [
+          "_NAME_.java",
+          "Abs_NAME_.java"
+        ]
+      },
+      {
+        "model_name": "Ratings",
+        "templates": [
+          "_NAME_.java",
+          "Abs_NAME_.java"
+        ]
+      },
+      {
+        "model_name": "ReleaseDates",
+        "templates": [
+          "_NAME_.java",
+          "Abs_NAME_.java"
+        ]
+      },
+      {
+        "model_name": "MoviesResponse",
+        "templates": [
+          "_NAME_.java",
+          "Abs_NAME_.java"
+        ]
+      },
+      {
+        "model_name": "",
+        "templates": [
+          "_NAME_Application.java"
+        ]
+      }
+    ],
+    "base_package": "com.rottentomatoes.app",
+    "language": "java"
+  },
+  {
+    "templater_version": "2.0",
+    "model_schema": "schema.json",
+    "templater_config": "templates/xl-rest_service_lib-android-v1.0.0/templater.conf",
+    "tasks": [
+      {
+        "model_name": "Movie",
+        "templates": [
+          "_NAME_Operation.java",
+          "_NAME_ListOperation.java",
+          "_NAME_Task.java",
+          "_NAME_ListTask.java"
+        ]
+      }
+    ],
+    "base_package": "com.rottentomatoes.app",
+    "language": "java"
+  }
+]

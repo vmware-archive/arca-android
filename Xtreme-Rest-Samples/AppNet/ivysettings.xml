@@ -1,0 +1,9 @@
+<ivysettings>
+    <settings defaultResolver="chained" />
+    <resolvers>
+        <chain name="chained" returnFirst="true" >
+            <ibiblio name="modules" m2compatible="true" root="http://maven.xtremelabs.com/artifactory/xl-libs" />
+        	<ibiblio name="maven2" m2compatible="true" root="http://repo1.maven.org/maven2" />
+        </chain>
+    </resolvers>
+</ivysettings>

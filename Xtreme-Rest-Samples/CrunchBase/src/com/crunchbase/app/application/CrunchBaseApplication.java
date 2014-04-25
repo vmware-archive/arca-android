@@ -1,0 +1,21 @@
+package com.crunchbase.app.application;
+
+import android.app.Application;
+
+import com.xtreme.rest.providers.Database;
+
+public class CrunchBaseApplication extends Application {
+	
+	private static final int DATABASE_VERSION = 1;
+	private static final String DATABASE_NAME = "crunchbase.db";
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		
+		Database.init(DATABASE_NAME, DATABASE_VERSION);
+		
+		com.xtreme.rest.utils.Logger.setup(true, "Xtreme-Rest");
+		com.xtreme.rest.service.Logger.setup(true, "Xtreme-Rest-Service");
+	}
+}

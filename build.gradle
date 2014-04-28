@@ -24,6 +24,18 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    uploadArchives {
+        repositories.mavenDeployer {
+
+            def userName = System.getenv('MAVEN_USER')
+            def password = System.getenv('MAVEN_PASS')
+
+            repository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+                authentication(userName: userName, password: password)
+            }
+        }
+    }
 }
 
 ext.pomInfo = {

@@ -33,14 +33,14 @@ levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string 
 <dependency>
   <groupId>io.pivotal</groupId>
   <artifactId>arca</artifactId>
-  <version>1.0.0-beta</version>
+  <version>1.0-beta</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-compile 'io.pivotal:arca:1.0.0-beta'
+compile 'io.pivotal:arca:1.0-beta'
 ```
 
 # Further Reading

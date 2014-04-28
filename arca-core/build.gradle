@@ -12,7 +12,7 @@ dependencies {
 uploadArchives {
     repositories.mavenDeployer {
         pom.whenConfigured {
-            pom -> pom.packaging = "pom";
+            pom -> pom.packaging = "pom"
         }
     }
 }

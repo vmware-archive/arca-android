@@ -1,5 +1,10 @@
 apply plugin: 'android-library'
 
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
+}
+
 dependencies {
     compile 'com.android.support:support-v4:19.1.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])

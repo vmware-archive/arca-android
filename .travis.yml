@@ -6,15 +6,6 @@ branches:
         - dev
         - master
 
-env:
-    global:
-        - secure: MB+NPBzzkKD4LOQVkWvndBJbS/Sq2uE1bdDRALpnkjYqrjyb9NR4FtMq3TfeC4vSo33k3PL6fVsWLgMXeXLkBi9ax7cOf/gn0/lm8XymCHZuBhHomd4Czd+KQ6/9/qYoYNwZrJeCJU700Y8hpy5W37rQYMSptWAGxxbI3snh4Zs=
-        - secure: jeKvPRe9wbPCxbDHuw9PFtc/QfIWyNlMazOILos1bqkc9kt+iyC22G793HOaeSAoHyM9OMKUvOljDf4kEaFMKQyLbhO57+iAQi5mB4UceUIc2e/MSMkpp6hfnOgsrfhbBg9tOOEkvIRtZBNozPnwdHY/FfUgkdY0V1wKSVluItM=
-
-notifications:
-    webhooks:
-        - http://pulse.pivotallabs.com/projects/3658562c-a106-4aab-a788-8f39051597e7/status
-
 before_install:
     # Install base Android SDK
     - sudo apt-get update -qq; sudo apt-get install -qq libstdc++6:i386 lib32z1
@@ -30,4 +21,4 @@ before_script:
     - wait_for_emulator
 
 script:
-    - ./gradlew connectedCheck upload
+    - ./gradlew connectedCheck

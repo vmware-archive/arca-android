@@ -1,5 +1,5 @@
 # Arca
-[![Build Status](https://magnum.travis-ci.com/xtremelabs/arca-android.svg?token=zXNxiAMJAGWrGfYuztmN&branch=dev)](https://magnum.travis-ci.com/xtremelabs/arca-android)
+[![Build Status](https://travis-ci.org/cfmobile/arca-android.svg?branch=dev)](https://travis-ci.org/cfmobile/arca-android)
 
 The Arca library provides a comprehensive framework for caching and displaying data. It is modular by design and compatible with native Android components.
 

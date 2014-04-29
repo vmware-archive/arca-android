@@ -1,4 +1,4 @@
-# Arca-ADapters
+# Arca-Adapters
 
 Within the Android framework, adapters act as a bridge between your data and your UI. The Arca Adapters package builds off the standard CursorAdapter implementation adding a number of improvements.
 

@@ -1,0 +1,12 @@
+apply plugin: 'android-library'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
+}
+
+dependencies {
+    compile project(":arca-core:arca-utils")
+    compile project(":arca-core:arca-threading")
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

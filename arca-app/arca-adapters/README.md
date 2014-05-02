@@ -15,8 +15,8 @@ In the simple case, you do not need to create your own adapter. You can use one 
 
 ```java
 private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-    new Binding(R.id.list_item_custom_title, PostTable.Columns.TITLE.name),
-	new Binding(R.id.list_item_custom_date, PostTable.Columns.DATE.name),
+    new Binding(R.id.list_item_custom_title, PostTable.Columns.TITLE),
+	new Binding(R.id.list_item_custom_date, PostTable.Columns.DATE),
 });
 
 private CursorAdapter createAdapterForAdapterView() {
@@ -120,14 +120,14 @@ public class MyTypedCursorAdapter extends ModernCursorAdapter {
 	@Override
 	public int getItemViewType(final int position) {
 		final Cursor cursor = (Cursor) getItem(position);
-		final int index = cursor.getColumnIndex(PostTable.Columns.TYPE.name);
+		final int index = cursor.getColumnIndex(PostTable.Columns.TYPE);
 		final String typeString = cursor.getString(index);
 		return ViewTypes.valueOf(typeString).ordinal();
 	}
 
 	@Override
 	public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-		final int index = cursor.getColumnIndex(PostTable.Columns.TYPE.name);
+		final int index = cursor.getColumnIndex(PostTable.Columns.TYPE);
 		final String typeString = cursor.getString(index);
 		final ViewTypes viewType = ViewTypes.valueOf(typeString);
 		final LayoutInflater inflater = LayoutInflater.from(context);
@@ -140,9 +140,9 @@ When implementing your adapter you create a list of Bindings as follows:
 
 ```java
 private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-	ViewTypes.DEFAULT.newBinding(R.id.list_item_default_title, PostTable.Columns.TITLE.name),
-	ViewTypes.DEFAULT.newBinding(R.id.list_item_default_date, PostTable.Columns.DATE.name),
-	ViewTypes.CUSTOM.newBinding(R.id.list_item_custom_title, PostTable.Columns.TITLE.name),
-	ViewTypes.CUSTOM.newBinding(R.id.list_item_custom_date, PostTable.Columns.DATE.name),
+	ViewTypes.DEFAULT.newBinding(R.id.list_item_default_title, PostTable.Columns.TITLE),
+	ViewTypes.DEFAULT.newBinding(R.id.list_item_default_date, PostTable.Columns.DATE),
+	ViewTypes.CUSTOM.newBinding(R.id.list_item_custom_title, PostTable.Columns.TITLE),
+	ViewTypes.CUSTOM.newBinding(R.id.list_item_custom_date, PostTable.Columns.DATE),
 });
 ```

@@ -55,24 +55,24 @@ If you don't want to persist data in a database but still want to take full adva
 
 ### Datasets
 
-After the request has been filtered through the ContentProvider, an individual Dataset will handle the requested action. If you are persisting data to a SQLiteDatabase you will need to to create your own SQLiteTable subclass. Notice in the example below that we are extending the SQLiteTable.Columns interface and adding our own set of columns. This makes it easy for you to refer back to these column values when querying for data (see [Arca-Dispatcher](../../Arca-App/Arca-Dispatcher)) or binding to views in your adapter (see [Arca-Adapters](../../Arca-App/Arca-Adapters)).
+After the request has been filtered through the ContentProvider, an individual Dataset will handle the requested action. If you are persisting data to a SQLiteDatabase you will need to to create your own SQLiteTable subclass. Notice in the example below that we are extending the SQLiteTable.Columns interface and adding our own set of columns. This makes it easy for you to refer back to these column values when querying for data (see [Arca-Dispatcher](../../arca-app/arca-dispatcher)) or binding to views in your adapter (see [Arca-Adapters](../../arca-app/arca-adapters)).
 
 ```java
 public class PostTable extends SQLiteTable {
 
-	public static interface ColumnNames {
-		public static final String ID = "id";
-		public static final String TEXT = "text";
-		public static final String USER_ID = "user_id";
-		public static final String DATE = "date";
-	}
-
 	public static interface Columns extends SQLiteTable.Columns {
 		@Unique(OnConflict.REPLACE)
-		public static final Column ID = Column.Type.INTEGER.newColumn(ColumnNames.ID);
-		public static final Column TEXT = Column.Type.TEXT.newColumn(ColumnNames.TEXT);
-		public static final Column USER_ID = Column.Type.INTEGER.newColumn(ColumnNames.USER_ID);
-		public static final Column DATE = Column.Type.INTEGER.newColumn(ColumnNames.DATE);
+		@Column(Column.Type.INTEGER)
+		public static final String ID = "id";
+
+		@Column(Column.Type.TEXT)
+		public static final String TEXT = "text";
+
+		@Column(Column.Type.INTEGER)
+		public static final String USER_ID = "user_id";
+
+		@Column(Column.Type.INTEGER)
+		public static final String DATE = "date";
 	}
 }
 ```

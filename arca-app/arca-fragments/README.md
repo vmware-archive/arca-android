@@ -12,8 +12,8 @@ The example below shows a simple example of a fragment that displays a list of P
 public class PostListFragment extends ArcaAdapterFragment implements OnItemClickListener {
 
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
-		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT.name),
-		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT.name),
+		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT),
+		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT),
 	});
 	
 	@Override
@@ -55,7 +55,7 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 	@Override
 	public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
 		final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-		final int columnIndex = cursor.getColumnIndex(PostTable.Columns.ID.name);
+		final int columnIndex = cursor.getColumnIndex(PostTable.Columns.ID);
 		final String itemId = cursor.getString(columnIndex);
 		PostActivity.newInstance(getActivity(), itemId);
 	}

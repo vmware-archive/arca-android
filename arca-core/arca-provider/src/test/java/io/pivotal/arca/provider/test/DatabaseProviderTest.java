@@ -23,8 +23,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 
+import junit.framework.Assert;
+
+import java.util.ArrayList;
+
 import io.pivotal.arca.provider.Column;
-import io.pivotal.arca.provider.Column.Type;
 import io.pivotal.arca.provider.DatabaseConfiguration;
 import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import io.pivotal.arca.provider.DatabaseProvider;
@@ -32,10 +35,6 @@ import io.pivotal.arca.provider.Dataset;
 import io.pivotal.arca.provider.SQLiteTable;
 import io.pivotal.arca.provider.test.DatabaseProviderTest.TestDatabaseProvider;
 import io.pivotal.arca.provider.test.DatabaseProviderTest.TestDatabaseProvider.Uris;
-
-import junit.framework.Assert;
-
-import java.util.ArrayList;
 
 public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider> {
 
@@ -156,7 +155,8 @@ public class DatabaseProviderTest extends ProviderTestCase2<TestDatabaseProvider
 	public static class TestTable1 extends SQLiteTable {
 
 		public static interface Columns {
-			public static final Column ID = Type.TEXT.newColumn("id");
+            @Column(Column.Type.TEXT)
+            public static final String ID = "id";
 		}
 
 		@Override

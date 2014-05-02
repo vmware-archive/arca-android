@@ -19,19 +19,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import io.pivotal.arca.provider.Column.Type;
-
 public abstract class SQLiteDataset implements Dataset {
-
-	protected static interface ColumnNames {
-		public static final String _ID = "_id";
-		public static final String _STATE = "_state";
-	}
-
-	protected static interface Columns {
-		public static final Column _ID = Type.INTEGER.newColumn(ColumnNames._ID, "PRIMARY KEY AUTOINCREMENT");
-		public static final Column _STATE = Type.INTEGER.newColumn(ColumnNames._STATE, "DEFAULT 0");
-	}
 
 	public abstract void onCreate(final SQLiteDatabase db);
 

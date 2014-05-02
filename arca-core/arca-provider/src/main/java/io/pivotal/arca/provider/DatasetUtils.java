@@ -17,10 +17,10 @@ package io.pivotal.arca.provider;
 
 import android.text.TextUtils;
 
-import io.pivotal.arca.utils.Logger;
-
 import java.lang.reflect.Field;
 import java.util.Map;
+
+import io.pivotal.arca.utils.Logger;
 
 public class DatasetUtils {
 
@@ -36,9 +36,10 @@ public class DatasetUtils {
 	}
 
 	private static String getSelect(final Class<?> klass) throws Exception {
-		final Select select = klass.getAnnotation(Select.class);
-		if (select != null) {
-			return select.value();
+
+		final SelectFrom from = klass.getAnnotation(SelectFrom.class);
+		if (from != null) {
+            return getSelectString(klass, from);
 		}
 
 		final Class<?>[] klasses = klass.getDeclaredClasses();
@@ -51,6 +52,64 @@ public class DatasetUtils {
 
 		return "";
 	}
+
+    private static String getSelectString(final Class<?> klass, final SelectFrom from) {
+        final String selectString = getSelectColumnsString(klass);
+        final StringBuilder fromBuilder = new StringBuilder(from.value());
+
+        final Joins joins = klass.getAnnotation(Joins.class);
+        if (joins != null) {
+            for (final String join : joins.value()) {
+                fromBuilder.append(" " + join);
+            }
+        }
+
+        final GroupBy groupBy = klass.getAnnotation(GroupBy.class);
+        if (groupBy != null) {
+            return String.format("SELECT %s FROM (%s) GROUP BY %s", selectString, fromBuilder.toString(), groupBy.value());
+        } else {
+            return String.format("SELECT %s FROM (%s)", selectString, fromBuilder.toString());
+        }
+    }
+
+    private static String getSelectColumnsString(final Class<?> klass) {
+        final StringBuilder builder = new StringBuilder();
+
+        try {
+            getSelectColumns(klass, builder);
+        } catch (final Exception e) {
+            Logger.ex(e);
+        }
+
+        if (builder.length() > 0) {
+            builder.deleteCharAt(builder.length() - 1);
+        } else {
+            builder.append("*");
+        }
+
+        return builder.toString();
+    }
+
+    private static void getSelectColumns(final Class<?> klass, final StringBuilder builder) throws Exception {
+        final Field[] fields = klass.getFields();
+        for (final Field field : fields) {
+            getSelectColumn(field, builder);
+        }
+
+        final Class<?>[] klasses = klass.getDeclaredClasses();
+        for (int i = 0; i < klasses.length; i++) {
+            getSelectColumns(klasses[i], builder);
+        }
+    }
+
+    private static void getSelectColumn(final Field field, final StringBuilder builder) throws Exception {
+        final Select select = field.getAnnotation(Select.class);
+        if (select != null) {
+
+            final String columnName = (String) field.get(null);
+            builder.append(String.format("%s as %s,", select.value(), columnName));
+        }
+    }
 
 	// =================================================
 
@@ -88,21 +147,23 @@ public class DatasetUtils {
 	}
 
 	private static void getColumn(final Field field, final StringBuilder builder, final ConcatMap uniqueMap) throws Exception {
-		if (field.getType().isAssignableFrom(Column.class)) {
+        final Column columnType = field.getAnnotation(Column.class);
+        if (columnType != null) {
 
-			final Column column = (Column) field.get(null);
+            final String columnName = (String) field.get(null);
 
-			final Unique annotation = field.getAnnotation(Unique.class);
-			if (annotation != null) {
-				uniqueMap.put(annotation.value().name(), column.name);
-			}
+            final ColumnOptions columnOptions = field.getAnnotation(ColumnOptions.class);
+            if (columnOptions != null) {
+                builder.append(String.format("%s %s %s,", columnName, columnType.value().name(), columnOptions.value()));
+            } else {
+                builder.append(String.format("%s %s,", columnName, columnType.value().name()));
+            }
 
-			if (TextUtils.isEmpty(column.options)) {
-				builder.append(String.format("%s %s,", column.name, column.type));
-			} else {
-				builder.append(String.format("%s %s %s,", column.name, column.type, column.options));
-			}
-		}
+            final Unique unique = field.getAnnotation(Unique.class);
+            if (unique != null) {
+                uniqueMap.put(unique.value().name(), columnName);
+            }
+        }
 	}
 
 	private static String getUnique(final Map<String, String> uniqueMap) {

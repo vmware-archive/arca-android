@@ -19,6 +19,7 @@ import android.test.AndroidTestCase;
 
 import io.pivotal.arca.provider.Column;
 import io.pivotal.arca.provider.DatasetUtils;
+import io.pivotal.arca.provider.OrderBy;
 import io.pivotal.arca.provider.SelectFrom;
 import io.pivotal.arca.provider.GroupBy;
 import io.pivotal.arca.provider.Joins;
@@ -66,6 +67,12 @@ public class ColumnUtilsTest extends AndroidTestCase {
     public void testColumnUtilsCustomView3Conversion() {
         final String columns = DatasetUtils.getSelect(new TestView3());
         final String expected = "SELECT TestTable2.custom as custom2,TestTable3.custom as custom3 FROM (TestTable1 LEFT JOIN TestTable2 ON TestTable1.test_id = TestTable2.test_id LEFT JOIN TestTable3 ON TestTable1.test_id = TestTable3.test_id)";
+        assertEquals(expected, columns);
+    }
+
+    public void testColumnUtilsCustomView4Conversion() {
+        final String columns = DatasetUtils.getSelect(new TestView4());
+        final String expected = "SELECT * FROM (TestTable1) ORDER BY TestTable1.test_id";
         assertEquals(expected, columns);
     }
 
@@ -152,5 +159,14 @@ public class ColumnUtilsTest extends AndroidTestCase {
             @Select("TestTable3.custom")
             public static final String CUSTOM3 = "custom3";
         }
+    }
+
+    public static final class TestView4 extends SQLiteView {
+
+        @SelectFrom("TestTable1")
+
+        @OrderBy("TestTable1.test_id")
+
+        public static interface Columns {}
     }
 }

@@ -54,25 +54,28 @@ public class DatasetUtils {
 	}
 
     private static String getSelectString(final Class<?> klass, final SelectFrom from) {
-        final String selectString = getSelectColumnsString(klass);
-        final StringBuilder fromBuilder = new StringBuilder(from.value());
+        final String columnString = getColumnString(klass);
+        final String fromString = getFromString(klass, from);
 
-        final Joins joins = klass.getAnnotation(Joins.class);
-        if (joins != null) {
-            for (final String join : joins.value()) {
-                fromBuilder.append(" " + join);
-            }
-        }
+        final String selectString = String.format("SELECT %s FROM (%s)", columnString, fromString);
+
+        final StringBuilder selectBuilder = new StringBuilder();
+        selectBuilder.append(selectString);
 
         final GroupBy groupBy = klass.getAnnotation(GroupBy.class);
         if (groupBy != null) {
-            return String.format("SELECT %s FROM (%s) GROUP BY %s", selectString, fromBuilder.toString(), groupBy.value());
-        } else {
-            return String.format("SELECT %s FROM (%s)", selectString, fromBuilder.toString());
+            selectBuilder.append(String.format(" GROUP BY %s", groupBy.value()));
         }
+
+        final OrderBy orderBy = klass.getAnnotation(OrderBy.class);
+        if (orderBy != null) {
+            selectBuilder.append(String.format(" ORDER BY %s", orderBy.value()));
+        }
+
+        return selectBuilder.toString();
     }
 
-    private static String getSelectColumnsString(final Class<?> klass) {
+    private static String getColumnString(final Class<?> klass) {
         final StringBuilder builder = new StringBuilder();
 
         try {
@@ -88,6 +91,19 @@ public class DatasetUtils {
         }
 
         return builder.toString();
+    }
+
+    private static String getFromString(Class<?> klass, SelectFrom from) {
+        final StringBuilder fromBuilder = new StringBuilder(from.value());
+
+        final Joins joins = klass.getAnnotation(Joins.class);
+        if (joins != null) {
+            for (final String join : joins.value()) {
+                fromBuilder.append(" " + join);
+            }
+        }
+
+        return fromBuilder.toString();
     }
 
     private static void getSelectColumns(final Class<?> klass, final StringBuilder builder) throws Exception {

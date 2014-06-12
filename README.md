@@ -27,16 +27,6 @@ The easiest way to get started with the Arca library is to scaffold a project wi
 levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string age:int"
 ```
 
-### Maven
-
-```xml
-<dependency>
-  <groupId>io.pivotal</groupId>
-  <artifactId>arca</artifactId>
-  <version>1.0-beta</version>
-</dependency>
-```
-
 ### Gradle
 
 ```groovy

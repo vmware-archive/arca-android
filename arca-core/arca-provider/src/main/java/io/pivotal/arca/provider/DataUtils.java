@@ -16,9 +16,11 @@
 package io.pivotal.arca.provider;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.pivotal.arca.utils.Logger;
@@ -91,6 +93,77 @@ public class DataUtils {
             final Class<?> klass = values.getClass();
             final Method method = klass.getMethod("put", String.class, value.getClass());
             method.invoke(values, key, value);
+        }
+    }
+
+    public static <T> List<T> getList(final Cursor cursor, final Class<T> klass) {
+        try {
+            return getObjectsFromCursor(cursor, klass);
+        } catch (final Exception e) {
+            Logger.ex(e);
+            return null;
+        }
+    }
+
+    private static <T> List<T> getObjectsFromCursor(final Cursor cursor, final Class<T> klass) throws IllegalAccessException, InstantiationException {
+        final List<T> objects = new ArrayList<T>();
+        while (cursor.moveToNext()) {
+            final T object = getObjectFromCursor(cursor, klass);
+            objects.add(object);
+        }
+        return objects;
+    }
+
+    private static <T> T getObjectFromCursor(final Cursor cursor, final Class<T> klass) throws IllegalAccessException, InstantiationException {
+        final T object = klass.newInstance();
+        final Field[] fields = klass.getDeclaredFields();
+        for (final Field field : fields) {
+            final ColumnName annotation = field.getAnnotation(ColumnName.class);
+            if (annotation != null) {
+                final int columnIndex = cursor.getColumnIndex(annotation.value());
+                if (columnIndex > -1) {
+                    getFieldFromCursor(cursor, object, field, columnIndex);
+                }
+            }
+        }
+        return object;
+    }
+
+    private static <T> void getFieldFromCursor(final Cursor cursor, final T object, final Field field, int columnIndex) throws IllegalAccessException {
+        field.setAccessible(true);
+
+        final Class<?> type = field.getType();
+        if (type == String.class) {
+            field.set(object, cursor.getString(columnIndex));
+
+        } else if (type == byte[].class) {
+            field.set(object, cursor.getBlob(columnIndex));
+
+        } else if (type == Integer.class || type == int.class) {
+            field.set(object, cursor.getInt(columnIndex));
+
+        } else if (type == Boolean.class || type == boolean.class) {
+            field.set(object, cursor.getInt(columnIndex) != 0);
+
+        } else if (type == Float.class || type == float.class) {
+            field.set(object, cursor.getFloat(columnIndex));
+
+        } else if (type == Long.class || type == long.class) {
+            field.set(object, cursor.getLong(columnIndex));
+
+        } else if (type == Double.class || type == double.class) {
+            field.set(object, cursor.getDouble(columnIndex));
+
+        } else if (type == Short.class || type == short.class) {
+            field.set(object, (short) cursor.getInt(columnIndex));
+
+        } else if (type == Byte.class || type == byte.class) {
+            field.set(object, (byte) cursor.getInt(columnIndex));
+
+        } else if (type == Character.class || type == char.class) {
+            final String string = cursor.getString(columnIndex);
+            final boolean isNotEmpty = string != null && string.length() > 0;
+            field.set(object,  isNotEmpty ? string.charAt(0) : '\0');
         }
     }
 }

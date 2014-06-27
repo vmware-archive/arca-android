@@ -77,7 +77,7 @@ public class PostTable extends SQLiteTable {
 }
 ```
 
-After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and ammending the where arguments to return that single resource when required.
+After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and amending the where arguments to return that single resource when required.
 
 ```java
 @Override
@@ -106,16 +106,16 @@ In order to take advantage of these methods you need to add the `@ColumnName` an
 ```java
 public class Post {
 	
-	@ColumnName(ColumnNames.ID)
+	@ColumnName(Columns.ID)
 	private long mId;
 	
-	@ColumnName(ColumnNames.TEXT)
+	@ColumnName(Columns.TEXT)
 	private String mText;
 	
-	@ColumnName(ColumnNames.USER_ID)
+	@ColumnName(Columns.USER_ID)
 	private long mUserId;
 
-	@ColumnName(ColumnNames.DATE)
+	@ColumnName(Columns.DATE)
 	public long getDate() {
 		return System.currentTimeMillis();
 	}

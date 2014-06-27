@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/arca.iml" filepath="$PROJECT_DIR$/arca.iml" />
       <module fileurl="file://$PROJECT_DIR$/arca-app/arca-adapters/arca-adapters.iml" filepath="$PROJECT_DIR$/arca-app/arca-adapters/arca-adapters.iml" />
+      <module fileurl="file://$PROJECT_DIR$/arca-android.iml" filepath="$PROJECT_DIR$/arca-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/arca-core/arca-broadcaster/arca-broadcaster.iml" filepath="$PROJECT_DIR$/arca-core/arca-broadcaster/arca-broadcaster.iml" />
       <module fileurl="file://$PROJECT_DIR$/arca-app/arca-dispatcher/arca-dispatcher.iml" filepath="$PROJECT_DIR$/arca-app/arca-dispatcher/arca-dispatcher.iml" />
       <module fileurl="file://$PROJECT_DIR$/arca-app/arca-fragments/arca-fragments.iml" filepath="$PROJECT_DIR$/arca-app/arca-fragments/arca-fragments.iml" />

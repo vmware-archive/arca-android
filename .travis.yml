@@ -27,6 +27,6 @@ before_script:
     - emulator -avd test-avd -no-skin -no-audio -no-window &
 
 script:
-    - ./gradlew assemble
+    - ./gradlew clean build
     - ./wait_for_emulator.sh
-    - ./gradlew connectedCheck upload
+    - ./gradlew connectedCheck uploadArchives

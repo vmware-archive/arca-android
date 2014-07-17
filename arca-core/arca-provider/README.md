@@ -13,9 +13,9 @@ If you are planning on persisting data to a SQLiteDatabase you should extend the
 ```java
 public class MyAppContentProvider extends DatabaseProvider {
 
-    private static final String AUTHORITY = "com.mycompany.myapp.providers.MyAppContentProvider";
-    
-    public static final class Uris {
+	private static final String AUTHORITY = "com.mycompany.myapp.providers.MyAppContentProvider";
+	
+	public static final class Uris {
 		public static final Uri POSTS = Uri.parse("content://" + AUTHORITY + "/" + Paths.POSTS);
 		public static final Uri USERS = Uri.parse("content://" + AUTHORITY + "/" + Paths.USERS);
 	}
@@ -73,6 +73,36 @@ public class PostTable extends SQLiteTable {
 
 		@Column(Column.Type.INTEGER)
 		public static final String DATE = "date";
+	}
+}
+```
+
+```java
+public static final class UserPostView extends SQLiteView {
+
+	@SelectFrom("PostTable as posts")
+
+	@Joins({
+		"LEFT JOIN UserTable as users ON posts.user_id = users.id"
+	})
+
+	@OrderBy("posts.date")
+
+	public static interface Columns {
+		@Select("posts.id")
+		public static final String _ID = "_id";
+
+		@Select("posts.text")
+		public static final String TEXT = "text";
+
+		@Select("posts.date")
+		public static final String DATE = "date";
+
+		@Select("users.id")
+		public static final String USER_ID = "user_id";
+
+		@Select("users.name")
+		public static final String USER_NAME = "user_name";
 	}
 }
 ```

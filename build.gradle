@@ -15,31 +15,25 @@ buildscript {
     }
 }
 
-allprojects {
-    apply plugin: 'maven'
+ext.pomProjects = [
+    rootProject,
+    project('arca-app'),
+    project('arca-core')
+]
 
-    group = 'io.pivotal'
-    version = '1.0-beta.3-SNAPSHOT'
-
-    repositories {
-        mavenCentral()
-    }
-
-    uploadArchives {
-        repositories.mavenDeployer {
-
-            def userName = System.getenv('MAVEN_USER')
-            def password = System.getenv('MAVEN_PASS')
-
-            repository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
-                authentication(userName: userName, password: password)
-            }
-        }
-    }
-}
+ext.libProjects = [
+    project('arca-app:arca-adapters'),
+    project('arca-app:arca-dispatcher'),
+    project('arca-app:arca-fragments'),
+    project('arca-app:arca-monitor'),
+    project('arca-core:arca-broadcaster'),
+    project('arca-core:arca-provider'),
+    project('arca-core:arca-service'),
+    project('arca-core:arca-threading'),
+    project('arca-core:arca-utils')
+]
 
 ext.pomInfo = {
-
     name 'Arca Android'
     description 'A comprehensive framework for caching and displaying data.'
     url 'https://github.com/cfmobile/arca-android'
@@ -66,12 +60,31 @@ ext.pomInfo = {
     }
 }
 
-configure([
-    rootProject,
-    project('arca-app'),
-    project('arca-core')
-]) {
 
+allprojects {
+    apply plugin: 'maven'
+
+    group = 'io.pivotal'
+    version = '1.0-beta.3-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    uploadArchives {
+        repositories.mavenDeployer {
+
+            def userName = System.getenv('MAVEN_USER')
+            def password = System.getenv('MAVEN_PASS')
+
+            repository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+                authentication(userName: userName, password: password)
+            }
+        }
+    }
+}
+
+configure(pomProjects) {
     apply plugin: 'java'
 
     uploadArchives {
@@ -85,18 +98,7 @@ configure([
     }
 }
 
-configure([
-    project('arca-app:arca-adapters'),
-    project('arca-app:arca-dispatcher'),
-    project('arca-app:arca-fragments'),
-    project('arca-app:arca-monitor'),
-    project('arca-core:arca-broadcaster'),
-    project('arca-core:arca-provider'),
-    project('arca-core:arca-service'),
-    project('arca-core:arca-threading'),
-    project('arca-core:arca-utils')
-]) {
-
+configure(libProjects) {
     apply plugin: 'android-library'
 
     android {

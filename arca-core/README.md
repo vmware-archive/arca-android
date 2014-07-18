@@ -231,7 +231,7 @@ public class MyAppProviderUtility {
 	}
 
 	public static void populateUserTableAsync(final Context context) {
-		final Uri uri = MyAppContentProvider.Uris.POSTS;
+		final Uri uri = MyAppContentProvider.Uris.USERS;
 		final Operation operation = new GetUserListOperation(uri);
 
 		OperationService.start(context, operation);
@@ -242,7 +242,7 @@ public class MyAppProviderUtility {
 Where each `Operation` is as follows.
 
 ```java
-public class GetPostListOperation extends Operation {
+public class GetPostListOperation extends SimpleOperation<ContentValues[]> {
 
 	public GetPostListOperation(final Uri uri) {
 		super(uri);
@@ -253,10 +253,20 @@ public class GetPostListOperation extends Operation {
 	}
 
 	@Override
-	public Set<Task<?>> onCreateTasks() {
-		final Set<Task<?>> set = new HashSet<Task<?>>();
-		set.add(new GetPostListTask());
-		return set;
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>("get_post_list");
+	}
+
+	@Override
+	public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
+		final Post.ListResponse response = MyAppApi.getPostListResponse();
+		return DataUtils.getContentValues(response);
+	}
+
+	@Override
+	public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
+		final ContentResolver resolver = context.getContentResolver();
+		resolver.bulkInsert(MyAppContentProvider.Uris.POSTS, values);
 	}
 
 	@Override
@@ -281,28 +291,6 @@ public class GetPostListOperation extends Operation {
 			return new GetPostListOperation[size];
 		}
 	};
-
-	public static class GetPostListTask extends Task<ContentValues[]> {
-
-		public GetPostListTask() {}
-
-		@Override
-		public Identifier<?> onCreateIdentifier() {
-			return new Identifier<String>("get_post_list");
-		}
-
-		@Override
-		public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
-			final Post.ListResponse response = MyAppApi.getPostListResponse();
-			return DataUtils.getContentValues(response);
-		}
-
-		@Override
-		public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
-			final ContentResolver resolver = context.getContentResolver();
-			resolver.bulkInsert(MyAppContentProvider.Uris.POSTS, values);
-		}
-	}
 }
 ```
 
@@ -318,10 +306,20 @@ public class GetUserListOperation extends Operation {
 	}
 
 	@Override
-	public Set<Task<?>> onCreateTasks() {
-		final Set<Task<?>> set = new HashSet<Task<?>>();
-		set.add(new GetUserListTask());
-		return set;
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>("get_user_list");
+	}
+
+	@Override
+	public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
+		final User.ListResponse response = MyAppApi.getUserListResponse();
+		return DataUtils.getContentValues(response);
+	}
+
+	@Override
+	public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
+		final ContentResolver resolver = context.getContentResolver();
+		resolver.bulkInsert(MyAppContentProvider.Uris.USERS, values);
 	}
 
 	@Override
@@ -346,27 +344,5 @@ public class GetUserListOperation extends Operation {
 			return new GetUserListOperation[size];
 		}
 	};
-
-	public static class GetUserListTask extends Task<ContentValues[]> {
-
-		public GetUserListTask() {}
-
-		@Override
-		public Identifier<?> onCreateIdentifier() {
-			return new Identifier<String>("get_user_list");
-		}
-
-		@Override
-		public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
-			final User.ListResponse response = MyAppApi.getUserListResponse();
-			return DataUtils.getContentValues(response);
-		}
-
-		@Override
-		public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
-			final ContentResolver resolver = context.getContentResolver();
-			resolver.bulkInsert(MyAppContentProvider.Uris.USERS, values);
-		}
-	}
 }
 ```

@@ -200,6 +200,7 @@ Now we can fetch data and insert it into our `ContentProvider`.
 ```java
 public class MyAppProviderUtility {
 
+	// Synchronously
 	public static void populatePostTable(final Context context) throws Exception {
 		final Post.ListResponse response = MyAppApi.getPostListResponse();
 		final ContentValues[] values = DataUtils.getContentValues(response);
@@ -215,37 +216,29 @@ public class MyAppProviderUtility {
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.bulkInsert(MyAppContentProvider.Uris.USERS, values);
 	}
-}
-```
 
-Or with a bit more work we can do the same thing asynchronously using `Operations`. 
-
-```java
-public class MyAppProviderUtility {
-
+	// Asynchronously
 	public static void populatePostTableAsync(final Context context) {
-		final Uri uri = MyAppContentProvider.Uris.POSTS;
-		final Operation operation = new GetPostListOperation(uri);
+		final Operation operation = new GetPostListOperation();
 
 		OperationService.start(context, operation);
 	}
 
 	public static void populateUserTableAsync(final Context context) {
-		final Uri uri = MyAppContentProvider.Uris.USERS;
-		final Operation operation = new GetUserListOperation(uri);
+		final Operation operation = new GetUserListOperation();
 
 		OperationService.start(context, operation);
 	}
 }
 ```
 
-Where each `Operation` is as follows.
+If we are doing things asynchronously each `Operation` is defined as follows.
 
 ```java
-public class GetPostListOperation extends SimpleOperation<ContentValues[]> {
+public class GetPostListOperation extends SimpleOperation {
 
-	public GetPostListOperation(final Uri uri) {
-		super(uri);
+	public GetPostListOperation() {
+		super(MyAppContentProvider.Uris.POSTS);
 	}
 
 	public GetPostListOperation(final Parcel in) {
@@ -253,31 +246,9 @@ public class GetPostListOperation extends SimpleOperation<ContentValues[]> {
 	}
 
 	@Override
-	public Identifier<?> onCreateIdentifier() {
-		return new Identifier<String>("get_post_list");
-	}
-
-	@Override
-	public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
+	public ContentValues[] onExecute(final Context context) throws Exception {
 		final Post.ListResponse response = MyAppApi.getPostListResponse();
 		return DataUtils.getContentValues(response);
-	}
-
-	@Override
-	public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
-		final ContentResolver resolver = context.getContentResolver();
-		resolver.bulkInsert(MyAppContentProvider.Uris.POSTS, values);
-	}
-
-	@Override
-	public void onSuccess(final Context context, final List<Task<?>> completed) {
-		final ContentResolver resolver = context.getContentResolver();
-		resolver.notifyChange(getUri(), null);
-	}
-
-	@Override
-	public void onFailure(final Context context, final ServiceError serviceError) {
-		// handle failure
 	}
 
 	public static final Parcelable.Creator<GetPostListOperation> CREATOR = new Parcelable.Creator<GetPostListOperation>() {
@@ -295,10 +266,10 @@ public class GetPostListOperation extends SimpleOperation<ContentValues[]> {
 ```
 
 ```java
-public class GetUserListOperation extends Operation {
+public class GetUserListOperation extends SimpleOperation {
 
-	public GetUserListOperation(final Uri uri) {
-		super(uri);
+	public GetUserListOperation() {
+		super(MyAppContentProvider.Uris.USERS);
 	}
 
 	public GetUserListOperation(final Parcel in) {
@@ -306,31 +277,9 @@ public class GetUserListOperation extends Operation {
 	}
 
 	@Override
-	public Identifier<?> onCreateIdentifier() {
-		return new Identifier<String>("get_user_list");
-	}
-
-	@Override
-	public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
+	public ContentValues[] onExecute(final Context context) throws Exception {
 		final User.ListResponse response = MyAppApi.getUserListResponse();
 		return DataUtils.getContentValues(response);
-	}
-
-	@Override
-	public void onExecuteProcessing(final Context context, final ContentValues[] values) throws Exception {
-		final ContentResolver resolver = context.getContentResolver();
-		resolver.bulkInsert(MyAppContentProvider.Uris.USERS, values);
-	}
-
-	@Override
-	public void onSuccess(final Context context, final List<Task<?>> completed) {
-		final ContentResolver resolver = context.getContentResolver();
-		resolver.notifyChange(getUri(), null);
-	}
-
-	@Override
-	public void onFailure(final Context context, final ServiceError serviceError) {
-		// handle failure
 	}
 
 	public static final Parcelable.Creator<GetUserListOperation> CREATOR = new Parcelable.Creator<GetUserListOperation>() {

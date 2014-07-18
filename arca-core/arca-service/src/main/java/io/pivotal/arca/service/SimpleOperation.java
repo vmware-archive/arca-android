@@ -1,15 +1,18 @@
 package io.pivotal.arca.service;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import io.pivotal.arca.threading.Identifier;
 
-public abstract class SimpleOperation<T> extends Operation {
+public abstract class SimpleOperation extends Operation {
 
     public SimpleOperation(final Uri uri, final Priority priority) {
         super(uri, priority);
@@ -30,16 +33,29 @@ public abstract class SimpleOperation<T> extends Operation {
         return set;
     }
 
-    public abstract Identifier<?> onCreateIdentifier();
+    public Identifier<?> onCreateIdentifier() {
+        return new Identifier<Uri>(getUri());
+    }
 
-    public abstract T onExecuteNetworking(final Context context) throws Exception;
+    public abstract ContentValues[] onExecute(final Context context) throws Exception;
 
-    public abstract void onExecuteProcessing(Context context, T data) throws Exception;
+    public void onPostExecute(final Context context, final ContentValues[] values) throws Exception {
+        final ContentResolver resolver = context.getContentResolver();
+        resolver.bulkInsert(getUri(), values);
+    }
 
+    @Override
+    public void onSuccess(final Context context, final List<Task<?>> completed) {
+        final ContentResolver resolver = context.getContentResolver();
+        resolver.notifyChange(getUri(), null);
+    }
 
-    private final class InnerTask extends Task<T> {
+    @Override
+    public void onFailure(final Context context, final ServiceError serviceError) {
+        //do nothing
+    }
 
-        private InnerTask() {}
+    private final class InnerTask extends Task<ContentValues[]> {
 
         @Override
         public Identifier<?> onCreateIdentifier() {
@@ -47,13 +63,13 @@ public abstract class SimpleOperation<T> extends Operation {
         }
 
         @Override
-        public T onExecuteNetworking(final Context context) throws Exception {
-            return SimpleOperation.this.onExecuteNetworking(context);
+        public ContentValues[] onExecuteNetworking(final Context context) throws Exception {
+            return SimpleOperation.this.onExecute(context);
         }
 
         @Override
-        public void onExecuteProcessing(Context context, T data) throws Exception {
-            SimpleOperation.this.onExecuteProcessing(context, data);
+        public void onExecuteProcessing(final Context context, final ContentValues[] data) throws Exception {
+            SimpleOperation.this.onPostExecute(context, data);
         }
     }
 }

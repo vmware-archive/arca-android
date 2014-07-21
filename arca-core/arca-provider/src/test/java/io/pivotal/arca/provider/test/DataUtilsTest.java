@@ -133,6 +133,117 @@ public class DataUtilsTest extends AndroidTestCase {
         assertEquals((byte)0,  model2.mByte2.shortValue());
     }
 
+    public void testDataUtilsConvertsContentValuesArrayToList() {
+
+        final ContentValues[] values = new ContentValues[3];
+        values[0] = new ContentValues();
+        values[0].put("string", "string0");
+        values[0].put("blob", "blob0".getBytes());
+        values[0].put("integer1", 0);
+        values[0].put("integer2", new Integer(0));
+        values[0].put("boolean1", false);
+        values[0].put("boolean2", Boolean.FALSE);
+        values[0].put("float1", 0.0f);
+        values[0].put("float2", new Float(0));
+        values[0].put("long1", 0L);
+        values[0].put("long2", new Long(0));
+        values[0].put("double1", 0.0d);
+        values[0].put("double2", new Double(0));
+        values[0].put("short1", (short)0);
+        values[0].put("short2", new Short((short)0));
+        values[0].put("character1", "0");
+        values[0].put("character2", new String("0"));
+        values[0].put("byte1", (byte)0);
+        values[0].put("byte2", new Byte((byte)0));
+
+        values[1] = new ContentValues();
+        values[1].put("string", "string1");
+        values[1].put("blob", "blob1".getBytes());
+        values[1].put("integer1", 1);
+        values[1].put("integer2", new Integer(1));
+        values[1].put("boolean1", true);
+        values[1].put("boolean2", Boolean.TRUE);
+        values[1].put("float1", 1.0f);
+        values[1].put("float2", new Float(1));
+        values[1].put("long1", 1L);
+        values[1].put("long2", new Long(1));
+        values[1].put("double1", 1.0d);
+        values[1].put("double2", new Double(1));
+        values[1].put("short1", (short)1);
+        values[1].put("short2", new Short((short)1));
+        values[1].put("character1", "1");
+        values[1].put("character2", new String("1"));
+        values[1].put("byte1", (byte)1);
+        values[1].put("byte2", new Byte((byte)1));
+
+        values[2] = new ContentValues();
+
+        final List<TypeModel> models = DataUtils.getList(values, TypeModel.class);
+
+        assertEquals(3, models.size());
+
+        final TypeModel model0 = models.get(0);
+        final TypeModel model1 = models.get(1);
+        final TypeModel model2 = models.get(2);
+
+        assertEquals("string0", model0.mString);
+        assertTrue(Arrays.equals("blob0".getBytes(), model0.mBlob));
+        assertEquals(0, model0.mInteger1);
+        assertEquals(0, model0.mInteger2.intValue());
+        assertFalse(model0.mBoolean1);
+        assertFalse(model0.mBoolean2.booleanValue());
+        assertEquals(0.0f, model0.mFloat1);
+        assertEquals(0.0f, model0.mFloat2.floatValue());
+        assertEquals(0L, model0.mLong1);
+        assertEquals(0L, model0.mLong2.longValue());
+        assertEquals(0.0d, model0.mDouble1);
+        assertEquals(0.0d, model0.mDouble2.doubleValue());
+        assertEquals((short)0,  model0.mShort1);
+        assertEquals((short)0,  model0.mShort2.shortValue());
+        assertEquals('0',  model0.mCharacter1);
+        assertEquals('0',  model0.mCharacter2.charValue());
+        assertEquals((byte)0,  model0.mByte1);
+        assertEquals((byte)0,  model0.mByte2.shortValue());
+
+        assertEquals("string1", model1.mString);
+        assertTrue(Arrays.equals("blob1".getBytes(), model1.mBlob));
+        assertEquals(1, model1.mInteger1);
+        assertEquals(1, model1.mInteger2.intValue());
+        assertTrue(model1.mBoolean1);
+        assertTrue(model1.mBoolean2.booleanValue());
+        assertEquals(1.0f, model1.mFloat1);
+        assertEquals(1.0f, model1.mFloat2.floatValue());
+        assertEquals(1L, model1.mLong1);
+        assertEquals(1L, model1.mLong2.longValue());
+        assertEquals(1.0d, model1.mDouble1);
+        assertEquals(1.0d, model1.mDouble2.doubleValue());
+        assertEquals((short)1,  model1.mShort1);
+        assertEquals((short)1,  model1.mShort2.shortValue());
+        assertEquals('1',  model1.mCharacter1);
+        assertEquals('1',  model1.mCharacter2.charValue());
+        assertEquals((byte)1,  model1.mByte1);
+        assertEquals((byte)1,  model1.mByte2.shortValue());
+
+        assertEquals(null, model2.mString);
+        assertEquals(null, model2.mBlob);
+        assertEquals(0, model2.mInteger1);
+        assertEquals(null, model2.mInteger2);
+        assertFalse(model2.mBoolean1);
+        assertEquals(null, model2.mBoolean2);
+        assertEquals(0.0f, model2.mFloat1);
+        assertEquals(null, model2.mFloat2);
+        assertEquals(0L, model2.mLong1);
+        assertEquals(null, model2.mLong2);
+        assertEquals(0.0d, model2.mDouble1);
+        assertEquals(null, model2.mDouble2);
+        assertEquals((short)0,  model2.mShort1);
+        assertEquals(null,  model2.mShort2);
+        assertEquals('\0',  model2.mCharacter1);
+        assertEquals(null,  model2.mCharacter2);
+        assertEquals((byte)0,  model2.mByte1);
+        assertEquals(null,  model2.mByte2);
+    }
+
     private static final class Model {
 
         @ColumnName("id")

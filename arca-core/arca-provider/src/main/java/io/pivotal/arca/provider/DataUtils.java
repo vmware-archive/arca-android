@@ -167,7 +167,7 @@ public class DataUtils {
         } else if (type == Character.class || type == char.class) {
             final String string = cursor.getString(columnIndex);
             final boolean isNotEmpty = string != null && string.length() > 0;
-            field.set(object,  isNotEmpty ? string.charAt(0) : '\0');
+            field.set(object, isNotEmpty ? string.charAt(0) : '\0');
         }
     }
 
@@ -177,7 +177,7 @@ public class DataUtils {
 
     public static <T> List<T> getList(final ContentValues[] values, final Class<T> klass) {
         final List<T> objects = new ArrayList<T>();
-        for (int i=0; i<values.length; i++) {
+        for (int i = 0; i < values.length; i++) {
             final T object = getObject(values[i], klass);
             if (object != null) {
                 objects.add(object);
@@ -248,12 +248,12 @@ public class DataUtils {
         } else if (type == Character.class) {
             final String string = values.getAsString(value);
             final boolean isNotEmpty = string != null && string.length() > 0;
-            field.set(object,  isNotEmpty ? string.charAt(0) : null);
+            field.set(object, isNotEmpty ? string.charAt(0) : null);
 
         } else if (type == char.class) {
             final String string = values.getAsString(value);
             final boolean isNotEmpty = string != null && string.length() > 0;
-            field.set(object,  isNotEmpty ? string.charAt(0) : '\0');
+            field.set(object, isNotEmpty ? string.charAt(0) : '\0');
         }
     }
 }

@@ -15,7 +15,9 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT),
 		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT),
 	});
-	
+
+	private ArcaViewManager mViewManager;
+
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.fragment_post_list, container, false);
@@ -23,35 +25,31 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 		list.setOnItemClickListener(this);
 		return view;
 	}
-	
+
 	@Override
 	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState) {
 		final ModernCursorAdapter adapter = new ModernCursorAdapter(getActivity(), R.layout.list_item_post, BINDINGS);
 		adapter.setViewBinder(new PostListViewBinder());
 		return adapter;
 	}
-	
+
 	@Override
 	public ArcaDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
 		final ArcaDispatcher dispatcher = super.onCreateDispatcher(savedInstaceState);
 		dispatcher.setRequestMonitor(new PostListMonitor());
 		return dispatcher;
 	}
-	
+
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		
+
+		mViewManager = new ArcaViewManager(view);
+		mViewManager.showProgressView();
+
 		loadPosts();
 	}
-	
-	private void loadPosts() {
-		final Uri contentUri = MyAppContentProvider.Uris.POSTS;
-		final Query request = new Query(contentUri);
-		request.setSortOrder(PostTable.Columns.CREATED_AT.name);
-		execute(request);
-	}
-	
+
 	@Override
 	public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
 		final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
@@ -59,56 +57,26 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 		final String itemId = cursor.getString(columnIndex);
 		PostActivity.newInstance(getActivity(), itemId);
 	}
-}
-```
 
-If you need full control over the state of your UI, you can also take advantage of the various callbacks for content state changes. This simple implementation allows you hide and show content when results are present:
+	private void loadPosts() {
+		final Uri contentUri = MyAppContentProvider.Uris.POSTS;
+		final Query request = new Query(contentUri);
+		request.setSortOrder(PostTable.Columns.CREATED_AT.name);
+		execute(request);
+	}
 
-```java
-@Override
-public void onContentChanged(final QueryResult result) {
-	final CursorAdapter adapter = getCursorAdapter();
-	if (adapter.getCount() > 0) {
-		showResults();
-	} else if (!result.isSyncing()) {
-		showNoResults();
+	@Override
+	public void onContentChanged(final QueryResult result) {
+		mViewManager.checkResult(result);
+	}
+
+	@Override
+	public void onContentError(final Error error) {
+		mViewManager.checkError(error);
 	}
 }
-
-@Override
-public void onContentError(final Error error) {
-	showNoResults();
-	showError(error);
-}
-
-private View getLoadingView() {
-	return getView().findViewById(R.id.loading);
-}
-
-private View getEmptyView() {
-	return getView().findViewById(R.id.empty);
-}
-
-private void showLoading() {
-	getAdapterView().setVisibility(View.INVISIBLE);
-	getLoadingView().setVisibility(View.VISIBLE);
-	getEmptyView().setVisibility(View.INVISIBLE);
-}
-
-private void showResults() {
-	getAdapterView().setVisibility(View.VISIBLE);
-	getLoadingView().setVisibility(View.INVISIBLE);
-	getEmptyView().setVisibility(View.INVISIBLE);
-}
-
-private void showNoResults() {
-	getAdapterView().setVisibility(View.INVISIBLE);
-	getLoadingView().setVisibility(View.INVISIBLE);
-	getEmptyView().setVisibility(View.VISIBLE);
-}
-
-private void showError(final Error error) {
-	final String message = String.format("ERROR: %s", error.getMessage());
-	Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-}
 ```
+
+## ViewManager
+
+By default the `ArcaViewManager` uses the built in `android.R` values to find at manage your view state for you. That means if you have three views with ids `android.R.id.list`, `android.R.id.empty`, and `android.R.id.progress` everything should work out of the box. If you need to customize the behaviour you can use `setContentId()`, `setEmptyId()`, and `setProgressId()` to override which id it looks for in your hierarchy.

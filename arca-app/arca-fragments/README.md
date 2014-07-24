@@ -61,7 +61,7 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 	private void loadPosts() {
 		final Uri contentUri = MyAppContentProvider.Uris.POSTS;
 		final Query request = new Query(contentUri);
-		request.setSortOrder(PostTable.Columns.CREATED_AT.name);
+		request.setSortOrder(PostTable.Columns.CREATED_AT);
 		execute(request);
 	}
 

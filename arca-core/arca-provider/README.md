@@ -13,9 +13,9 @@ If you are planning on persisting data to a SQLiteDatabase you should extend the
 ```java
 public class MyAppContentProvider extends DatabaseProvider {
 
-    private static final String AUTHORITY = "com.mycompany.myapp.providers.MyAppContentProvider";
-    
-    public static final class Uris {
+	private static final String AUTHORITY = "com.mycompany.myapp.providers.MyAppContentProvider";
+	
+	public static final class Uris {
 		public static final Uri POSTS = Uri.parse("content://" + AUTHORITY + "/" + Paths.POSTS);
 		public static final Uri USERS = Uri.parse("content://" + AUTHORITY + "/" + Paths.USERS);
 	}
@@ -55,29 +55,59 @@ If you don't want to persist data in a database but still want to take full adva
 
 ### Datasets
 
-After the request has been filtered through the ContentProvider, an individual Dataset will handle the requested action. If you are persisting data to a SQLiteDatabase you will need to to create your own SQLiteTable subclass. Notice in the example below that we are extending the SQLiteTable.Columns interface and adding our own set of columns. This makes it easy for you to refer back to these column values when querying for data (see [Arca-Dispatcher](../../Arca-App/Arca-Dispatcher)) or binding to views in your adapter (see [Arca-Adapters](../../Arca-App/Arca-Adapters)).
+After the request has been filtered through the ContentProvider, an individual Dataset will handle the requested action. If you are persisting data to a SQLiteDatabase you will need to to create your own SQLiteTable subclass. Notice in the example below that we are extending the SQLiteTable.Columns interface and adding our own set of columns. This makes it easy for you to refer back to these column values when querying for data (see [Arca-Dispatcher](../../arca-app/arca-dispatcher)) or binding to views in your adapter (see [Arca-Adapters](../../arca-app/arca-adapters)).
 
 ```java
 public class PostTable extends SQLiteTable {
 
-	public static interface ColumnNames {
-		public static final String ID = "id";
-		public static final String TEXT = "text";
-		public static final String USER_ID = "user_id";
-		public static final String DATE = "date";
-	}
-
 	public static interface Columns extends SQLiteTable.Columns {
 		@Unique(OnConflict.REPLACE)
-		public static final Column ID = Column.Type.INTEGER.newColumn(ColumnNames.ID);
-		public static final Column TEXT = Column.Type.TEXT.newColumn(ColumnNames.TEXT);
-		public static final Column USER_ID = Column.Type.INTEGER.newColumn(ColumnNames.USER_ID);
-		public static final Column DATE = Column.Type.INTEGER.newColumn(ColumnNames.DATE);
+		@Column(Column.Type.INTEGER)
+		public static final String ID = "id";
+
+		@Column(Column.Type.TEXT)
+		public static final String TEXT = "text";
+
+		@Column(Column.Type.INTEGER)
+		public static final String USER_ID = "user_id";
+
+		@Column(Column.Type.INTEGER)
+		public static final String DATE = "date";
 	}
 }
 ```
 
-After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and ammending the where arguments to return that single resource when required.
+```java
+public static final class UserPostView extends SQLiteView {
+
+	@SelectFrom("PostTable as posts")
+
+	@Joins({
+		"LEFT JOIN UserTable as users ON posts.user_id = users.id"
+	})
+
+	@OrderBy("posts.date")
+
+	public static interface Columns {
+		@Select("posts.id")
+		public static final String _ID = "_id";
+
+		@Select("posts.text")
+		public static final String TEXT = "text";
+
+		@Select("posts.date")
+		public static final String DATE = "date";
+
+		@Select("users.id")
+		public static final String USER_ID = "user_id";
+
+		@Select("users.name")
+		public static final String USER_NAME = "user_name";
+	}
+}
+```
+
+After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and amending the where arguments to return that single resource when required.
 
 ```java
 @Override
@@ -106,16 +136,16 @@ In order to take advantage of these methods you need to add the `@ColumnName` an
 ```java
 public class Post {
 	
-	@ColumnName(ColumnNames.ID)
+	@ColumnName(Columns.ID)
 	private long mId;
 	
-	@ColumnName(ColumnNames.TEXT)
+	@ColumnName(Columns.TEXT)
 	private String mText;
 	
-	@ColumnName(ColumnNames.USER_ID)
+	@ColumnName(Columns.USER_ID)
 	private long mUserId;
 
-	@ColumnName(ColumnNames.DATE)
+	@ColumnName(Columns.DATE)
 	public long getDate() {
 		return System.currentTimeMillis();
 	}

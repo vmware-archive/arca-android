@@ -22,6 +22,16 @@ import android.net.Uri;
 
 public abstract class SQLiteTable extends SQLiteDataset {
 
+    protected static interface Columns {
+        @Column(Column.Type.INTEGER)
+        @ColumnOptions("PRIMARY KEY AUTOINCREMENT")
+        public static final String _ID = "_id";
+
+        @Column(Column.Type.INTEGER)
+        @ColumnOptions("DEFAULT 0")
+        public static final String _STATE = "_state";
+    }
+
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
 		final String columns = DatasetUtils.getColumns(this);

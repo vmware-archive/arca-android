@@ -1,5 +1,12 @@
-language: java
-jdk: oraclejdk7
+language: android
+
+android:
+    components:
+        - build-tools-19.1.0
+        - extra-android-support
+    licenses:
+        - android-sdk-license-5be876d5
+        - android-sdk-license-598b93a6
 
 branches:
     only:
@@ -15,19 +22,11 @@ notifications:
     webhooks:
         - http://pulse.pivotallabs.com/projects/3658562c-a106-4aab-a788-8f39051597e7/status
 
-before_install:
-    # Install base Android SDK
-    - sudo apt-get update -qq; sudo apt-get install -qq libstdc++6:i386 lib32z1
-    - export COMPONENTS=build-tools-19.0.3,android-19,sysimg-19,extra-android-support,extra-android-m2repository,extra-google-m2repository
-    - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-1/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
-    - source ~/.android-sdk-installer/env
-
-    # Create and start emulator
+before_script:
     - echo no | android create avd --force --name test-avd --target android-19 --abi armeabi-v7a
     - emulator -avd test-avd -no-skin -no-audio -no-window &
 
-before_script:
-    - wait_for_emulator
-
 script:
-    - ./gradlew connectedCheck upload
+    - ./gradlew clean build
+    - ./wait_for_emulator.sh
+    - ./gradlew connectedCheck

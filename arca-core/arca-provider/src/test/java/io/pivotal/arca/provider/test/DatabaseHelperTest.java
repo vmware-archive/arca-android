@@ -20,21 +20,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.provider.Column;
-import io.pivotal.arca.provider.Column.Type;
-import io.pivotal.arca.provider.DatabaseConfiguration;
-import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
-import io.pivotal.arca.provider.DatabaseHelper;
-import io.pivotal.arca.provider.SQLiteDataset;
-import io.pivotal.arca.provider.SQLiteTable;
-import io.pivotal.arca.provider.SQLiteView;
-import io.pivotal.arca.provider.Select;
-
 import junit.framework.Assert;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import io.pivotal.arca.provider.Column;
+import io.pivotal.arca.provider.DatabaseConfiguration;
+import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
+import io.pivotal.arca.provider.DatabaseHelper;
+import io.pivotal.arca.provider.SelectFrom;
+import io.pivotal.arca.provider.SQLiteDataset;
+import io.pivotal.arca.provider.SQLiteTable;
+import io.pivotal.arca.provider.SQLiteView;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DatabaseHelperTest extends AndroidTestCase {
@@ -146,15 +145,15 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	public static class TestSQLiteTable extends SQLiteTable {
 
 		public static interface Columns {
-			public static final Column ID = Type.TEXT.newColumn("id");
+            @Column(Column.Type.TEXT)
+            public static final String ID = "id";
 		}
 	}
 
 	public static class TestSQLiteView extends SQLiteView {
 
-		@Select("SELECT * FROM (TestSQLiteTable)")
-		public static interface Columns extends TestSQLiteTable.Columns {
-		}
+        @SelectFrom("TestSQLiteTable")
+		public static interface Columns {}
 
 	}
 

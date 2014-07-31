@@ -22,11 +22,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Column {
+public @interface ColumnOptions {
 
-    public static enum Type {
-        INTEGER, REAL, TEXT, BLOB, NONE
-    }
+	String value();
 
-    Type value();
 }

@@ -21,15 +21,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import io.pivotal.arca.provider.Column;
 import io.pivotal.arca.provider.DatabaseConfiguration;
 import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 import io.pivotal.arca.provider.DatabaseHelper;
 import io.pivotal.arca.provider.SQLiteDataset;
 import io.pivotal.arca.provider.SQLiteTable;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class SQLiteDatasetTest extends AndroidTestCase {
 
@@ -116,7 +116,8 @@ public class SQLiteDatasetTest extends AndroidTestCase {
 	public static final class TestSQLiteTable extends SQLiteTable {
 
 		public static interface Columns {
-			public static final Column ID = Column.Type.TEXT.newColumn("id");
+            @Column(Column.Type.TEXT)
+            public static final String ID = "id";
 		}
 
 		@Override

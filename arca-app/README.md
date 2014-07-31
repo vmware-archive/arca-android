@@ -18,7 +18,7 @@ The Arca Monitor package adds a layer on top of the Arca Dispatcher that allows 
 
 ## Fetching data from your Content Provider
 
-You can easily query data from a `ContentProvider` within your activity or fragment. In the asynchronous case all queries are made using a `CursorLoader`.
+You can easily query data from a `ContentProvider` within your activity or fragment. In the asynchronous case all queries are made using a `CursorLoader` and the result is returned to you via a listener.
 
 ```java
 public class UserListActivity extends Activity {
@@ -66,7 +66,7 @@ public class UserListActivity extends Activity {
 If you have an adapter view in your layout you can use the `ArcaAdapterFragment` in conjunction with the `CursorAdapters` that are included in the framework and your layout will be automatically populated for you.
 
 ```java
-public class UserListFragment extends ArcaAdapterFragment implements OnItemClickListener {
+public class UserListFragment extends ArcaAdapterFragment {
 
 	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] {
 		new Binding(R.id.user_id, UserTable.Columns.ID),

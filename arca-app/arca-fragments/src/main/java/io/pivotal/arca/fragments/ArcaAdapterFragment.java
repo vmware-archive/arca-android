@@ -31,6 +31,7 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState);
 
 	private AdapterView<CursorAdapter> mAdapterView;
+    private CursorAdapter mAdapter;
 
 	@Override
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -51,8 +52,10 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 
 	@SuppressWarnings("unchecked")
 	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
+        mAdapter = onCreateAdapter(mAdapterView, savedInstanceState);
+
 		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(getAdapterViewId());
-		mAdapterView.setAdapter(onCreateAdapter(mAdapterView, savedInstanceState));
+		mAdapterView.setAdapter(mAdapter);
 	}
 
 	public int getAdapterViewId() {
@@ -64,12 +67,7 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 	}
 
 	public CursorAdapter getCursorAdapter() {
-		final AdapterView<CursorAdapter> adapterView = getAdapterView();
-		if (adapterView != null) {
-			return adapterView.getAdapter();
-		} else {
-			return null;
-		}
+		return mAdapter;
 	}
 
 	@Override

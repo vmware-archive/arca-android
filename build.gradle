@@ -1,4 +1,3 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply plugin: 'java'
 
 dependencies {
@@ -16,21 +15,21 @@ buildscript {
 }
 
 ext.pomProjects = [
-    rootProject,
-    project('arca-app'),
-    project('arca-core')
+        rootProject,
+        project('arca-app'),
+        project('arca-core')
 ]
 
 ext.libProjects = [
-    project('arca-app:arca-adapters'),
-    project('arca-app:arca-dispatcher'),
-    project('arca-app:arca-fragments'),
-    project('arca-app:arca-monitor'),
-    project('arca-core:arca-broadcaster'),
-    project('arca-core:arca-provider'),
-    project('arca-core:arca-service'),
-    project('arca-core:arca-threading'),
-    project('arca-core:arca-utils')
+        project('arca-app:arca-adapters'),
+        project('arca-app:arca-dispatcher'),
+        project('arca-app:arca-fragments'),
+        project('arca-app:arca-monitor'),
+        project('arca-core:arca-broadcaster'),
+        project('arca-core:arca-provider'),
+        project('arca-core:arca-service'),
+        project('arca-core:arca-threading'),
+        project('arca-core:arca-utils')
 ]
 
 ext.pomInfo = {
@@ -55,7 +54,7 @@ ext.pomInfo = {
         developer {
             id 'jwinters'
             name 'Joshua Winters'
-            email 'jwinters@gopivotal.com'
+            email 'jwinters@pivotal.io'
         }
     }
 }
@@ -65,7 +64,7 @@ allprojects {
     apply plugin: 'maven'
 
     group = 'io.pivotal'
-    version = '1.0-beta.3-SNAPSHOT'
+    version = '1.0-beta.4-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -73,11 +72,14 @@ allprojects {
 
     uploadArchives {
         repositories.mavenDeployer {
-
             def userName = System.getenv('MAVEN_USER')
             def password = System.getenv('MAVEN_PASS')
 
-            repository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: userName, password: password)
+            }
+
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
                 authentication(userName: userName, password: password)
             }
         }
@@ -140,6 +142,10 @@ configure(libProjects) {
     uploadArchives {
         repositories.mavenDeployer {
             pom.project pomInfo
+
+            pom.whenConfigured {
+                pom -> pom.packaging = 'jar'
+            }
         }
     }
 }

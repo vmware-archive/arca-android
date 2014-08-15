@@ -27,6 +27,65 @@ import io.pivotal.arca.utils.Logger;
 
 public class DataUtils {
 
+
+    public static ContentValues[] getContentValues(final Cursor cursor, final Class<?> klass) {
+        final ContentValues[] values = new ContentValues[cursor.getCount()];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = getContentValues(cursor, klass,i);
+        }
+        return values;
+    }
+
+    public static ContentValues getContentValues(final Cursor cursor, final Class<?> klass, final int position) {
+        final ContentValues values = new ContentValues();
+        try {
+            if (cursor.moveToPosition(position)) {
+                getColumns(cursor, klass, values);
+            }
+        } catch (final Exception e) {
+            Logger.ex(e);
+        }
+        return values;
+    }
+
+    private static void getColumns(final Cursor cursor, final Class<?> klass, final ContentValues values) throws Exception {
+        final Field[] fields = klass.getFields();
+        for (final Field field : fields) {
+            getField(cursor, field, values);
+        }
+
+        final Class<?>[] klasses = klass.getDeclaredClasses();
+        for (int i = 0; i < klasses.length; i++) {
+            getColumns(cursor, klasses[i], values);
+        }
+    }
+
+    private static void getField(final Cursor cursor, final Field field, final ContentValues values) throws Exception {
+        final Column columnType = field.getAnnotation(Column.class);
+        if (columnType != null) {
+
+            final String columnName = (String) field.get(null);
+            final int columnIndex = cursor.getColumnIndex(columnName);
+
+            if (columnType.value() == Column.Type.TEXT) {
+                values.put(columnName, cursor.getString(columnIndex));
+
+            } else if (columnType.value() == Column.Type.BLOB) {
+                values.put(columnName, cursor.getBlob(columnIndex));
+
+            } else if (columnType.value() == Column.Type.INTEGER) {
+                values.put(columnName, cursor.getInt(columnIndex));
+
+            } else if (columnType.value() == Column.Type.REAL) {
+                values.put(columnName, cursor.getFloat(columnIndex));
+            }
+        }
+    }
+
+
+    // ================================================
+
+
     public static ContentValues[] getContentValues(final List<?> list) {
         return getContentValues(list, null);
     }

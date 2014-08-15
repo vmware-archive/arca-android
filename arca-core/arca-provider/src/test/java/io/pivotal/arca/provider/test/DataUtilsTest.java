@@ -23,10 +23,71 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.pivotal.arca.provider.Column;
 import io.pivotal.arca.provider.ColumnName;
 import io.pivotal.arca.provider.DataUtils;
 
 public class DataUtilsTest extends AndroidTestCase {
+
+    private static final class TestTable {
+        public static final class Columns {
+            @Column(Column.Type.TEXT)
+            public static final String STRING = "string";
+
+            @Column(Column.Type.BLOB)
+            public static final String BLOB = "blob";
+
+            @Column(Column.Type.INTEGER)
+            public static final String INTEGER = "integer1";
+
+            @Column(Column.Type.REAL)
+            public static final String FLOAT = "float1";
+        }
+    }
+
+    public void testDataUtilsConvertsEmptyCursorToContentValues() {
+        final MatrixCursor cursor = new MatrixCursor(new String[]{
+            "string", "blob", "integer1", "float1"
+        });
+
+        final ContentValues[] values = DataUtils.getContentValues(cursor, TestTable.class);
+
+        assertEquals(0, values.length);
+    }
+
+    public void testDataUtilsConvertsCursorToContentValues() {
+        final MatrixCursor cursor = new MatrixCursor(new String[]{
+            "string", "blob", "integer1", "integer2", "boolean1", "boolean2", "float1", "float2", "long1", "long2", "double1", "double2","short1", "short2", "character1", "character2", "byte1", "byte2"
+        });
+
+        cursor.addRow(new Object[]{ "string0", "blob0".getBytes(), 0, 0, 0, 0, 0.0f, 0.0f, 0L, 0L, 0.0d, 0.0d, (short)0, (short)0, '0', '0', (byte)0, (byte)0 });
+        cursor.addRow(new Object[]{ "string1", "blob1".getBytes(), 1, 1, 1, 1, 1.0f, 1.0f, 1L, 1L, 1.0d, 1.0d, (short)1, (short)1, '1', '1', (byte)1, (byte)1 });
+        cursor.addRow(new Object[]{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null });
+
+        final ContentValues[] values = DataUtils.getContentValues(cursor, TestTable.class);
+
+        final ContentValues values0 = values[0];
+        final ContentValues values1 = values[1];
+        final ContentValues values2 = values[2];
+
+        assertEquals(3, values.length);
+
+        assertEquals("string0", values0.getAsString("string"));
+        assertTrue(Arrays.equals("blob0".getBytes(), values0.getAsByteArray("blob")));
+        assertEquals(0, values0.getAsInteger("integer1").intValue());
+        assertEquals(0.0f, values0.getAsFloat("float1").floatValue());
+
+        assertEquals("string1", values1.getAsString("string"));
+        assertTrue(Arrays.equals("blob1".getBytes(), values1.getAsByteArray("blob")));
+        assertEquals(1, values1.getAsInteger("integer1").intValue());
+        assertEquals(1.0f, values1.getAsFloat("float1").floatValue());
+
+        assertEquals(null, values2.getAsString("string"));
+        assertEquals(null, values2.getAsByteArray("blob"));
+        assertEquals(0, values2.getAsInteger("integer1").intValue());
+        assertEquals(0.0f, values2.getAsFloat("float1").floatValue());
+    }
+
 
     public void testDataUtilsConvertsEmptyListToContentValues() {
         final List<Model> models = new ArrayList<Model>();
@@ -65,7 +126,7 @@ public class DataUtilsTest extends AndroidTestCase {
 
         cursor.addRow(new Object[]{ "string0", "blob0".getBytes(), 0, 0, 0, 0, 0.0f, 0.0f, 0L, 0L, 0.0d, 0.0d, (short)0, (short)0, '0', '0', (byte)0, (byte)0 });
         cursor.addRow(new Object[]{ "string1", "blob1".getBytes(), 1, 1, 1, 1, 1.0f, 1.0f, 1L, 1L, 1.0d, 1.0d, (short)1, (short)1, '1', '1', (byte)1, (byte)1 });
-        cursor.addRow(new Object[]{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null});
+        cursor.addRow(new Object[]{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null });
 
         final List<TypeModel> models = DataUtils.getList(cursor, TypeModel.class);
 

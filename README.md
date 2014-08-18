@@ -21,7 +21,7 @@ The Arca App package makes it really easy to fetch data from a ContentProvider a
 
 ### Levo
 
-The easiest way to get started with the Arca library is to scaffold a project with the [levo command line tool](https://github.com/cfmobile/levo).
+The easiest way to get started with the Arca library is to scaffold a project with the [levo cli](https://github.com/cfmobile/levo).
 
 ```bash
 levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string age:int"

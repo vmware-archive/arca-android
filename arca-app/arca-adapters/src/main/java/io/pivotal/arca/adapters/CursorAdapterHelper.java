@@ -15,14 +15,14 @@
  */
 package io.pivotal.arca.adapters;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.view.View;
+
 import java.util.Collection;
 import java.util.List;
 
 import io.pivotal.arca.adapters.ViewBinder.DefaultViewBinder;
-
-import android.content.Context;
-import android.database.Cursor;
-import android.view.View;
 
 public class CursorAdapterHelper {
 
@@ -62,7 +62,7 @@ public class CursorAdapterHelper {
 		}
 
 		if (!bound) {
-			throw new IllegalStateException("Connot bind to view: " + view);
+			throw new IllegalStateException("Cannot bind to view: " + view);
 		}
 	}
 }

@@ -75,7 +75,7 @@ allprojects {
             def userName = System.getenv('MAVEN_USER')
             def password = System.getenv('MAVEN_PASS')
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
                 authentication(userName: userName, password: password)
             }
 

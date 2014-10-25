@@ -62,6 +62,11 @@ public class DatasetUtils {
         final StringBuilder selectBuilder = new StringBuilder();
         selectBuilder.append(selectString);
 
+        final Where where = klass.getAnnotation(Where.class);
+        if (where != null) {
+            selectBuilder.append(String.format(" WHERE %s", where.value()));
+        }
+
         final GroupBy groupBy = klass.getAnnotation(GroupBy.class);
         if (groupBy != null) {
             selectBuilder.append(String.format(" GROUP BY %s", groupBy.value()));

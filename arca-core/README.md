@@ -116,7 +116,91 @@ public class MyAppContentProvider extends DatabaseProvider {
 
 ## Populating your Content Provider
 
-In order to populate our `ContentProvider` we first need to define a set of API calls that will correspond to each `Dataset`.
+Now in order to populate our `ContentProvider` we can use the `OperationService` to send asynchronous requests to fetch data from the server.
+
+
+```java
+public class MyAppRequests {
+
+	public static void requestPosts(final Context context) {
+		final Operation operation = new GetPostListOperation();
+
+		OperationService.start(context, operation);
+	}
+
+	public static void requestUsers(final Context context) {
+		final Operation operation = new GetUserListOperation();
+
+		OperationService.start(context, operation);
+	}
+}
+```
+
+In our case we define an `Operation` for Users and Posts as follows.
+
+```java
+public class GetPostListOperation extends SimpleOperation {
+
+	public GetPostListOperation() {
+		super(MyAppContentProvider.Uris.POSTS);
+	}
+
+	public GetPostListOperation(final Parcel in) {
+		super(in);
+	}
+
+	@Override
+	public ContentValues[] onExecute(final Context context) throws Exception {
+		final Post.ListResponse response = MyAppApi.getPostListResponse();
+		return DataUtils.getContentValues(response);
+	}
+
+	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+		@Override
+		public GetPostListOperation createFromParcel(final Parcel in) {
+			return new GetPostListOperation(in);
+		}
+
+		@Override
+		public GetPostListOperation[] newArray(final int size) {
+			return new GetPostListOperation[size];
+		}
+	};
+}
+```
+
+```java
+public class GetUserListOperation extends SimpleOperation {
+
+	public GetUserListOperation() {
+		super(MyAppContentProvider.Uris.USERS);
+	}
+
+	public GetUserListOperation(final Parcel in) {
+		super(in);
+	}
+
+	@Override
+	public ContentValues[] onExecute(final Context context) throws Exception {
+		final User.ListResponse response = MyAppApi.getUserListResponse();
+		return DataUtils.getContentValues(response);
+	}
+
+	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+		@Override
+		public GetUserListOperation createFromParcel(final Parcel in) {
+			return new GetUserListOperation(in);
+		}
+
+		@Override
+		public GetUserListOperation[] newArray(final int size) {
+			return new GetUserListOperation[size];
+		}
+	};
+}
+```
+
+In the `onExecute` method we are invoking our `MyAppApi` class which fetches json data from the server and converts it into models using Gson.
 
 ```java
 public class MyAppApi {
@@ -143,7 +227,7 @@ public class MyAppApi {
 }
 ```
 
-Since we will be using `Gson` to fetch our data we also need to define our annotated models.
+The Post and User models are defined below. In order for the `DataUtils.getContentValues()` method to be able to convert your model into a `ContentValues` object you will need to include a `@ColumnName` annotation on each field you want saved.
 
 ```java
 public static class Post {
@@ -192,106 +276,5 @@ public static class User {
 	@ColumnName(UserTable.Columns.AGE)
 	@SerializedName("age")
 	private int mAge;
-}
-```
-
-Now we can fetch data and insert it into our `ContentProvider`.
-
-```java
-public class MyAppProviderUtility {
-
-	// Synchronously
-	public static void populatePostTable(final Context context) throws Exception {
-		final Post.ListResponse response = MyAppApi.getPostListResponse();
-		final ContentValues[] values = DataUtils.getContentValues(response);
-
-		final ContentResolver resolver = context.getContentResolver();
-		resolver.bulkInsert(MyAppContentProvider.Uris.POSTS, values);
-	}
-
-	public static void populateUserTable(final Context context) throws Exception {
-		final User.ListResponse response = MyAppApi.getUserListResponse();
-		final ContentValues[] values = DataUtils.getContentValues(response);
-
-		final ContentResolver resolver = context.getContentResolver();
-		resolver.bulkInsert(MyAppContentProvider.Uris.USERS, values);
-	}
-
-	// Asynchronously
-	public static void populatePostTableAsync(final Context context) {
-		final Operation operation = new GetPostListOperation();
-
-		OperationService.start(context, operation);
-	}
-
-	public static void populateUserTableAsync(final Context context) {
-		final Operation operation = new GetUserListOperation();
-
-		OperationService.start(context, operation);
-	}
-}
-```
-
-If we are doing things asynchronously each `Operation` is defined as follows.
-
-```java
-public class GetPostListOperation extends SimpleOperation {
-
-	public GetPostListOperation() {
-		super(MyAppContentProvider.Uris.POSTS);
-	}
-
-	public GetPostListOperation(final Parcel in) {
-		super(in);
-	}
-
-	@Override
-	public ContentValues[] onExecute(final Context context) throws Exception {
-		final Post.ListResponse response = MyAppApi.getPostListResponse();
-		return DataUtils.getContentValues(response);
-	}
-
-	public static final Parcelable.Creator<GetPostListOperation> CREATOR = new Parcelable.Creator<GetPostListOperation>() {
-		@Override
-		public GetPostListOperation createFromParcel(final Parcel in) {
-			return new GetPostListOperation(in);
-		}
-
-		@Override
-		public GetPostListOperation[] newArray(final int size) {
-			return new GetPostListOperation[size];
-		}
-	};
-}
-```
-
-```java
-public class GetUserListOperation extends SimpleOperation {
-
-	public GetUserListOperation() {
-		super(MyAppContentProvider.Uris.USERS);
-	}
-
-	public GetUserListOperation(final Parcel in) {
-		super(in);
-	}
-
-	@Override
-	public ContentValues[] onExecute(final Context context) throws Exception {
-		final User.ListResponse response = MyAppApi.getUserListResponse();
-		return DataUtils.getContentValues(response);
-	}
-
-	public static final Parcelable.Creator<GetUserListOperation> CREATOR = new Parcelable.Creator<GetUserListOperation>() {
-		@Override
-		public GetUserListOperation createFromParcel(final Parcel in) {
-			return new GetUserListOperation(in);
-		}
-
-		@Override
-		public GetUserListOperation[] newArray(final int size) {
-			return new GetUserListOperation[size];
-		}
-	};
 }
 ```

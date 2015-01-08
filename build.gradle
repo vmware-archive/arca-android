@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
@@ -120,12 +120,12 @@ configure(libProjects) {
     }
 
     task jarClasses(type: Jar, dependsOn: assembleRelease) {
-        from fileTree(dir: 'build/classes/release')
+        from fileTree(dir: 'build/intermediates/classes/release')
     }
 
     task jarSources(type: Jar) {
         classifier = 'sources'
-        from android.sourceSets.main.java
+        from android.sourceSets.main.java.srcDirs
     }
 
     task jarJavadoc(type: Jar) {

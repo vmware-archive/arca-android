@@ -18,7 +18,7 @@ OperationService.start(context, new GetDataOperation(uri));
 
 **Note:** *This class must be declared in the AndroidManifest.xml file as follows:*
 ```xml
-<service android:name="com.arca.service.OperationService" android:exported="false" />
+<service android:name="io.pivotal.arca.service.OperationService" android:exported="false" />
 ```
 
 ### Operations

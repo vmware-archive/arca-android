@@ -34,8 +34,8 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 	}
 
 	@Override
-	public ArcaDispatcher onCreateDispatcher(final Bundle savedInstaceState) {
-		final ArcaDispatcher dispatcher = super.onCreateDispatcher(savedInstaceState);
+	public ArcaDispatcher onCreateDispatcher(final Bundle savedInstanceState) {
+		final ArcaDispatcher dispatcher = super.onCreateDispatcher(savedInstanceState);
 		dispatcher.setRequestMonitor(new PostListMonitor());
 		return dispatcher;
 	}

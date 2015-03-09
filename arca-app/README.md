@@ -18,79 +18,69 @@ The Arca Monitor package adds a layer on top of the Arca Dispatcher that allows 
 
 ## Fetching data from your Content Provider
 
-You can easily query data from a `ContentProvider` within your activity or fragment. In the asynchronous case all queries are made using a `CursorLoader` and the result is returned to you via a listener.
+The easiest way to take advantage of all the features in the Arca App package is by creating your own subclass of `ArcaSimpleAdapterFragment` or `ArcaSimpleItemFragment` with an `@ArcaFragment` annotation. These fragment subclasses will create an `ArcaDispatcher` and use it to fetch data asynchronously from your `ContentProvider` every time a `Query` is executed. These fragments will also handle the resulting cursor and properly manage the view state of your fragment.
 
 ```java
-public class UserListActivity extends Activity {
+@ArcaFragment(
+    fragmentLayout = R.layout.fragment_user_list,
+    adapterItemLayout = R.layout.list_item_user,
+    monitor = UserListRequestMonitor.class,
+    binder = UserListViewBinder.class
+)
+public class UserListFragment extends ArcaSimpleAdapterFragment {
 
-	private RequestDispatcher mDispatcher;
+    @ArcaFragmentBindings
+    private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] {
+        new Binding(R.id.user_id, UserTable.Columns.ID),
+        new Binding(R.id.user_name, UserTable.Columns.NAME),
+        new Binding(R.id.user_age, UserTable.Columns.AGE)
+    });
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_user_list);
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-		mDispatcher = ArcaDispatcherFactory.generateDispatcher(this);
-	}
+        final Query request = new Query(MyAppContentProvider.Uris.USERS);
+        request.setSortOrder(UserTable.Columns.NAME);
 
-	public void fetchUsers() {
-		final Query request = new Query(MyAppContentProvider.Uris.USERS);
-		final QueryResult result = mDispatcher.execute(request);
-
-		final Cursor cursor = result.getResult();
-
-		// do something with cursor
-
-		cursor.close();
-	}
-
-	public void fetchUsersAsync() {
-		final Query request = new Query(MyAppContentProvider.Uris.USERS);
-
-		mDispatcher.execute(request, new QueryListener() {
-
-			@Override
-			public void onRequestComplete(final QueryResult result) {
-				// closing cursor is not necessary
-			}
-
-			@Override
-			public void onRequestReset() {
-
-			}
-		});
-	}
+        execute(request);
+    }
 }
 ```
 
-If you have an adapter view in your layout you can use the `ArcaAdapterFragment` in conjunction with the `CursorAdapters` that are included in the framework and your layout will be automatically populated for you.
 
 ```java
-public class UserListFragment extends ArcaAdapterFragment {
+@ArcaFragment(
+    fragmentLayout = R.layout.fragment_user_item,
+    monitor = UserItemRequestMonitor.class,
+    binder = UserItemViewBinder.class
+)
+public class UserItemFragment extends ArcaSimpleItemFragment {
 
-	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] {
-		new Binding(R.id.user_id, UserTable.Columns.ID),
-		new Binding(R.id.user_name, UserTable.Columns.NAME),
-		new Binding(R.id.user_age, UserTable.Columns.AGE),
-	});
+    @ArcaFragmentBindings
+    private static final Collection<Binding> BINDINGS = Arrays.asList(
+        new Binding(R.id.user_id, UserTable.Columns.ID),
+        new Binding(R.id.user_name, UserTable.Columns.NAME),
+        new Binding(R.id.user_age, UserTable.Columns.AGE)
+    );
 
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_user_list, container, false);
-	}
+    private String mIdentifier;
 
-	@Override
-	public CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState) {
-		return new ModernCursorAdapter(getActivity(), R.layout.list_item_user, BINDINGS);
-	}
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-	@Override
-	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+        final String whereClause = UserTable.Columns.ID + "=?";
+        final String[] whereArgs = new String[] { mIdentifier };
 
-		final Uri uri = MyAppContentProvider.Uris.USERS;
-		final Query request = new Query(uri);
-		execute(request);
-	}
+        final Query request = new Query(MyAppContentProvider.Uris.USERS);
+        request.setWhere(whereClause, whereArgs);
+
+        execute(request);
+    }
+
+    public void setIdentifier(final String identifier) {
+        mIdentifier = identifier;
+    }
 }
 ```

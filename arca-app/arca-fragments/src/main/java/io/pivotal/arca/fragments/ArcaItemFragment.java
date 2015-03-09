@@ -31,12 +31,13 @@ public abstract class ArcaItemFragment extends ArcaQueryFragment {
 
 	private CursorAdapter mAdapter;
 
-	@Override
-	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+    @Override
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-		setupAdapterView(view, savedInstanceState);
-	}
+        setupAdapterView(view, savedInstanceState);
+    }
 
 	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
 		mAdapter = onCreateAdapter(view, savedInstanceState);

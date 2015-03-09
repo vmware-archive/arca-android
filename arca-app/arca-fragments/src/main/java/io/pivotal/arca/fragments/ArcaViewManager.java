@@ -12,7 +12,8 @@ public class ArcaViewManager {
 
     private int mProgressId = android.R.id.progress;
     private int mEmptyId = android.R.id.empty;
-    private int mContentId = android.R.id.list;
+    private int mContentId = android.R.id.content;
+    private int mListId = android.R.id.list;
 
     public ArcaViewManager(final View view) {
         mView = view;
@@ -43,7 +44,8 @@ public class ArcaViewManager {
     }
 
     private View getContentView() {
-        return getView().findViewById(mContentId);
+        final View content = getView().findViewById(mContentId);
+        return content != null ? content : getView().findViewById(mListId);
     }
 
     public void showProgressView() {

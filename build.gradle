@@ -72,15 +72,13 @@ allprojects {
 
     uploadArchives {
         repositories.mavenDeployer {
-            def userName = System.getenv('MAVEN_USER')
-            def password = System.getenv('MAVEN_PASS')
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-                authentication(userName: userName, password: password)
+                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
             }
 
             snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
-                authentication(userName: userName, password: password)
+                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
             }
         }
     }
@@ -101,7 +99,7 @@ configure(pomProjects) {
 }
 
 configure(libProjects) {
-    apply plugin: 'android-library'
+    apply plugin: 'com.android.library'
 
     android {
         compileSdkVersion 21

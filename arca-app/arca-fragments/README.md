@@ -1,12 +1,49 @@
 # Arca-Fragments
 
-The Arca Fragments package manages an Arca Dispatcher object which lets you easily execute a Query, Update, Insert or Delete request. It also allows you to register an Arca Monitor to observe callbacks before and after each request is executed.
+The Arca Fragments package manages an `ArcaDispatcher` object which lets you easily execute a `Query`, `Update`, `Insert` or `Delete` request. It also allows you to register an `ArcaMonitor` to observe callbacks before and after each request is executed.
 
-The ArcaAdapterFragment has a convenience method that lets you execute Queries and automatically takes care of the the QueryResult by ripping out the cursor and swapping it in your adapter.
+The `ArcaAdapterFragment` has a convenience method that lets you execute a `Query` and automatically takes care of the the `QueryResult` by ripping out the cursor and swapping it in your adapter.
+
+The `ArcaSimpleAdapterFragment` reduces the amount of boiler plate code required by allowing you to specify all your layouts and components in an `@ArcaFragment` annotation.
 
 ## Usage
 
-The example below shows a simple example of a fragment that displays a list of Posts.
+The easiest way to get started with Arca Fragments is with the `@ArcaFragment` annotation. The example below demonstrates how to display a list of Posts.
+
+```java
+@ArcaFragment(
+    fragmentLayout = R.layout.fragment_post_list,
+    adapterItemLayout = R.layout.list_item_post,
+    monitor = PostListMonitor.class,
+    binder = PostListViewBinder.class
+)
+public class PostListFragment extends ArcaSimpleAdapterFragment {
+
+    @ArcaFragmentBindings
+	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] {
+		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT),
+		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT),
+	});
+
+	@Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        loadPosts();
+    }
+
+    private void loadPosts() {
+        final Uri contentUri = MyAppContentProvider.Uris.POSTS;
+        final Query request = new Query(contentUri);
+        request.setSortOrder(PostTable.Columns.CREATED_AT);
+        execute(request);
+    }
+}
+```
+
+
+Instead of using the annotations above, you can setup your fragment manually:
+
 
 ```java
 public class PostListFragment extends ArcaAdapterFragment implements OnItemClickListener {
@@ -79,4 +116,20 @@ public class PostListFragment extends ArcaAdapterFragment implements OnItemClick
 
 ## ViewManager
 
-By default the `ArcaViewManager` uses the built in `android.R` values to find at manage your view state for you. That means if you have three views with ids `android.R.id.list`, `android.R.id.empty`, and `android.R.id.progress` everything should work out of the box. If you need to customize the behaviour you can use `setContentId()`, `setEmptyId()`, and `setProgressId()` to override which id it looks for in your hierarchy.
+By default the `ArcaViewManager` uses the built in `android.R.id` values to find at manage 3 different view states in your fragment.
+
+#### Progress
+
+The view manager looks for a view with id `android.R.id.progress` to display when content is loading.
+
+#### Content
+
+The view manager looks for a view with id `android.R.id.content` or `android.R.id.list` to display when the cursor has content to display.
+
+#### Empty
+
+The view manager looks for a view with id `android.R.id.empty` to display when the cursor has no content to display.
+
+### Customization
+
+You can use `setContentId(final int id)`, `setEmptyId(final int id)`, and `setProgressId(final int id)` to override which id it looks for in your hierarchy.

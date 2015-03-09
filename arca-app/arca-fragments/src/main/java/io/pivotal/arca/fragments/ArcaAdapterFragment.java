@@ -41,7 +41,7 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 		setupAdapterView(view, savedInstanceState);
 	}
 
-	@Override
+    @Override
 	public void onStart() {
 		super.onStart();
 
@@ -52,10 +52,11 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 
 	@SuppressWarnings("unchecked")
 	private void setupAdapterView(final View view, final Bundle savedInstanceState) {
+        mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(getAdapterViewId());
+
         mAdapter = onCreateAdapter(mAdapterView, savedInstanceState);
 
-		mAdapterView = (AdapterView<CursorAdapter>) view.findViewById(getAdapterViewId());
-		mAdapterView.setAdapter(mAdapter);
+        mAdapterView.setAdapter(mAdapter);
 	}
 
 	public int getAdapterViewId() {
@@ -86,11 +87,11 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 		onContentReset();
 	}
 
-	protected void onContentChanged(final QueryResult result) {
-	}
+    protected void onContentChanged(final QueryResult result) {
+    }
 
-	protected void onContentError(final Error error) {
-	}
+    protected void onContentError(final Error error) {
+    }
 
 	protected void onContentReset() {
 	}

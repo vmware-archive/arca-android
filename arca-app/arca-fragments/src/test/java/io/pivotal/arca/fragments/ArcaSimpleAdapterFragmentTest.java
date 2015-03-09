@@ -17,6 +17,8 @@ package io.pivotal.arca.fragments;
 
 import android.test.AndroidTestCase;
 
-public class ArcaQuerySupportFragmentTest extends AndroidTestCase {
+public class ArcaSimpleAdapterFragmentTest extends AndroidTestCase {
+
+
 
 }

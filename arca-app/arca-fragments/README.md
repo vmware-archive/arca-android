@@ -20,10 +20,10 @@ The easiest way to get started with Arca Fragments is with the `@ArcaFragment` a
 public class PostListFragment extends ArcaSimpleAdapterFragment {
 
     @ArcaFragmentBindings
-	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] {
+	private static final Collection<Binding> BINDINGS = Arrays.asList(
 		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT),
-		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT),
-	});
+		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT)
+	);
 
 	@Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
@@ -48,10 +48,10 @@ Instead of using the annotations above, you can setup your fragment manually:
 ```java
 public class PostListFragment extends ArcaAdapterFragment implements OnItemClickListener {
 
-	private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] { 
+	private static final Collection<Binding> BINDINGS = Arrays.asList(
 		new Binding(R.id.list_item_post_text, PostTable.Columns.TEXT),
-		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT),
-	});
+		new Binding(R.id.list_item_post_created_at, PostTable.Columns.CREATED_AT)
+	);
 
 	private ArcaViewManager mViewManager;
 

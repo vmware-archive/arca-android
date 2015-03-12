@@ -63,19 +63,23 @@ public class ArcaSimpleAdapterSupportFragment extends ArcaAdapterSupportFragment
         return dispatcher;
     }
 
+    public ArcaViewManager onCreateViewManager(final View view, final Bundle savedInstanceState) {
+        return new ArcaViewManager(view);
+    }
+
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-        setupViewManager(view);
+        setupViewManager(view, savedInstanceState);
 	}
 
     protected ArcaViewManager getViewManager() {
         return mManager;
     }
 
-    private void setupViewManager(final View view) {
-        mManager = new ArcaViewManager(view);
+    private void setupViewManager(final View view, final Bundle savedInstanceState) {
+        mManager = onCreateViewManager(view, savedInstanceState);
         mManager.showProgressView();
     }
 

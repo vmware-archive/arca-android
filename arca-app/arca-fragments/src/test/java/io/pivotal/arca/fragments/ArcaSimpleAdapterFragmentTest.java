@@ -19,6 +19,8 @@ import android.test.AndroidTestCase;
 
 public class ArcaSimpleAdapterFragmentTest extends AndroidTestCase {
 
+    public void test() {
 
+    }
 
 }

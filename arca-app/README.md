@@ -30,11 +30,11 @@ The easiest way to take advantage of all the features in the Arca App package is
 public class UserListFragment extends ArcaSimpleAdapterFragment {
 
     @ArcaFragmentBindings
-    private static final Collection<Binding> BINDINGS = Arrays.asList(new Binding[] {
+    private static final Collection<Binding> BINDINGS = Arrays.asList(
         new Binding(R.id.user_id, UserTable.Columns.ID),
         new Binding(R.id.user_name, UserTable.Columns.NAME),
         new Binding(R.id.user_age, UserTable.Columns.AGE)
-    });
+    );
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {

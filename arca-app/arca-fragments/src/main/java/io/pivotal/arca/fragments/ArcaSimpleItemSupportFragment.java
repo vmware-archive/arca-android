@@ -56,12 +56,16 @@ public class ArcaSimpleItemSupportFragment extends ArcaItemSupportFragment {
         return dispatcher;
     }
 
+    public ArcaViewManager onCreateViewManager(final View view, final Bundle savedInstanceState) {
+        return new ArcaViewManager(view);
+    }
+
     @Override
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		setupViewManager(view);
+		setupViewManager(view, savedInstanceState);
 	}
 
     @Override
@@ -69,7 +73,7 @@ public class ArcaSimpleItemSupportFragment extends ArcaItemSupportFragment {
 		super.onStart();
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
-			setupViewManager(getView());
+			setupViewManager(getView(), null);
 		}
 	}
 
@@ -77,8 +81,8 @@ public class ArcaSimpleItemSupportFragment extends ArcaItemSupportFragment {
         return mManager;
     }
 
-    private void setupViewManager(final View view) {
-        mManager = new ArcaViewManager(view);
+    private void setupViewManager(final View view, final Bundle savedInstanceState) {
+        mManager = onCreateViewManager(view, savedInstanceState);
         mManager.showProgressView();
     }
 

@@ -34,7 +34,7 @@ import io.pivotal.arca.dispatcher.QueryResult;
 import io.pivotal.arca.monitor.ArcaDispatcher;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class ArcaSimpleAdapterFragment extends ArcaAdapterFragment implements AdapterView.OnItemClickListener {
+public class ArcaSimpleAdapterFragment extends ArcaAdapterFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private ArcaViewManager mManager;
 
@@ -42,8 +42,14 @@ public class ArcaSimpleAdapterFragment extends ArcaAdapterFragment implements Ad
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = inflater.inflate(FragmentUtils.getFragmentLayout(this.getClass()), container, false);
         final AbsListView listView = (AbsListView) view.findViewById(getAdapterViewId());
+        listView.setOnItemLongClickListener(this);
         listView.setOnItemClickListener(this);
         return view;
+    }
+
+    @Override
+    public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+        return false;
     }
 
     @Override

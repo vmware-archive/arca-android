@@ -31,7 +31,7 @@ import io.pivotal.arca.dispatcher.Error;
 import io.pivotal.arca.dispatcher.QueryResult;
 import io.pivotal.arca.monitor.ArcaDispatcher;
 
-public class ArcaSimpleAdapterSupportFragment extends ArcaAdapterSupportFragment implements AdapterView.OnItemClickListener {
+public class ArcaSimpleAdapterSupportFragment extends ArcaAdapterSupportFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private ArcaViewManager mManager;
 
@@ -39,8 +39,14 @@ public class ArcaSimpleAdapterSupportFragment extends ArcaAdapterSupportFragment
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = inflater.inflate(FragmentUtils.getFragmentLayout(this.getClass()), container, false);
         final AbsListView listView = (AbsListView) view.findViewById(getAdapterViewId());
+        listView.setOnItemLongClickListener(this);
         listView.setOnItemClickListener(this);
         return view;
+    }
+
+    @Override
+    public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+        return false;
     }
 
     @Override

@@ -55,6 +55,11 @@ public abstract class SimpleOperation extends Operation {
         //do nothing
     }
 
+    @Override
+    public void onCancel() {
+        /* DO NOTHING */
+    }
+
     private final class InnerTask extends Task<ContentValues[]> {
 
         @Override

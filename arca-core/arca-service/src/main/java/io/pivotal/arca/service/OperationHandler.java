@@ -25,6 +25,7 @@ import java.util.Set;
 public class OperationHandler extends Handler implements OperationObserver {
 
 	private static final int MSG_NOTIFY_COMPLETE = 100;
+    protected static final int MSG_NOTIFY_CANCELLED = 101;
 
 	public static enum HandlerState {
 		IDLE, RUNNING
@@ -65,6 +66,15 @@ public class OperationHandler extends Handler implements OperationObserver {
 		}
 	}
 
+    public boolean cancel(final Operation operation) {
+        if (!mOperations.isEmpty() && mOperations.contains(operation)) {
+            operation.cancel();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 	public boolean finish(final Operation operation) {
 		mOperations.remove(operation);
 
@@ -86,12 +96,18 @@ public class OperationHandler extends Handler implements OperationObserver {
 		sendMessage(message);
 	}
 
-	@Override
+    @Override
+    public void onOperationCancelled(Operation operation) {
+        final Message message = obtainMessage(MSG_NOTIFY_CANCELLED, operation);
+        sendMessage(message);
+    }
+
+    @Override
 	public void handleMessage(final Message msg) {
-		if (msg.what == MSG_NOTIFY_COMPLETE) {
+		if (msg.what == MSG_NOTIFY_COMPLETE || msg.what == MSG_NOTIFY_CANCELLED) {
 			final Operation operation = (Operation) msg.obj;
 			finish(operation);
-		}
+        }
 	}
 
 	private void notifyRunning() {

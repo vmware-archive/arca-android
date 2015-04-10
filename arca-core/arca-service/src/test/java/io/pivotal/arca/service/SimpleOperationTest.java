@@ -53,6 +53,11 @@ public class SimpleOperationTest extends AndroidTestCase {
 
                 assertNull(o.getError());
             }
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
         });
         operation.execute();
         latch.assertComplete();
@@ -69,6 +74,11 @@ public class SimpleOperationTest extends AndroidTestCase {
                 latch.countDown();
 
                 assertEquals(ERROR, o.getError().getMessage());
+            }
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
             }
         });
         operation.execute();
@@ -88,6 +98,11 @@ public class SimpleOperationTest extends AndroidTestCase {
 
                 assertEquals(error, o.getError());
             }
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
         });
         operation.execute();
         latch.assertComplete();
@@ -104,6 +119,11 @@ public class SimpleOperationTest extends AndroidTestCase {
                 latch.countDown();
 
                 assertEquals(ERROR, o.getError().getMessage());
+            }
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
             }
         });
         operation.execute();
@@ -122,6 +142,11 @@ public class SimpleOperationTest extends AndroidTestCase {
                 latch.countDown();
 
                 assertEquals(error, o.getError());
+            }
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
             }
         });
         operation.execute();

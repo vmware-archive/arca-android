@@ -20,10 +20,16 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.test.ServiceTestCase;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import io.pivotal.arca.service.OperationService;
+import io.pivotal.arca.service.Task;
 import io.pivotal.arca.service.test.mock.TestOperation;
 import io.pivotal.arca.service.test.mock.TestOperationFactory;
 import io.pivotal.arca.service.test.mock.TestOperationService;
+import io.pivotal.arca.service.test.mock.TestTask;
+import io.pivotal.arca.service.test.mock.TestTaskFactory;
 import io.pivotal.arca.service.test.utils.AssertionLatch;
 
 public class OperationServiceTest2 extends ServiceTestCase<TestOperationService> {
@@ -49,18 +55,6 @@ public class OperationServiceTest2 extends ServiceTestCase<TestOperationService>
 
 	// =============================================
 
-	public void testOperationServiceCancelOperationThrowsException() {
-		final Intent intent = new Intent(getContext(), TestOperationService.class);
-		intent.putExtra(TestOperationService.Extras.ACTION, OperationService.Action.CANCEL);
-		intent.putExtra(TestOperationService.Extras.OPERATION, new TestOperation(null, null));
-		try {
-			startService(intent);
-			fail();
-		} catch (final UnsupportedOperationException e) {
-			assertNotNull(e);
-		}
-	}
-
 	public void testOperationServiceExecutesOperation() {
 		final OperationExecuteCounter latch = new OperationExecuteCounter(1);
 		final Intent intent = new Intent(getContext(), TestOperationService.class);
@@ -76,6 +70,31 @@ public class OperationServiceTest2 extends ServiceTestCase<TestOperationService>
 		startService(intent);
 		latch.assertComplete();
 	}
+
+    public void testOperationServiceCancelsOperation() {
+        final OperationCancelCounter latch = new OperationCancelCounter(1);
+
+        TestOperation testOperation = new TestOperation(null, null){
+            @Override
+            public void cancel() {
+                super.cancel();
+                latch.cancel();
+            }
+        };
+
+        final Intent startIntent = new Intent(getContext(), TestOperationService.class);
+        startIntent.putExtra(TestOperationService.Extras.ACTION, OperationService.Action.START);
+        startIntent.putExtra(TestOperationService.Extras.OPERATION, testOperation);
+        startService(startIntent);
+
+        final Intent cancelIntent = new Intent(getContext(), TestOperationService.class);
+        cancelIntent.putExtra(TestOperationService.Extras.ACTION, OperationService.Action.CANCEL);
+        cancelIntent.putExtra(TestOperationService.Extras.OPERATION, testOperation);
+
+        startService(cancelIntent);
+
+        latch.assertComplete();
+    }
 
 	// =============================================
 
@@ -130,20 +149,37 @@ public class OperationServiceTest2 extends ServiceTestCase<TestOperationService>
 		}
 	}
 
-	private static class OperationExecuteCounter {
+    private static class OperationExecuteCounter {
 
-		final AssertionLatch mExecuteLatch;
+        final AssertionLatch mExecuteLatch;
 
-		public OperationExecuteCounter(final int count) {
-			mExecuteLatch = new AssertionLatch(count);
-		}
+        public OperationExecuteCounter(final int count) {
+            mExecuteLatch = new AssertionLatch(count);
+        }
 
-		public void execute() {
-			mExecuteLatch.countDown();
-		}
+        public void execute() {
+            mExecuteLatch.countDown();
+        }
 
-		public void assertComplete() {
-			mExecuteLatch.assertComplete();
-		}
-	}
+        public void assertComplete() {
+            mExecuteLatch.assertComplete();
+        }
+    }
+
+    private static class OperationCancelCounter {
+
+        final AssertionLatch mCancelLatch;
+
+        public OperationCancelCounter(final int count) {
+            mCancelLatch = new AssertionLatch(count);
+        }
+
+        public void cancel() {
+            mCancelLatch.countDown();
+        }
+
+        public void assertComplete() {
+            mCancelLatch.assertComplete();
+        }
+    }
 }

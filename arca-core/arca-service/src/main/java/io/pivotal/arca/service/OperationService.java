@@ -102,7 +102,9 @@ public class OperationService extends Service implements OperationHandler.OnStat
 
 	protected void handleAction(final Action action, final Operation operation) {
 		if (action == Action.START) {
-			handleStart(operation);
+            handleStart(operation);
+        } else if (action == Action.CANCEL) {
+            handleCancel(operation);
 		} else {
 			throw new UnsupportedOperationException("This action has not yet been implemented.");
 		}
@@ -111,6 +113,10 @@ public class OperationService extends Service implements OperationHandler.OnStat
 	protected void handleStart(final Operation operation) {
 		mHandler.start(operation);
 	}
+
+    protected void handleCancel(final Operation operation) {
+        mHandler.cancel(operation);
+    }
 
 	@Override
 	public void onStateChanged(final OperationHandler.HandlerState state) {

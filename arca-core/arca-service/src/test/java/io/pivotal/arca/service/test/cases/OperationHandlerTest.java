@@ -15,35 +15,96 @@
  */
 package io.pivotal.arca.service.test.cases;
 
+import android.os.Message;
 import android.test.AndroidTestCase;
 
+import io.pivotal.arca.service.Operation;
 import io.pivotal.arca.service.OperationHandler;
 import io.pivotal.arca.service.test.mock.TestOperation;
 
 public class OperationHandlerTest extends AndroidTestCase {
 
-	public void testOperationServiceDoesntExecuteAlreadyRunningOperation() {
-		final OperationHandler handler = new OperationHandler(null, null);
-		final TestOperation operation = new TestOperation(null, null);
-		handler.getOperations().add(operation);
-		assertFalse(handler.start(operation));
-	}
+    public void testOperationServiceDoesntExecuteAlreadyRunningOperation() {
+        final OperationHandler handler = new OperationHandler(null, null);
+        final TestOperation operation = new TestOperation(null, null);
+        handler.getOperations().add(operation);
+        assertFalse(handler.start(operation));
+    }
 
-	public void testOperationServiceShutsDownWhenAllOperationsFinish() {
-		final OperationHandler handler = new OperationHandler(null, null);
-		final TestOperation operation = new TestOperation(null, null);
-		handler.getOperations().add(operation);
-		assertTrue(handler.finish(operation));
-	}
+    public void testOperationServiceDoesntCancelNonStartedOperation() {
+        final OperationHandler handler = new OperationHandler(null, null);
+        final TestOperation operation = new TestOperation(null, null);
 
-	public void testOperationServiceDoesntShutDownWhenMoreOperationsRunning() {
-		final OperationHandler handler = new OperationHandler(null, null);
-		final TestOperation operation1 = new TestOperation(null, null);
-		final TestOperation operation2 = new TestOperation(null, null);
-		handler.getOperations().add(operation1);
-		handler.getOperations().add(operation2);
-		assertFalse(handler.finish(operation1));
-		assertTrue(handler.finish(operation2));
-	}
+        assertFalse(handler.cancel(operation));
+    }
 
+    public void testOperationServiceCancelsAlreadyRunningOperation() {
+        final OperationHandler handler = new OperationHandler(null, null);
+        final TestOperation operation = new TestOperation(null, null);
+        handler.getOperations().add(operation);
+
+        assertTrue(handler.cancel(operation));
+    }
+
+    public void testOperationServiceShutsDownWhenAllOperationsFinish() {
+        final OperationHandler handler = new OperationHandler(null, null);
+        final TestOperation operation = new TestOperation(null, null);
+        handler.getOperations().add(operation);
+        assertTrue(handler.finish(operation));
+    }
+
+    public void testOperationServiceDoesntShutDownWhenMoreOperationsRunning() {
+        final OperationHandler handler = new OperationHandler(null, null);
+        final TestOperation operation1 = new TestOperation(null, null);
+        final TestOperation operation2 = new TestOperation(null, null);
+        handler.getOperations().add(operation1);
+        handler.getOperations().add(operation2);
+        assertFalse(handler.finish(operation1));
+        assertTrue(handler.finish(operation2));
+    }
+
+    public void testOperationServiceShutsDownWhenOperationsAreCancelled() {
+        final BooleanResultObserver finishResultObserver = new BooleanResultObserver();
+
+        final OperationHandler handler = new OperationHandler(null, null) {
+            @Override
+            public boolean finish(Operation operation) {
+                boolean result = super.finish(operation);
+                finishResultObserver.setResult(result);
+                return result;
+            }
+
+            @Override
+            public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
+                handleMessage(msg);
+                return true;
+            }
+        };
+
+        final TestOperation operation1 = new TestOperation(null, null);
+        final TestOperation operation2 = new TestOperation(null, null);
+
+        handler.getOperations().add(operation1);
+        handler.getOperations().add(operation2);
+        operation1.setOperationObserver(handler);
+        operation2.setOperationObserver(handler);
+
+        assertTrue(handler.cancel(operation1));
+        assertFalse(finishResultObserver.getResult());
+
+        assertTrue(handler.cancel(operation2));
+        assertTrue(finishResultObserver.getResult());
+    }
+
+    public static class BooleanResultObserver {
+        private Boolean mResult = null;
+
+        public void setResult(boolean newResult) {
+            mResult = newResult;
+        }
+
+        public Boolean getResult() {
+            return mResult;
+        }
+    }
 }

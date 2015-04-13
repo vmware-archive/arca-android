@@ -266,4 +266,19 @@ public class TestTaskFactory {
 		return expectedOrder;
 	}
 
+    public static List<Task<?>> newTaskList() {
+        final RequestExecutor.SerialRequestExecutor executor = new RequestExecutor.SerialRequestExecutor();
+
+        final TestTask task1 = TestTaskFactory.newTaskWithIdentifier(new Identifier<String>("task1"));
+        task1.setRequestExecutor(executor);
+
+        final TestTask task2 = TestTaskFactory.newTaskWithIdentifier(new Identifier<String>("task2"));
+        task2.setRequestExecutor(executor);
+
+        final List<Task<?>> expectedOrder = new ArrayList<Task<?>>();
+        expectedOrder.add(task1);
+        expectedOrder.add(task2);
+
+        return expectedOrder;
+    }
 }

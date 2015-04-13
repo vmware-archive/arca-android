@@ -31,6 +31,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	}
 
     private final Object mTaskLock = new Object();
+    private final Object mStateLock = new Object();
     private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
     private final Set<Task<?>> mDependencies = new HashSet<Task<?>>();
     private final List<ServiceError> mErrors = new ArrayList<ServiceError>();
@@ -38,6 +39,7 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
     private Priority mPriority = Priority.MEDIUM;
     private Identifier<?> mIdentifier;
     private boolean mFinished;
+    private boolean mCancelled;
 
     private TaskObserver mObserver;
     private RequestExecutor mExecutor;
@@ -91,6 +93,10 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
         }
     }
 
+    public void cancel() {
+        notifyCancelled();
+    }
+
     private boolean allPrerequisitesComplete() {
 		synchronized (mTaskLock) {
 			return mPrerequisites.isEmpty();
@@ -142,9 +148,23 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 		}
 	}
 
+	protected void onPrerequisiteCancelled(final Task<?> task) {
+		synchronized (mTaskLock) {
+			mPrerequisites.remove(task);
+			notifyCancelled();
+			checkExecution();
+		}
+	}
+
 	// ======================================================
 
 	private void startNetworkingRequest() {
+		synchronized (mStateLock) {
+			if (mCancelled) {
+				return;
+			}
+		}
+
 		if (mExecutor != null) {
 			final NetworkingPrioritizable<T> prioritizable = new NetworkingPrioritizable<T>(this);
 			final NetworkingRequest<T> request = new NetworkingRequest<T>(prioritizable, mPriority.ordinal(), this);
@@ -156,7 +176,13 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	@Override
 	public final T executeNetworking() throws Exception {
-		return onExecuteNetworking(mContext);
+		synchronized (mStateLock) {
+			if (!mCancelled) {
+				return onExecuteNetworking(mContext);
+			} else {
+				return null;
+			}
+		}
 	}
 
 	@Override
@@ -172,6 +198,12 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 	// ======================================================
 
 	private void startProcessingRequest(final T data) {
+		synchronized (mStateLock) {
+			if (mCancelled) {
+				return;
+			}
+		}
+
 		if (mExecutor != null) {
 			final ProcessingPrioritizable<T> prioritizable = new ProcessingPrioritizable<T>(this, data);
 			final ProcessingRequest<T> request = new ProcessingRequest<T>(prioritizable, mPriority.ordinal(), this);
@@ -183,7 +215,11 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 
 	@Override
 	public final void executeProcessing(final T data) throws Exception {
-		onExecuteProcessing(mContext, data);
+		synchronized (mStateLock) {
+			if (!mCancelled) {
+				onExecuteProcessing(mContext, data);
+			}
+		}
 	}
 
 	@Override
@@ -222,6 +258,19 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 		notifyDependentsOfFailure(error);
 	}
 
+	private void notifyCancelled() {
+		synchronized (mStateLock) {
+			if (!mCancelled) {
+				mCancelled = true;
+
+				if (mObserver != null) {
+					mObserver.onTaskCancelled(this);
+				}
+				notifyDependentsOfCancellation();
+			}
+		}
+	}
+
 	private void notifyDependentsOfCompletion() {
 		synchronized (mTaskLock) {
 			for (final Task<?> dependant : mDependencies) {
@@ -234,6 +283,14 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
 		synchronized (mTaskLock) {
 			for (final Task<?> dependant : mDependencies) {
 				dependant.onPrerequisiteFailure(this, error);
+			}
+		}
+	}
+
+	private void notifyDependentsOfCancellation() {
+		synchronized (mTaskLock) {
+			for (final Task<?> dependant : mDependencies) {
+				dependant.onPrerequisiteCancelled(this);
 			}
 		}
 	}

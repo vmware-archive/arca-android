@@ -22,4 +22,6 @@ public interface TaskObserver {
 	public void onTaskComplete(Task<?> task);
 
 	public void onTaskFailure(Task<?> task, ServiceError error);
+
+    public void onTaskCancelled(Task<?> task);
 }

@@ -59,7 +59,12 @@ public class TestOperation extends Operation {
 
 	}
 
-	public static final Creator<TestOperation> CREATOR = new Creator<TestOperation>() {
+    @Override
+    public void onCancel() {
+
+    }
+
+    public static final Creator<TestOperation> CREATOR = new Creator<TestOperation>() {
 		@Override
 		public TestOperation createFromParcel(final Parcel in) {
 			return new TestOperation(in);

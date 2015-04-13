@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,6 +36,8 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
 	private final Priority mPriority;
 	private final Uri mUri;
+
+	private boolean mIsCancelled;
 
 	private OperationObserver mObserver;
 	private RequestExecutor mExecutor;
@@ -78,6 +80,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	}
 
 	public void execute() {
+		mIsCancelled = false;
 		final Set<Task<?>> tasks = onCreateTasks();
 		checkTasks(tasks);
 	}
@@ -91,7 +94,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 		}
 	}
 
-	private void addTasksToPending(final Set<Task<?>> tasks) {
+    private void addTasksToPending(final Set<Task<?>> tasks) {
         for (final Task<?> task : tasks) {
             addTaskToPending(task);
 		}
@@ -99,7 +102,34 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
 	private void executeTasks(final Set<Task<?>> tasks) {
 		for (final Task<?> task : tasks) {
-            task.execute();
+			task.execute();
+		}
+	}
+
+	public void cancel() {
+		mIsCancelled = true;
+		Set<Task<?>> pendingTasks = new HashSet<Task<?>>();
+		Set<Task<?>> executingTasks = new HashSet<Task<?>>();
+
+		synchronized (mTaskLock) {
+			executingTasks.addAll(mExecutingTasks);
+		}
+
+		for (Task executingTask : executingTasks) {
+			executingTask.cancel();
+		}
+
+		synchronized (mTaskLock) {
+			pendingTasks.addAll(mPendingTasks);
+		}
+
+		for (Task pendingTask : pendingTasks) {
+			pendingTask.cancel();
+		}
+
+
+		if (executingTasks.isEmpty() && pendingTasks.isEmpty()) {
+			notifyComplete();
 		}
 	}
 
@@ -110,6 +140,8 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	public abstract void onSuccess(Context context, List<Task<?>> completed);
 
 	public abstract void onFailure(Context context, ServiceError error);
+
+	public abstract void onCancel();
 
 	// ======================================================
 
@@ -129,6 +161,12 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	public void onTaskFailure(final Task<?> task, final ServiceError error) {
 		removeTaskFromExecutingAndPending(task);
 		handleTaskFailure(error);
+		checkTaskCompletion();
+	}
+
+	@Override
+	public void onTaskCancelled(Task<?> task) {
+		removeTaskFromExecutingAndPending(task);
 		checkTaskCompletion();
 	}
 
@@ -190,13 +228,26 @@ public abstract class Operation implements Parcelable, TaskObserver {
 	}
 
 	private void notifyComplete() {
-		if (mError == null) {
-			onSuccess(mContext, mCompletedTasks);
+		if (mIsCancelled) {
+			notifyCancelled();
+
 		} else {
-			onFailure(mContext, mError);
+
+			if (mError == null) {
+				onSuccess(mContext, mCompletedTasks);
+			} else {
+				onFailure(mContext, mError);
+			}
+			if (mObserver != null) {
+				mObserver.onOperationComplete(this);
+			}
 		}
+	}
+
+	private void notifyCancelled() {
+		onCancel();
 		if (mObserver != null) {
-			mObserver.onOperationComplete(this);
+			mObserver.onOperationCancelled(this);
 		}
 	}
 

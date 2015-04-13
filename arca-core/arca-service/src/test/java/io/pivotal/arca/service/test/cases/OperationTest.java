@@ -124,7 +124,7 @@ public class OperationTest extends AndroidTestCase {
 	// =============================================
 
 	public void testOperationWithoutTasksSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -136,13 +136,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final TestOperation operation = TestOperationFactory.newOperationWithTask();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -154,13 +159,91 @@ public class OperationTest extends AndroidTestCase {
 				assertNull(o.getError());
 			}
 
+			@Override
+			public void onOperationCancelled(Operation operation) {
+
+			}
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
+    public void testOperationCanCancelSuccessfully() {
+        final ObserverCounter latch = new ObserverCounter(0, 1);
+
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNull(o.getError());
+                fail();
+            }
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+                latch.onOperationCancelled();
+            }
+
+        });
+
+        operation.cancel();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTasksCancelsAllTasks() {
+        final ObserverCounter latch = new ObserverCounter(0, 1);
+        final RequestCounter requestLatch = new RequestCounter(1, 0);
+
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
+
+        operation.setRequestExecutor(new RequestExecutor() {
+
+            @Override
+            public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+                requestLatch.executeNetworkingRequest();
+
+                assertNotNull(request);
+            }
+
+            @Override
+            public void executeProcessingRequest(final ProcessingRequest<?> request) {
+                requestLatch.executeProcessingRequest();
+
+                fail();
+            }
+
+        });
+
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNull(o.getError());
+                fail();
+            }
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+                latch.onOperationCancelled();
+
+            }
+        });
+
+        operation.execute();
+        operation.cancel();
+
+        latch.assertComplete();
+        requestLatch.assertComplete();
+    }
+
 	public void testOperationWithTaskFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -172,6 +255,11 @@ public class OperationTest extends AndroidTestCase {
 
 				assertNotNull(o.getError());
 			}
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
 
 		});
 		operation.execute();
@@ -179,7 +267,7 @@ public class OperationTest extends AndroidTestCase {
 	}
 
 	public void testOperationWithTaskFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
@@ -193,13 +281,18 @@ public class OperationTest extends AndroidTestCase {
 				assertEquals(error, o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -212,13 +305,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNotNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskFailsWithCustomProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
@@ -231,6 +329,11 @@ public class OperationTest extends AndroidTestCase {
 
 				assertEquals(error, o.getError());
 			}
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
 
 		});
 		operation.execute();
@@ -240,7 +343,7 @@ public class OperationTest extends AndroidTestCase {
 	// =============================================
 
 	public void testOperationWithTaskPrerequisitesSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisites();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -252,13 +355,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskPrerequisitesFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -270,6 +378,11 @@ public class OperationTest extends AndroidTestCase {
 
 				assertNotNull(o.getError());
 			}
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
 
 		});
 		operation.execute();
@@ -277,7 +390,7 @@ public class OperationTest extends AndroidTestCase {
 	}
 
 	public void testOperationWithTaskPrerequisitesFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
@@ -291,13 +404,18 @@ public class OperationTest extends AndroidTestCase {
 				assertEquals(error, o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskPrerequisitesFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -310,13 +428,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNotNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskPrerequisitesFailsWithCustomProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
@@ -330,13 +453,18 @@ public class OperationTest extends AndroidTestCase {
 				assertEquals(error, o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskDependenciesSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -348,13 +476,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskDependenciesFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -366,6 +499,11 @@ public class OperationTest extends AndroidTestCase {
 
 				assertNotNull(o.getError());
 			}
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
 
 		});
 		operation.execute();
@@ -373,7 +511,7 @@ public class OperationTest extends AndroidTestCase {
 	}
 
 	public void testOperationWithTaskDependenciesFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsNetworkingException(exception);
@@ -387,13 +525,18 @@ public class OperationTest extends AndroidTestCase {
 				assertEquals(error, o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskDependenciesFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsProcessingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -406,13 +549,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNotNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithTaskDependenciesFailsWithCustomProcssingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsProcessingException(exception);
@@ -426,13 +574,18 @@ public class OperationTest extends AndroidTestCase {
 				assertEquals(error, o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithDynamicTaskDependenciesSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependency();
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
 		operation.setOperationObserver(new OperationObserver() {
@@ -444,13 +597,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithDynamicTaskDependenciesFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -462,6 +620,11 @@ public class OperationTest extends AndroidTestCase {
 
 				assertNotNull(o.getError());
 			}
+
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
 
 		});
 		operation.execute();
@@ -469,7 +632,7 @@ public class OperationTest extends AndroidTestCase {
 	}
 
 	public void testOperationWithDynamicTaskDependenciesFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(exception);
@@ -483,13 +646,18 @@ public class OperationTest extends AndroidTestCase {
 				assertEquals(error, o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
 		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithDynamicTaskDependenciesFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final Exception exception = new Exception(ERROR);
 		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(exception);
 		operation.setRequestExecutor(new TestThreadedRequestExecutor());
@@ -502,13 +670,18 @@ public class OperationTest extends AndroidTestCase {
 				assertNotNull(o.getError());
 			}
 
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
 		});
  		operation.execute();
 		latch.assertComplete();
 	}
 
 	public void testOperationWithDynamicTaskDependenciesFailsWithCustomProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1);
+		final ObserverCounter latch = new ObserverCounter(1, 0);
 		final ServiceError error = new ServiceError(ERROR);
 		final ServiceException exception = new ServiceException(error);
 		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(exception);
@@ -522,7 +695,12 @@ public class OperationTest extends AndroidTestCase {
 				assertEquals(error, o.getError());
 			}
 
-		});
+            @Override
+            public void onOperationCancelled(Operation operation) {
+
+            }
+
+        });
 		operation.execute();
 		latch.assertComplete();
 	}
@@ -557,18 +735,24 @@ public class OperationTest extends AndroidTestCase {
 
 	private static class ObserverCounter {
 
-		final AssertionLatch mCompleteLatch;
+        final AssertionLatch mCompleteLatch;
+        final AssertionLatch mCancelLatch;
 
-		public ObserverCounter(final int completeCount) {
-			mCompleteLatch = new AssertionLatch(completeCount);
+		public ObserverCounter(final int completeCount, final int cancelCount) {
+            mCompleteLatch = new AssertionLatch(completeCount);
+            mCancelLatch = new AssertionLatch(cancelCount);
 		}
 
-		public void onOperationComplete() {
-			mCompleteLatch.countDown();
-		}
+        public void onOperationComplete() {
+            mCompleteLatch.countDown();
+        }
+        public void onOperationCancelled() {
+            mCancelLatch.countDown();
+        }
 
 		public void assertComplete() {
 			mCompleteLatch.assertComplete();
+            mCancelLatch.assertComplete();
 		}
 	}
 

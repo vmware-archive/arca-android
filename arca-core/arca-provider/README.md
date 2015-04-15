@@ -72,19 +72,20 @@ public class PostTable extends SQLiteTable {
 		@Column(Column.Type.INTEGER)
 		public static final String USER_ID = "user_id";
 
-		@Column(Column.Type.INTEGER)
+		@Column(Column.Type.TEXT)
+		@ColumnOptions("DEFAULT CURRENT_TIMESTAMP")
 		public static final String DATE = "date";
 	}
 }
 ```
 
-#### Dataset Annotations
+#### SQLiteTable Annotations
 
-**@Column** - Indicates that a field should be converted into a SQLite column with the specified type.
-
-**@ColumnOptions** - Contains free-form text that can be added to the column definition (e.g. "DEFAULT 0").
-
-**@Unique** - Indicates that a column should be unique. Annotating multiple columns with this annotation will create a composite constraint.
+Annotation | Description
+:--------: | :----------
+`@Column`| Indicates that a field should be converted into a SQLite column with the specified type.
+`@ColumnOptions` | Contains free-form text that can be added to the column definition (e.g. "DEFAULT 0").
+`@Unique` | Indicates that a column should be unique. Annotating multiple columns with this annotation will create a composite constraint.
 
 
 ```java
@@ -117,19 +118,19 @@ public static final class UserPostView extends SQLiteView {
 }
 ```
 
-#### Dataset Annotations
+#### SQLiteView Annotations
 
-**@SelectFrom** - Indicates the primary table from which we are selecting data.
+Annotation | Description
+:--------: | :----------
+`@SelectFrom` | Indicates the primary table from which we are selecting data.
+`@Joins` | Contains an array of free-form joins which should be applied to the selection.
+`@Where` | Indicates any filtering that should be applied to the result set.
+`@OrderBy` | Indicates the ordering for the result set.
+`@GroupBy` | Indicates the grouping for the result set.
+`@Select` | Indicates which fields should be selected as part of the result set. *Note: An `_id` column is required.*
 
-**@Joins** - Contains an array of free-form joins which should be applied to the selection.
 
-**@Where** - Indicates any filtering that should be applied to the result set.
-
-**@OrderBy** - Indicates the ordering for the result set.
-
-**@GroupBy** - Indicates the grouping for the result set.
-
-**@Select** - Indicates which fields should be selected as part of the result set. Note: An `_id` column is required.
+#### Modifying requests
 
 
 After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and amending the where arguments to return that single resource when required.

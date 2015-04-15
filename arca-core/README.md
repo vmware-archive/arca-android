@@ -26,12 +26,13 @@ Below we define our `ContentProvider`, which includes a definition of each `Data
 ```java
 public class MyAppContentProvider extends DatabaseProvider {
 
-	private static final String AUTHORITY = "com.mycompany.myapp.providers.MyAppContentProvider";
+	private static final String AUTHORITY = MyAppContentProvider.class.getName();
 
 	public static final class Uris {
-		public static final Uri POSTS = Uri.parse("content://" + AUTHORITY + "/" + Paths.POSTS);
-		public static final Uri USERS = Uri.parse("content://" + AUTHORITY + "/" + Paths.USERS);
-		public static final Uri USER_POSTS = Uri.parse("content://" + AUTHORITY + "/" + Paths.USER_POSTS);
+		private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
+        public static final Uri POSTS = Uri.withAppendedPath(BASE_URI, Paths.POSTS);
+        public static final Uri USERS = Uri.withAppendedPath(BASE_URI, Paths.USERS);
+		public static final Uri USER_POSTS = Uri.withAppendedPath(BASE_URI, Paths.USER_POSTS);
 	}
 
 	private static final class Paths {

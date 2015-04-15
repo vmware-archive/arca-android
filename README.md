@@ -15,7 +15,7 @@ The Arca Core package provides all the groundwork for caching data within a Cont
 
 ##[Arca-App](arca-app)
 
-The Arca App package makes it really easy to fetch data from a ContentProvider and bind it to elements in your layout. This means your UI will always be up to date with the most recent data without having to write a single additional line of code.
+The Arca App package makes it really easy to fetch data from a ContentProvider and bind it to elements in your layout. Your application is notified when your data changes so your UI is always up to date with the latest content.
 
 # Getting Started
 

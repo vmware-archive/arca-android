@@ -13,11 +13,12 @@ If you are planning on persisting data to a SQLiteDatabase you should extend the
 ```java
 public class MyAppContentProvider extends DatabaseProvider {
 
-	private static final String AUTHORITY = "com.mycompany.myapp.providers.MyAppContentProvider";
+	private static final String AUTHORITY = MyAppContentProvider.class.getName();
 	
 	public static final class Uris {
-		public static final Uri POSTS = Uri.parse("content://" + AUTHORITY + "/" + Paths.POSTS);
-		public static final Uri USERS = Uri.parse("content://" + AUTHORITY + "/" + Paths.USERS);
+	    private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
+		public static final Uri POSTS = Uri.withAppendedPath(BASE_URI, Paths.POSTS);
+		public static final Uri USERS = Uri.withAppendedPath(BASE_URI, Paths.USERS);
 	}
 	
 	private static final class Paths {
@@ -77,6 +78,15 @@ public class PostTable extends SQLiteTable {
 }
 ```
 
+#### Dataset Annotations
+
+**@Column** - Indicates that a field should be converted into a SQLite column with the specified type.
+
+**@ColumnOptions** - Contains free-form text that can be added to the column definition (e.g. "DEFAULT 0").
+
+**@Unique** - Indicates that a column should be unique. Annotating multiple columns with this annotation will create a composite constraint.
+
+
 ```java
 public static final class UserPostView extends SQLiteView {
 
@@ -106,6 +116,21 @@ public static final class UserPostView extends SQLiteView {
 	}
 }
 ```
+
+#### Dataset Annotations
+
+**@SelectFrom** - Indicates the primary table from which we are selecting data.
+
+**@Joins** - Contains an array of free-form joins which should be applied to the selection.
+
+**@Where** - Indicates any filtering that should be applied to the result set.
+
+**@OrderBy** - Indicates the ordering for the result set.
+
+**@GroupBy** - Indicates the grouping for the result set.
+
+**@Select** - Indicates which fields should be selected as part of the result set. Note: An `_id` column is required.
+
 
 After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and amending the where arguments to return that single resource when required.
 

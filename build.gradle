@@ -59,7 +59,6 @@ ext.pomInfo = {
     }
 }
 
-
 allprojects {
     apply plugin: 'maven'
 
@@ -74,11 +73,11 @@ allprojects {
         repositories.mavenDeployer {
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
             }
 
             snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
-                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
             }
         }
     }

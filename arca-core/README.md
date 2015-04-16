@@ -27,9 +27,9 @@ Below we define our `ContentProvider`, which includes a definition of each `Data
 public class MyAppContentProvider extends DatabaseProvider {
 
 	private static final String AUTHORITY = MyAppContentProvider.class.getName();
+	private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 
 	public static final class Uris {
-		private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
         public static final Uri POSTS = Uri.withAppendedPath(BASE_URI, Paths.POSTS);
         public static final Uri USERS = Uri.withAppendedPath(BASE_URI, Paths.USERS);
 		public static final Uri USER_POSTS = Uri.withAppendedPath(BASE_URI, Paths.USER_POSTS);
@@ -137,7 +137,7 @@ public class MyAppRequests {
 }
 ```
 
-In our case we define an `Operation` for Users and Posts as follows.
+In this case we define an `Operation` for Users and Posts as follows.
 
 ```java
 public class GetPostListOperation extends SimpleOperation {
@@ -201,7 +201,7 @@ public class GetUserListOperation extends SimpleOperation {
 }
 ```
 
-In the `onExecute` method we are invoking our `MyAppApi` class which fetches json data from the server and converts it into models using Gson.
+In the `onExecute` method we are invoking our `MyAppApi` class which fetches json data from the server and parses the response using Gson.
 
 ```java
 public class MyAppApi {

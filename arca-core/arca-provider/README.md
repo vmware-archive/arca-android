@@ -14,9 +14,9 @@ If you are planning on persisting data to a SQLiteDatabase you should extend the
 public class MyAppContentProvider extends DatabaseProvider {
 
 	private static final String AUTHORITY = MyAppContentProvider.class.getName();
+	private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 	
 	public static final class Uris {
-	    private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 		public static final Uri POSTS = Uri.withAppendedPath(BASE_URI, Paths.POSTS);
 		public static final Uri USERS = Uri.withAppendedPath(BASE_URI, Paths.USERS);
 	}
@@ -46,7 +46,7 @@ public class MyAppContentProvider extends DatabaseProvider {
 	android:exported="false" />
 ```
 
-#### Configuration
+#### DatabaseProvider Configuration
 
 You can override the ```onCreateDatabaseConfiguration()``` method in the DatabaseProvider class to define your own database name and version number. The default implementation of the DatabaseConfiguration grabs this information from your AndroidManifest.xml file.
 
@@ -57,6 +57,8 @@ If you don't want to persist data in a database but still want to take full adva
 ### Datasets
 
 After the request has been filtered through the ContentProvider, an individual Dataset will handle the requested action. If you are persisting data to a SQLiteDatabase you will need to to create your own SQLiteTable subclass. Notice in the example below that we are extending the SQLiteTable.Columns interface and adding our own set of columns. This makes it easy for you to refer back to these column values when querying for data (see [Arca-Dispatcher](../../arca-app/arca-dispatcher)) or binding to views in your adapter (see [Arca-Adapters](../../arca-app/arca-adapters)).
+
+#### SQLiteTable
 
 ```java
 public class PostTable extends SQLiteTable {
@@ -79,7 +81,7 @@ public class PostTable extends SQLiteTable {
 }
 ```
 
-#### SQLiteTable Annotations
+##### SQLiteTable Annotations
 
 Annotation | Description
 :--------: | :----------
@@ -87,6 +89,8 @@ Annotation | Description
 `@ColumnOptions` | Contains free-form text that can be added to the column definition (e.g. "DEFAULT 0").
 `@Unique` | Indicates that a column should be unique. Annotating multiple columns with this annotation will create a composite constraint.
 
+
+#### SQLiteView
 
 ```java
 public static final class UserPostView extends SQLiteView {
@@ -118,7 +122,7 @@ public static final class UserPostView extends SQLiteView {
 }
 ```
 
-#### SQLiteView Annotations
+##### SQLiteView Annotations
 
 Annotation | Description
 :--------: | :----------
@@ -130,7 +134,7 @@ Annotation | Description
 `@Select` | Indicates which fields should be selected as part of the result set. *Note: An `_id` column is required.*
 
 
-#### Modifying requests
+#### Modifying Dataset Requests
 
 
 After your Dataset has been setup its ready to handle requests. The default query method can handle applying a where clause, a projection and sort order. You can, however, override the query method to add whatever business logic you need. A typical customization is stripping the resource identifier off the end of the Uri and amending the where arguments to return that single resource when required.
@@ -148,7 +152,7 @@ public Cursor query(final Uri uri, final String[] projection, final String selec
 }
 ```
 
-### ContentValues
+### Converting Objects to ContentValues
 
 There are convenience method that make it easy to convert a list of models into an array of ContentValues.
 

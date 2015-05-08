@@ -21,191 +21,102 @@ import android.test.AndroidTestCase;
 
 import junit.framework.Assert;
 
+import io.pivotal.arca.utils.Logger;
+
 public class OperationTest extends AndroidTestCase {
 
-	private static final String ERROR = "test_error";
+    private static final String ERROR = "test_error";
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	// =============================================
-
-	public void testOperationWithoutTasksDoesNotExecuteRequest() {
-		final RequestCounter latch = new RequestCounter(0, 0);
-		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
-		operation.setRequestExecutor(new RequestExecutor() {
-
-			@Override
-			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
-				latch.executeNetworkingRequest();
-
-				fail();
-			}
-
-			@Override
-			public void executeProcessingRequest(final ProcessingRequest<?> request) {
-				latch.executeProcessingRequest();
-
-				fail();
-			}
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskExecutesNetworkingRequest() {
-		final RequestCounter latch = new RequestCounter(1, 0);
-		final TestOperation operation = TestOperationFactory.newOperationWithTask();
-		operation.setRequestExecutor(new RequestExecutor() {
-
-			@Override
-			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
-				latch.executeNetworkingRequest();
-
-				assertNotNull(request);
-			}
-
-			@Override
-			public void executeProcessingRequest(final ProcessingRequest<?> request) {
-				latch.executeProcessingRequest();
-
-				fail();
-			}
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskExecutesProcessingRequest() {
-		final RequestCounter latch = new RequestCounter(1, 1);
-		final TestOperation operation = TestOperationFactory.newOperationWithTask();
-		operation.setRequestExecutor(new RequestExecutor() {
-
-			@Override
-			public void executeNetworkingRequest(final NetworkingRequest<?> request) {
-				latch.executeNetworkingRequest();
-
-				request.notifyComplete(null, null);
-			}
-
-			@Override
-			public void executeProcessingRequest(final ProcessingRequest<?> request) {
-				latch.executeProcessingRequest();
-
-				assertNotNull(request);
-			}
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	// =============================================
-
-	public void testOperationWithoutTasksSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final TestOperation operation = TestOperationFactory.newOperationWithTask();
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNull(o.getError());
-			}
-
-			@Override
-			public void onOperationCancelled(Operation operation) {
-
-			}
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-    public void testOperationCanCancelSuccessfully() {
-        final ObserverCounter latch = new ObserverCounter(0, 1);
-
-        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
-        operation.setOperationObserver(new OperationObserver() {
-
-            @Override
-            public void onOperationComplete(final Operation o) {
-                latch.onOperationComplete();
-
-                assertNull(o.getError());
-                fail();
-            }
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-                latch.onOperationCancelled();
-            }
-
-        });
-
-        operation.cancel();
-        latch.assertComplete();
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
     }
 
-    public void testOperationWithTasksCancelsAllTasks() {
-        final ObserverCounter latch = new ObserverCounter(0, 1);
-        final RequestCounter requestLatch = new RequestCounter(1, 0);
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
+    // =============================================
 
+    public void testOperationWithoutTasksDoesNotExecuteRequest() {
+        final RequestCounter latch = new RequestCounter(0, 0);
+        final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
         operation.setRequestExecutor(new RequestExecutor() {
 
             @Override
             public void executeNetworkingRequest(final NetworkingRequest<?> request) {
-                requestLatch.executeNetworkingRequest();
+                latch.executeNetworkingRequest();
+
+                fail();
+            }
+
+            @Override
+            public void executeProcessingRequest(final ProcessingRequest<?> request) {
+                latch.executeProcessingRequest();
+
+                fail();
+            }
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskExecutesNetworkingRequest() {
+        final RequestCounter latch = new RequestCounter(1, 0);
+        final TestOperation operation = TestOperationFactory.newOperationWithTask();
+        operation.setRequestExecutor(new RequestExecutor() {
+
+            @Override
+            public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+                latch.executeNetworkingRequest();
 
                 assertNotNull(request);
             }
 
             @Override
             public void executeProcessingRequest(final ProcessingRequest<?> request) {
-                requestLatch.executeProcessingRequest();
+                latch.executeProcessingRequest();
 
                 fail();
             }
 
         });
+        operation.execute();
+        latch.assertComplete();
+    }
 
+    public void testOperationWithTaskExecutesProcessingRequest() {
+        final RequestCounter latch = new RequestCounter(1, 1);
+        final TestOperation operation = TestOperationFactory.newOperationWithTask();
+        operation.setRequestExecutor(new RequestExecutor() {
+
+            @Override
+            public void executeNetworkingRequest(final NetworkingRequest<?> request) {
+                latch.executeNetworkingRequest();
+
+                request.notifyComplete(null, null);
+            }
+
+            @Override
+            public void executeProcessingRequest(final ProcessingRequest<?> request) {
+                latch.executeProcessingRequest();
+
+                assertNotNull(request);
+            }
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    // =============================================
+
+    public void testOperationWithoutTasksSucceeds() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
         operation.setOperationObserver(new OperationObserver() {
 
             @Override
@@ -213,13 +124,42 @@ public class OperationTest extends AndroidTestCase {
                 latch.onOperationComplete();
 
                 assertNull(o.getError());
-                fail();
             }
 
-            @Override
-            public void onOperationCancelled(Operation operation) {
-                latch.onOperationCancelled();
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
 
+    public void testOperationWithTaskSucceeds() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final TestOperation operation = TestOperationFactory.newOperationWithTask();
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNull(o.getError());
+            }
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationCanCancelSuccessfully() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final TestOperation operation = TestOperationFactory.newOperationWithTask();
+        operation.setRequestExecutor(new RequestExecutor.ThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(1, ((TestOperation) o).getCancelledTasks().size());
             }
         });
 
@@ -227,544 +167,480 @@ public class OperationTest extends AndroidTestCase {
         operation.cancel();
 
         latch.assertComplete();
-        requestLatch.assertComplete();
     }
 
-	public void testOperationWithTaskFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
+    public void testOperationWithTasksCancelsAllTasks() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
+        operation.setRequestExecutor(new RequestExecutor.ThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
 
             @Override
-            public void onOperationCancelled(Operation operation) {
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
 
+                final int cancelled = ((TestOperation) o).getCancelledTasks().size();
+                final int completed = ((TestOperation) o).getCompletedTasks().size();
+
+                assertEquals(2, cancelled + completed);
             }
+        });
 
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
+        operation.execute();
+        operation.cancel();
 
-	public void testOperationWithTaskFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
+        latch.assertComplete();
+    }
 
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
+    public void testOperationWithTaskFailsWithNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
 
             @Override
-            public void onOperationCancelled(Operation operation) {
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
 
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskFailsWithCustomProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	// =============================================
-
-	public void testOperationWithTaskPrerequisitesSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisites();
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskPrerequisitesFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskPrerequisitesFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskPrerequisitesFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskPrerequisitesFailsWithCustomProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskDependenciesSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskDependenciesFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskDependenciesFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskDependenciesFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithTaskDependenciesFailsWithCustomProcssingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithDynamicTaskDependenciesSucceeds() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependency();
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithDynamicTaskDependenciesFailsWithNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithDynamicTaskDependenciesFailsWithCustomNetworkError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
-		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithDynamicTaskDependenciesFailsWithProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final Exception exception = new Exception(ERROR);
-		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertNotNull(o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
-            }
-
-		});
- 		operation.execute();
-		latch.assertComplete();
-	}
-
-	public void testOperationWithDynamicTaskDependenciesFailsWithCustomProcessingError() {
-		final ObserverCounter latch = new ObserverCounter(1, 0);
-		final ServiceError error = new ServiceError(ERROR);
-		final ServiceException exception = new ServiceException(error);
-		final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(exception);
-		operation.setRequestExecutor(new TestThreadedRequestExecutor());
-		operation.setOperationObserver(new OperationObserver() {
-
-			@Override
-			public void onOperationComplete(final Operation o) {
-				latch.onOperationComplete();
-
-				assertEquals(error, o.getError());
-			}
-
-            @Override
-            public void onOperationCancelled(Operation operation) {
-
+                assertNotNull(o.getError());
             }
 
         });
-		operation.execute();
-		latch.assertComplete();
-	}
+        operation.execute();
+        latch.assertComplete();
+    }
 
-	// =============================================
+    public void testOperationWithTaskFailsWithCustomNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
 
-	public void testOperationParcelableDescribeContents() {
-		final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
-		Assert.assertEquals(0, operation.describeContents());
-	}
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
 
-	public void testOperationParcelableCreatorArray() {
-		final TestOperation[] operation = TestOperation.CREATOR.newArray(1);
-		assertEquals(1, operation.length);
-	}
+                assertEquals(error, o.getError());
+            }
 
-	public void testOperationParcelableCreator() {
-		final Uri uri = Uri.parse("http://empty");
-		final TestOperation operation = TestOperationFactory.newOperationWithUri(uri);
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
 
-		final Parcel parcel = Parcel.obtain();
-		operation.writeToParcel(parcel, 0);
-		parcel.setDataPosition(0);
+    public void testOperationWithTaskFailsWithProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
 
-		final TestOperation parceled = TestOperation.CREATOR.createFromParcel(parcel);
-		Assert.assertEquals(uri, parceled.getUri());
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
 
-		parcel.recycle();
-	}
+                assertNotNull(o.getError());
+            }
 
-	// =============================================
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
 
-	private static class ObserverCounter {
+    public void testOperationWithTaskFailsWithCustomProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(error, o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    // =============================================
+
+    public void testOperationWithTaskPrerequisitesSucceeds() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisites();
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskPrerequisitesFailsWithNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNotNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskPrerequisitesFailsWithCustomNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(error, o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskPrerequisitesFailsWithProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNotNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskPrerequisitesFailsWithCustomProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskPrerequisitesThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(error, o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskDependenciesSucceeds() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependencies();
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskDependenciesFailsWithNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNotNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskDependenciesFailsWithCustomNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(error, o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskDependenciesFailsWithProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNotNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithTaskDependenciesFailsWithCustomProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithTaskDependenciesThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(error, o.getError());
+            }
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithDynamicTaskDependenciesSucceeds() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependency();
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithDynamicTaskDependenciesFailsWithNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNotNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithDynamicTaskDependenciesFailsWithCustomNetworkError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsNetworkingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(error, o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithDynamicTaskDependenciesFailsWithProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final Exception exception = new Exception(ERROR);
+        final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertNotNull(o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    public void testOperationWithDynamicTaskDependenciesFailsWithCustomProcessingError() {
+        final ObserverCounter latch = new ObserverCounter(1);
+        final ServiceError error = new ServiceError(ERROR);
+        final ServiceException exception = new ServiceException(error);
+        final TestOperation operation = TestOperationFactory.newOperationWithDynamicTaskDependenciesThatThrowsProcessingException(exception);
+        operation.setRequestExecutor(new TestThreadedRequestExecutor());
+        operation.setOperationObserver(new OperationObserver() {
+
+            @Override
+            public void onOperationComplete(final Operation o) {
+                latch.onOperationComplete();
+
+                assertEquals(error, o.getError());
+            }
+
+
+        });
+        operation.execute();
+        latch.assertComplete();
+    }
+
+    // =============================================
+
+    public void testOperationParcelableDescribeContents() {
+        final TestOperation operation = TestOperationFactory.newOperationWithoutTasks();
+        Assert.assertEquals(0, operation.describeContents());
+    }
+
+    public void testOperationParcelableCreatorArray() {
+        final TestOperation[] operation = TestOperation.CREATOR.newArray(1);
+        assertEquals(1, operation.length);
+    }
+
+    public void testOperationParcelableCreator() {
+        final Uri uri = Uri.parse("http://empty");
+        final TestOperation operation = TestOperationFactory.newOperationWithUri(uri);
+
+        final Parcel parcel = Parcel.obtain();
+        operation.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        final TestOperation parceled = TestOperation.CREATOR.createFromParcel(parcel);
+        Assert.assertEquals(uri, parceled.getUri());
+
+        parcel.recycle();
+    }
+
+    // =============================================
+
+    private static class ObserverCounter {
 
         final AssertionLatch mCompleteLatch;
-        final AssertionLatch mCancelLatch;
 
-		public ObserverCounter(final int completeCount, final int cancelCount) {
+        public ObserverCounter(final int completeCount) {
             mCompleteLatch = new AssertionLatch(completeCount);
-            mCancelLatch = new AssertionLatch(cancelCount);
-		}
+        }
 
         public void onOperationComplete() {
             mCompleteLatch.countDown();
         }
-        public void onOperationCancelled() {
-            mCancelLatch.countDown();
+
+        public void assertComplete() {
+            mCompleteLatch.assertComplete();
+        }
+    }
+
+    private static class RequestCounter {
+
+        final AssertionLatch mNetworkLatch;
+        final AssertionLatch mProcessingLatch;
+
+        public RequestCounter(final int networkCount, final int processingCount) {
+            mNetworkLatch = new AssertionLatch(networkCount);
+            mProcessingLatch = new AssertionLatch(processingCount);
         }
 
-		public void assertComplete() {
-			mCompleteLatch.assertComplete();
-            mCancelLatch.assertComplete();
-		}
-	}
+        public void executeNetworkingRequest() {
+            mNetworkLatch.countDown();
+        }
 
-	private static class RequestCounter {
+        public void executeProcessingRequest() {
+            mProcessingLatch.countDown();
+        }
 
-		final AssertionLatch mNetworkLatch;
-		final AssertionLatch mProcessingLatch;
-
-		public RequestCounter(final int networkCount, final int processingCount) {
-			mNetworkLatch = new AssertionLatch(networkCount);
-			mProcessingLatch = new AssertionLatch(processingCount);
-		}
-
-		public void executeNetworkingRequest() {
-			mNetworkLatch.countDown();
-		}
-
-		public void executeProcessingRequest() {
-			mProcessingLatch.countDown();
-		}
-
-		public void assertComplete() {
-			mNetworkLatch.assertComplete();
-			mProcessingLatch.assertComplete();
-		}
-	}
+        public void assertComplete() {
+            mNetworkLatch.assertComplete();
+            mProcessingLatch.assertComplete();
+        }
+    }
 }

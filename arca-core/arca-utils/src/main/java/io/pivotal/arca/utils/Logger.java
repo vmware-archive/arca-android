@@ -31,7 +31,7 @@ public enum Logger {
 		public static final int VERBOSE = 4;
 	}
 
-	private static final int MAX_LOG_LEVEL = Level.VERBOSE;
+	private static int sLogLevel = Level.VERBOSE;
 
 	private static final String UI_THREAD = "UI";
 	private static final String BG_THREAD = "BG";
@@ -42,21 +42,17 @@ public enum Logger {
 	private Logger() {
 	}
 
-	/**
-	 * Sets the debuggable flag in the logger and assigns a tag to the log
-	 * message.</br> </br> If set to 'true' then all messages will be
-	 * logged.</br> If set to 'false' then only error messages will be logged.
-	 * 
-	 * @param isDebuggable
-	 * @param tagName
-	 */
+    public static void trace() {
+        setup(true, "TRACE");
+    }
+
 	public static void setup(final boolean isDebuggable, final String tagName) {
 		sIsDebuggable = isDebuggable;
 		sTagName = tagName;
 	}
 
 	public static void i(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.INFO) {
+		if (sIsDebuggable && sLogLevel >= Level.INFO) {
 			final String formattedString = formatMessage(message, objects);
 			Log.i(sTagName, formattedString);
 		}
@@ -67,7 +63,7 @@ public enum Logger {
 	}
 
 	public static void w(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.WARNING) {
+		if (sIsDebuggable && sLogLevel >= Level.WARNING) {
 			final String formattedString = formatMessage(message, objects);
 			Log.w(sTagName, formattedString);
 		}
@@ -78,7 +74,7 @@ public enum Logger {
 	}
 
 	public static void v(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.VERBOSE) {
+		if (sIsDebuggable && sLogLevel >= Level.VERBOSE) {
 			final String formattedString = formatMessage(message, objects);
 			Log.v(sTagName, formattedString);
 		}
@@ -89,7 +85,7 @@ public enum Logger {
 	}
 
 	public static void d(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.DEBUG) {
+		if (sIsDebuggable && sLogLevel >= Level.DEBUG) {
 			final String formattedString = formatMessage(message, objects);
 			Log.d(sTagName, formattedString);
 		}
@@ -100,7 +96,7 @@ public enum Logger {
 	}
 
 	public static void e(final String message, final Object... objects) {
-		if (sIsDebuggable && MAX_LOG_LEVEL >= Level.ERROR) {
+		if (sIsDebuggable && sLogLevel >= Level.ERROR) {
 			final String formattedString = formatMessage(message, objects);
 			Log.e(sTagName, formattedString);
 		}
@@ -112,8 +108,8 @@ public enum Logger {
 
 	public static void ex(final String message, final Throwable tr) {
 		final String stackTrace = getMessageFromThrowable(tr);
-		final String fromattedMessage = formatMessage(message, new Object[] {});
-		final String formattedString = String.format("%s : %s", fromattedMessage, stackTrace);
+		final String formattedMessage = formatMessage(message, new Object[] {});
+		final String formattedString = String.format("%s : %s", formattedMessage, stackTrace);
 		Log.w(sTagName, formattedString);
 	}
 
@@ -181,25 +177,21 @@ public enum Logger {
 		final String loggerClassName = INSTANCE.getClass().getName();
 
 		boolean foundLogger = false;
-		for (int i = 0; i < elements.length; i++) {
-			final StackTraceElement element = elements[i];
+        for (final StackTraceElement element : elements) {
+            // Scan down the list until we find the Logger itself
+            if (!foundLogger) {
+                if (element.getClassName().equalsIgnoreCase(loggerClassName)) {
+                    foundLogger = true;
+                }
+                continue;
+            }
 
-			// Scan down the list until we find the Logger itself
-			if (!foundLogger) {
-				if (element.getClassName().equalsIgnoreCase(loggerClassName)) {
-					foundLogger = true;
-				}
-				continue;
-			}
-
-			// After finding the Logger, look for the first class that isn't the
-			// logger -- that's the class that called the Logger!
-			if (foundLogger) {
-				if (!element.getClassName().equalsIgnoreCase(loggerClassName)) {
-					return element;
-				}
-			}
-		}
+            // After finding the Logger, look for the first class that isn't the
+            // logger -- that's the class that called the Logger!
+            if (!element.getClassName().equalsIgnoreCase(loggerClassName)) {
+                return element;
+            }
+        }
 		return null;
 	}
 }

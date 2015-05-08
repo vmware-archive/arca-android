@@ -51,13 +51,8 @@ public abstract class SimpleOperation extends Operation {
     }
 
     @Override
-    public void onFailure(final Context context, final ServiceError serviceError) {
-        //do nothing
-    }
+    public void onComplete(final Context context, final Results results) {
 
-    @Override
-    public void onCancel() {
-        /* DO NOTHING */
     }
 
     private final class InnerTask extends Task<ContentValues[]> {

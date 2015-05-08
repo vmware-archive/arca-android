@@ -377,81 +377,27 @@ public class TaskTest extends AndroidTestCase {
 	// =============================================
 
 	public void testTaskFailsWithoutExecutorForNetworkingRequest() {
-		final ObserverCounter latch = new ObserverCounter(1, 0, 1, 0);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestExecutor(null);
-		task.setTaskObserver(new TaskObserver() {
 
-			@Override
-			public void onTaskStarted(final Task<?> t) {
-				latch.onTaskStarted();
-
-				assertNotNull(t);
-			}
-
-			@Override
-			public void onTaskComplete(final Task<?> t) {
-				latch.onTaskComplete();
-
-				fail();
-			}
-
-			@Override
-			public void onTaskFailure(final Task<?> t, final ServiceError e) {
-				latch.onTaskFailure();
-
-				assertNotNull(t);
-				assertEquals(TestTask.Messages.NO_EXECUTOR, e.getMessage());
-			}
-
-            @Override
-            public void onTaskCancelled(Task<?> t) {
-                latch.onTaskCancelled();
-
-                fail();
-            }
-		});
-		task.execute();
-		latch.assertComplete();
+        try {
+            task.execute();
+            fail();
+        } catch (IllegalStateException e) {
+            assertNotNull(e);
+        }
 	}
 
 	public void testTaskFailsWithoutExecutorForProcessingRequest() {
-		final ObserverCounter latch = new ObserverCounter(0, 0, 1, 0);
 		final TestTask task = TestTaskFactory.newTask();
 		task.setRequestExecutor(null);
-		task.setTaskObserver(new TaskObserver() {
 
-			@Override
-			public void onTaskStarted(final Task<?> t) {
-				latch.onTaskStarted();
-
-				fail();
-			}
-
-			@Override
-			public void onTaskComplete(final Task<?> t) {
-				latch.onTaskComplete();
-
-				fail();
-			}
-
-			@Override
-			public void onTaskFailure(final Task<?> t, final ServiceError e) {
-				latch.onTaskFailure();
-
-				assertNotNull(t);
-				assertEquals(TestTask.Messages.NO_EXECUTOR, e.getMessage());
-			}
-
-            @Override
-            public void onTaskCancelled(Task<?> t) {
-                latch.onTaskCancelled();
-
-                fail();
-            }
-		});
-		task.onNetworkingComplete(null);
-		latch.assertComplete();
+        try {
+            task.onNetworkingComplete(null);
+            fail();
+        } catch (IllegalStateException e) {
+            assertNotNull(e);
+        }
 	}
 
 	public void testTaskCompleted() {
@@ -646,7 +592,47 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 
+    public void testTaskNotifiesWhenCancelled() {
+        final ObserverCounter latch = new ObserverCounter(0, 0, 0, 1);
+        final TestTask task = TestTaskFactory.newTask();
+        task.setRequestExecutor(new TestThreadedRequestExecutor());
+        task.setTaskObserver(new TaskObserver() {
+
+            @Override
+            public void onTaskStarted(final Task<?> t) {
+                latch.onTaskStarted();
+
+                fail();
+            }
+
+            @Override
+            public void onTaskComplete(final Task<?> t) {
+                latch.onTaskComplete();
+
+                fail();
+            }
+
+            @Override
+            public void onTaskFailure(final Task<?> t, final ServiceError e) {
+                latch.onTaskFailure();
+
+                fail();
+            }
+
+            @Override
+            public void onTaskCancelled(Task<?> t) {
+                latch.onTaskCancelled();
+
+                assertNotNull(t);
+            }
+        });
+        task.cancel();
+        latch.assertComplete();
+    }
+
+
 	// =============================================
+
 
 	public void testTaskPrerequisitesSuccess() {
 		final ObserverCounter latch = new ObserverCounter(2, 2, 0, 0);
@@ -1239,8 +1225,8 @@ public class TaskTest extends AndroidTestCase {
 		latch.assertComplete();
 	}
 
-    public void testTaskSecondTaskCancelsAfterStarting() {
-        final ObserverCounter latch = new ObserverCounter(2, 1, 0, 1);
+    public void testTaskWithDependenciesNotifiesOfCancellation() {
+        final ObserverCounter latch = new ObserverCounter(0, 0, 0, 2);
         final List<Task<?>> expectedOrder = TestTaskFactory.newTaskList();
 
         final TaskObserver observer = new TaskObserver() {
@@ -1248,6 +1234,8 @@ public class TaskTest extends AndroidTestCase {
             @Override
             public void onTaskStarted(final Task<?> t) {
                 latch.onTaskStarted();
+
+                fail();
             }
 
             @Override
@@ -1259,58 +1247,13 @@ public class TaskTest extends AndroidTestCase {
 
             @Override
             public void onTaskComplete(final Task<?> t) {
-                if (!t.getIdentifier().getData().equals("task2")) {
-                    latch.onTaskComplete();
-
-                    assertEquals(expectedOrder.remove(0), t);
-                }
-            }
-
-            @Override
-            public void onTaskCancelled(Task<?> t) {
-                latch.onTaskCancelled();
-
-                assertEquals(expectedOrder.remove(1), t);
-            }
-        };
-
-        for (final Task<?> task : expectedOrder)
-            task.setTaskObserver(observer);
-
-        expectedOrder.get(1).execute();
-        expectedOrder.get(1).cancel();
-        expectedOrder.get(0).execute();
-
-        latch.assertComplete();
-    }
-
-    public void testTaskTaskWithDependenciesCancelsAfterStarting() {
-        final ObserverCounter latch = new ObserverCounter(1, 0, 0, 2);
-        final List<Task<?>> expectedOrder = TestTaskFactory.newTaskListWithDependencies();
-
-        final TaskObserver observer = new TaskObserver() {
-
-            @Override
-            public void onTaskStarted(final Task<?> t) {
-                if (t.getIdentifier().getData().equals("task2")) {
-                    latch.onTaskStarted();
-                }
-            }
-
-            @Override
-            public void onTaskFailure(final Task<?> t, final ServiceError e) {
-                latch.onTaskFailure();
+                latch.onTaskComplete();
 
                 fail();
             }
 
             @Override
-            public void onTaskComplete(final Task<?> t) {
-
-            }
-
-            @Override
-            public void onTaskCancelled(Task<?> t) {
+            public void onTaskCancelled(final Task<?> t) {
                 latch.onTaskCancelled();
 
                 assertEquals(expectedOrder.remove(0), t);
@@ -1320,7 +1263,7 @@ public class TaskTest extends AndroidTestCase {
         for (final Task<?> task : expectedOrder)
             task.setTaskObserver(observer);
 
-        expectedOrder.get(0).execute();
+        expectedOrder.get(0).cancel();
         expectedOrder.get(0).cancel();
 
         latch.assertComplete();

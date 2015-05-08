@@ -19,12 +19,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class TestOperation extends Operation {
 
 	private final Set<Task<?>> mTasks;
+
+    private List<Task<?>> mCompletedTasks = new ArrayList<Task<?>>();
+    private List<Task<?>> mFailedTasks = new ArrayList<Task<?>>();
+    private List<Task<?>> mCancelledTasks = new ArrayList<Task<?>>();
 
 	public TestOperation(final Set<Task<?>> tasks) {
 		this(null, tasks);
@@ -45,7 +50,19 @@ public class TestOperation extends Operation {
 		return mTasks;
 	}
 
-	@Override
+    public List<Task<?>> getCompletedTasks() {
+        return mCompletedTasks;
+    }
+
+    public List<Task<?>> getFailedTasks() {
+        return mFailedTasks;
+    }
+
+    public List<Task<?>> getCancelledTasks() {
+        return mCancelledTasks;
+    }
+
+    @Override
 	public void onSuccess(final Context context, final List<Task<?>> completed) {
 
 	}
@@ -56,8 +73,10 @@ public class TestOperation extends Operation {
 	}
 
     @Override
-    public void onCancel() {
-
+    public void onComplete(final Context context, final Results results) {
+        mCompletedTasks = results.getCompletedTasks();
+        mCancelledTasks = results.getCancelledTasks();
+        mFailedTasks = results.getFailedTasks();
     }
 
     public static final Creator<TestOperation> CREATOR = new Creator<TestOperation>() {

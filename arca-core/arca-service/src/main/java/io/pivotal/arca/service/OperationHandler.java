@@ -41,6 +41,7 @@ public class OperationHandler extends Handler implements OperationObserver {
     private final RequestExecutor mExecutor;
     private final Context mContext;
 
+    private OperationHandlerObserver mObserver;
     private OnStateChangeListener mListener;
 
     public OperationHandler(final Context context, final RequestExecutor executor) {
@@ -48,8 +49,16 @@ public class OperationHandler extends Handler implements OperationObserver {
         mExecutor = executor;
     }
 
+    public void setOperationHandlerObserver(final OperationHandlerObserver observer) {
+        mObserver = observer;
+    }
+
     public void setOnStateChangeListener(final OnStateChangeListener listener) {
         mListener = listener;
+    }
+
+    public Map<Uri, Operation> getOperations() {
+        return mOperations;
     }
 
     public boolean start(final Operation operation) {
@@ -57,6 +66,10 @@ public class OperationHandler extends Handler implements OperationObserver {
 
         if (mOperations.isEmpty()) {
             notifyRunning();
+        }
+
+        if (mObserver != null) {
+            mObserver.onOperationStarted(operation);
         }
 
         final Uri uri = operation.getUri();
@@ -93,30 +106,15 @@ public class OperationHandler extends Handler implements OperationObserver {
 
         mOperations.remove(uri);
 
+        if (mObserver != null) {
+            mObserver.onOperationFinished(operation);
+        }
+
         if (mOperations.isEmpty()) {
             notifyEmpty();
             return true;
         } else {
             return false;
-        }
-    }
-
-    public Map<Uri, Operation> getOperations() {
-        return mOperations;
-    }
-
-    @Override
-    public void onOperationComplete(final Operation operation) {
-        Logger.v("OperationHandler[%s] Operation[%s] complete", this, operation);
-        final Message message = obtainMessage(MSG_NOTIFY_COMPLETE, operation);
-        sendMessage(message);
-    }
-
-    @Override
-    public void handleMessage(final Message msg) {
-        if (msg.what == MSG_NOTIFY_COMPLETE) {
-            final Operation operation = (Operation) msg.obj;
-            finish(operation);
         }
     }
 
@@ -130,5 +128,20 @@ public class OperationHandler extends Handler implements OperationObserver {
         if (mListener != null) {
             mListener.onStateChanged(HandlerState.IDLE);
         }
+    }
+
+    @Override
+    public void handleMessage(final Message msg) {
+        if (msg.what == MSG_NOTIFY_COMPLETE) {
+            final Operation operation = (Operation) msg.obj;
+            finish(operation);
+        }
+    }
+
+    @Override
+    public void onOperationComplete(final Operation operation) {
+        Logger.v("OperationHandler[%s] Operation[%s] complete", this, operation);
+        final Message message = obtainMessage(MSG_NOTIFY_COMPLETE, operation);
+        sendMessage(message);
     }
 }

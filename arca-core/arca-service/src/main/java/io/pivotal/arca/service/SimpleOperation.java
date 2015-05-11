@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,9 +29,7 @@ public abstract class SimpleOperation extends Operation {
 
     @Override
     public final Set<Task<?>> onCreateTasks() {
-        final Set<Task<?>> set = new HashSet<Task<?>>();
-        set.add(new InnerTask());
-        return set;
+        return new HashSet<Task<?>>(Arrays.asList(new InnerTask()));
     }
 
     public Identifier<?> onCreateIdentifier() {

@@ -18,11 +18,17 @@ package io.pivotal.arca.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.IBinder;
+
+import java.util.HashMap;
 
 import io.pivotal.arca.utils.Logger;
 
-public class OperationService extends Service implements OperationHandler.OnStateChangeListener {
+public class OperationService extends Service implements OperationHandler.OnStateChangeListener, OperationHandlerObserver {
+
+    private static final Object LOCK = new Object();
+    private static final HashMap<Uri, Operation> OPERATIONS = new HashMap<Uri, Operation>();
 
     public static enum Action {
         START, CANCEL
@@ -33,24 +39,30 @@ public class OperationService extends Service implements OperationHandler.OnStat
         public static final String OPERATION = "operation";
     }
 
+    public static boolean contains(final Operation operation) {
+        synchronized (LOCK) {
+            return OPERATIONS.containsKey(operation.getUri());
+        }
+    }
+
     public static boolean start(final Context context, final Operation operation) {
-        return startService(context, operation, Action.START);
+        return start(context, operation, Action.START);
     }
 
     public static boolean cancel(final Context context, final Operation operation) {
-        return startService(context, operation, Action.CANCEL);
+        return start(context, operation, Action.CANCEL);
+    }
+
+    private static boolean start(final Context context, final Operation operation, final Action action) {
+        return context != null && operation != null && startService(context, operation, action);
     }
 
     private static boolean startService(final Context context, final Operation operation, final Action action) {
-        if (context != null && operation != null) {
-            final Intent intent = new Intent(context, OperationService.class);
-            intent.putExtra(Extras.OPERATION, operation);
-            intent.putExtra(Extras.ACTION, action);
-            context.startService(intent);
-            return true;
-        } else {
-            return false;
-        }
+        final Intent intent = new Intent(context, OperationService.class);
+        intent.putExtra(Extras.OPERATION, operation);
+        intent.putExtra(Extras.ACTION, action);
+        context.startService(intent);
+        return true;
     }
 
     private OperationHandler mHandler;
@@ -62,12 +74,15 @@ public class OperationService extends Service implements OperationHandler.OnStat
         Logger.v("Created service %s", this.getClass());
 
         mHandler = onCreateOperationHandler();
+
+        clearOperations();
     }
 
     protected OperationHandler onCreateOperationHandler() {
         final Context context = getApplicationContext();
         final RequestExecutor executor = new RequestExecutor.ThreadedRequestExecutor();
         final OperationHandler handler = new OperationHandler(context, executor);
+        handler.setOperationHandlerObserver(this);
         handler.setOnStateChangeListener(this);
         return handler;
     }
@@ -113,11 +128,37 @@ public class OperationService extends Service implements OperationHandler.OnStat
     }
 
     protected void handleStart(final Operation operation) {
-        mHandler.start(operation);
+        if (mHandler != null) {
+            mHandler.start(operation);
+        }
     }
 
     protected void handleCancel(final Operation operation) {
-        mHandler.cancel(operation);
+        if (mHandler != null) {
+            mHandler.cancel(operation);
+        }
+    }
+
+    private void clearOperations() {
+        synchronized (LOCK) {
+            OPERATIONS.clear();
+        }
+    }
+
+    @Override
+    public void onOperationStarted(final Operation operation) {
+        synchronized (LOCK) {
+            final Uri uri = operation.getUri();
+            OPERATIONS.put(uri, operation);
+        }
+    }
+
+    @Override
+    public void onOperationFinished(final Operation operation) {
+        synchronized (LOCK) {
+            final Uri uri = operation.getUri();
+            OPERATIONS.remove(uri);
+        }
     }
 
     @Override

@@ -64,4 +64,28 @@ public class QueryTest extends AndroidTestCase {
 
 		parcel.recycle();
 	}
+
+public void testQueryAddWhere() {
+	final Uri uri = Uri.parse("content://empty");
+	final Query request = new Query(uri);
+
+	final String where = "test = ?";
+	final String[] whereArgs = { "true" };
+	final String where2 = "test2 = ?";
+	final String[] whereArgs2 = { "false" };
+
+	assertEquals(null, request.getWhereArgs());
+	assertEquals(null, request.getWhereClause());
+
+	request.addWhere(where, whereArgs);
+
+	assertEquals("test = ?", request.getWhereArgs());
+	assertArrayEquals({ "true" }, request.getWhereClause());
+
+	request.addWhere(where, whereArgs);
+
+	assertEquals("test = ? AND test2 = ?", request.getWhereArgs());
+	assertArrayEquals({ "true", "false" }, request.getWhereClause());
+}
+
 }

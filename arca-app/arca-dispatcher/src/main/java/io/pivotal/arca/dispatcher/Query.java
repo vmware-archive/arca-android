@@ -20,6 +20,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import io.pivotal.arca.utils.ArrayUtils;
+
 public class Query extends Request<Cursor> implements Parcelable {
 
 	private String[] mProjection;
@@ -62,6 +64,19 @@ public class Query extends Request<Cursor> implements Parcelable {
 	public void setWhere(final String whereClause, final String... whereArgs) {
 		mWhereClause = whereClause;
 		mWhereArgs = whereArgs;
+	}
+
+	public void addWhere(final String whereClause, final String... whereArgs) {
+		if (mWhereClause != null) {
+			mWhereClause = mWhereClause + " AND " + whereClause;
+		} else {
+			mWhereClause = whereClause;
+		}
+		if (mWhereArgs != null) {
+			mWhereArgs = ArrayUtils.append(mWhereArgs, whereArgs);
+		} else {
+			mWhereArgs = whereArgs;
+		}
 	}
 
 	public void setSortOrder(final String sortOrder) {

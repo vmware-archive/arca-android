@@ -27,7 +27,7 @@ An Operation is responsible for a collection of Tasks that, when executed, updat
 
 #### Simple Example
 
-In the simple example below you may notice that the Operation implements the Parcelable interface. This is required since the operation is bundle within an intent when passed to the OperationService. You will need to define your own static CREATOR class as well as write any properties to and from the given Parcel.
+In the simple example below you may notice that the Operation implements the Parcelable interface. This is required since the operation is bundled within an intent when passed to the OperationService. You will need to define your own static CREATOR class as well as write any properties to and from the given Parcel.
 
 ```java
 public class PostListOperation extends Operation {

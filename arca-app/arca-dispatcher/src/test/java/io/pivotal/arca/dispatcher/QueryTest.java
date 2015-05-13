@@ -19,8 +19,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Query;
-
 import java.util.Arrays;
 
 public class QueryTest extends AndroidTestCase {
@@ -65,27 +63,27 @@ public class QueryTest extends AndroidTestCase {
 		parcel.recycle();
 	}
 
-public void testQueryAddWhere() {
-	final Uri uri = Uri.parse("content://empty");
-	final Query request = new Query(uri);
+    public void testQueryAddWhere() {
+        final Uri uri = Uri.parse("content://empty");
+        final Query request = new Query(uri);
 
-	final String where = "test = ?";
-	final String[] whereArgs = { "true" };
-	final String where2 = "test2 = ?";
-	final String[] whereArgs2 = { "false" };
+        final String where1 = "test1 = ?";
+        final String[] whereArgs1 = { "true" };
+        final String where2 = "test2 = ?";
+        final String[] whereArgs2 = { "false" };
 
-	assertEquals(null, request.getWhereArgs());
-	assertEquals(null, request.getWhereClause());
+        assertEquals(null, request.getWhereArgs());
+        assertEquals(null, request.getWhereClause());
 
-	request.addWhere(where, whereArgs);
+        request.addWhere(where1, whereArgs1);
 
-	assertEquals("test = ?", request.getWhereArgs());
-	assertArrayEquals({ "true" }, request.getWhereClause());
+        assertEquals("test1 = ?", request.getWhereClause());
+        assertTrue(Arrays.deepEquals(new String[] { "true" }, request.getWhereArgs()));
 
-	request.addWhere(where, whereArgs);
+        request.addWhere(where2, whereArgs2);
 
-	assertEquals("test = ? AND test2 = ?", request.getWhereArgs());
-	assertArrayEquals({ "true", "false" }, request.getWhereClause());
-}
+        assertEquals("test1 = ? AND test2 = ?", request.getWhereClause());
+        assertTrue(Arrays.deepEquals(new String[] { "true", "false" }, request.getWhereArgs()));
+    }
 
 }

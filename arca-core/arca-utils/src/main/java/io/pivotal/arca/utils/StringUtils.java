@@ -61,7 +61,7 @@ public class StringUtils {
 		if (s == null)
 			return "";
 
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		for (final T t : s) {
 			if (buffer.length() > 0 && delimiter != null) {
 				buffer.append(delimiter);
@@ -75,7 +75,7 @@ public class StringUtils {
 		if (s == null)
 			return "";
 
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		for (final T t : s) {
 			if (buffer.length() > 0 && delimiter != null) {
 				buffer.append(delimiter);

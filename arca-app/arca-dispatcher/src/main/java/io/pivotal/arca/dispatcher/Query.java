@@ -21,6 +21,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import io.pivotal.arca.utils.ArrayUtils;
+import io.pivotal.arca.utils.StringUtils;
 
 public class Query extends Request<Cursor> implements Parcelable {
 
@@ -67,16 +68,8 @@ public class Query extends Request<Cursor> implements Parcelable {
 	}
 
 	public void addWhere(final String whereClause, final String... whereArgs) {
-		if (mWhereClause != null) {
-			mWhereClause = mWhereClause + " AND " + whereClause;
-		} else {
-			mWhereClause = whereClause;
-		}
-		if (mWhereArgs != null) {
-			mWhereArgs = ArrayUtils.append(mWhereArgs, whereArgs);
-		} else {
-			mWhereArgs = whereArgs;
-		}
+        mWhereClause = StringUtils.append(mWhereClause, whereClause, " AND ");
+        mWhereArgs = ArrayUtils.append(mWhereArgs, whereArgs);
 	}
 
 	public void setSortOrder(final String sortOrder) {

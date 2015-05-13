@@ -43,9 +43,11 @@ public abstract class Operation implements Parcelable, TaskObserver {
     private final Priority mPriority;
     private final Uri mUri;
 
+    private boolean mIsComplete;
     private OperationObserver mObserver;
     private RequestExecutor mExecutor;
     private Context mContext;
+
 
     public Operation(final Uri uri, final Priority priority) {
         mUri = uri;
@@ -83,6 +85,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
     public void execute() {
         Logger.v("Operation[%s] execute", this);
+        mIsComplete = false;
         final Set<Task<?>> tasks = onCreateTasks();
         checkTasks(tasks);
     }
@@ -164,7 +167,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
     private void checkTaskCompletion() {
         Logger.v("Operation[%s] checking task completion", this);
-        if (allTasksComplete()) {
+        if (!mIsComplete && allTasksComplete()) {
             notifyComplete();
         }
     }
@@ -245,6 +248,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
 
     private void notifyComplete() {
         Logger.v("Operation[%s] notify complete", this);
+        mIsComplete = true;
 
         if (hasCancelledTasks()) {
             Logger.v("Operation[%s] notify cancelled", this);

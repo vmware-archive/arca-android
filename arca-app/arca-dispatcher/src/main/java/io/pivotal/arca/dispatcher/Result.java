@@ -58,6 +58,6 @@ public abstract class Result<T> {
 	}
 
 	public boolean isValid() {
-		return mIsValid && !hasError();
+		return mIsValid;
 	}
 }

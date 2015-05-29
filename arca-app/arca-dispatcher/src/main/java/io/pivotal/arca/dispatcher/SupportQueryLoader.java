@@ -59,11 +59,11 @@ public class SupportQueryLoader extends SupportLoader<QueryResult> {
 
         } else {
 
-            if (isStarted()) {
+            if (isStarted() && result.isValid()) {
                 super.deliverResult(result);
             }
 
-            if (result.isValid()) {
+            if (result.isValid() && !result.hasError()) {
                 mTracker.trackValidResult(result);
             } else {
                 mTracker.trackInvalidResult(result, mObserver);

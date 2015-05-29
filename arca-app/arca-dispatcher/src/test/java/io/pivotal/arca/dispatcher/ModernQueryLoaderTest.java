@@ -17,10 +17,6 @@ package io.pivotal.arca.dispatcher;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Error;
-import io.pivotal.arca.dispatcher.ModernQueryLoader;
-import io.pivotal.arca.dispatcher.QueryResult;
-
 public class ModernQueryLoaderTest extends AndroidTestCase {
 
 	public void testErrorResult() {
@@ -31,5 +27,4 @@ public class ModernQueryLoaderTest extends AndroidTestCase {
 		assertTrue(result.hasError());
 		assertEquals(error, result.getError());
 	}
-
 }

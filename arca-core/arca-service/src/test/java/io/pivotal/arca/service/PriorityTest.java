@@ -9,10 +9,9 @@ package io.pivotal.arca.service;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.service.Priority;
-import io.pivotal.arca.threading.PriorityAccessor;
-
 import junit.framework.Assert;
+
+import io.pivotal.arca.threading.PriorityAccessor;
 
 public class PriorityTest extends AndroidTestCase {
 

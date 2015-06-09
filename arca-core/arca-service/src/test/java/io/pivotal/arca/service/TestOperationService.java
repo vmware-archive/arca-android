@@ -7,8 +7,6 @@
  */
 package io.pivotal.arca.service;
 
-import io.pivotal.arca.service.OperationService;
-
 public class TestOperationService extends OperationService {
 
 	public static interface Extras extends OperationService.Extras {

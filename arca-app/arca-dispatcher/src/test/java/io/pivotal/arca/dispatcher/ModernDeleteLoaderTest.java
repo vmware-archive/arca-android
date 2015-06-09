@@ -9,10 +9,6 @@ package io.pivotal.arca.dispatcher;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.DeleteResult;
-import io.pivotal.arca.dispatcher.Error;
-import io.pivotal.arca.dispatcher.ModernDeleteLoader;
-
 public class ModernDeleteLoaderTest extends AndroidTestCase {
 
 	public void testErrorResult() {

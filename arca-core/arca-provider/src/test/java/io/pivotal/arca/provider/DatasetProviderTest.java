@@ -13,12 +13,12 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 
-import io.pivotal.arca.provider.DatasetProviderTest.TestDatasetProvider;
-import io.pivotal.arca.provider.DatasetProviderTest.TestDatasetProvider.Uris;
-
 import junit.framework.Assert;
 
 import java.util.Locale;
+
+import io.pivotal.arca.provider.DatasetProviderTest.TestDatasetProvider;
+import io.pivotal.arca.provider.DatasetProviderTest.TestDatasetProvider.Uris;
 
 public class DatasetProviderTest extends ProviderTestCase2<TestDatasetProvider> {
 

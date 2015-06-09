@@ -10,8 +10,6 @@ package io.pivotal.arca.dispatcher;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Request;
-
 import junit.framework.Assert;
 
 public class RequestTest extends AndroidTestCase {

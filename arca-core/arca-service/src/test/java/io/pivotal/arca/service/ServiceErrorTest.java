@@ -10,8 +10,6 @@ package io.pivotal.arca.service;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.service.ServiceError;
-
 import java.util.Locale;
 
 public class ServiceErrorTest extends AndroidTestCase {

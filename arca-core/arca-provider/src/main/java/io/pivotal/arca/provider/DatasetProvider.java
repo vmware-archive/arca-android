@@ -12,10 +12,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import io.pivotal.arca.provider.DatasetMatcher.DefaultMatcher;
-
 import java.util.Collection;
 import java.util.Locale;
+
+import io.pivotal.arca.provider.DatasetMatcher.DefaultMatcher;
 
 public abstract class DatasetProvider extends ContentProvider {
 

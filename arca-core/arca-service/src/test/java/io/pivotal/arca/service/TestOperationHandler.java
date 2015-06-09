@@ -10,9 +10,6 @@ package io.pivotal.arca.service;
 import android.content.Context;
 import android.os.Message;
 
-import io.pivotal.arca.service.OperationHandler;
-import io.pivotal.arca.service.RequestExecutor;
-
 public class TestOperationHandler extends OperationHandler {
 
 	public TestOperationHandler(final Context context, final RequestExecutor executor) {

@@ -11,8 +11,6 @@ import android.test.AndroidTestCase;
 
 import junit.framework.Assert;
 
-import io.pivotal.arca.provider.PackageUtils;
-
 public class PackageUtilsTest extends AndroidTestCase {
 
 	public void testVersionCode() {

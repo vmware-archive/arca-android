@@ -11,10 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.provider.Dataset;
-import io.pivotal.arca.provider.DatasetMatcher;
 import io.pivotal.arca.provider.DatasetMatcher.DefaultMatcher;
-import io.pivotal.arca.provider.SQLiteTable;
 
 public class DefaultMatcherTest extends AndroidTestCase {
 

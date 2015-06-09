@@ -9,9 +9,6 @@ package io.pivotal.arca.dispatcher;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Error;
-import io.pivotal.arca.dispatcher.Result;
-
 public class ResultTest extends AndroidTestCase {
 
 	public void testResultHasError() {

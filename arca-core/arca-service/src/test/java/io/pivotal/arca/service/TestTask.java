@@ -9,7 +9,6 @@ package io.pivotal.arca.service;
 
 import android.content.Context;
 
-import io.pivotal.arca.service.Task;
 import io.pivotal.arca.threading.Identifier;
 
 public class TestTask extends Task<String> {

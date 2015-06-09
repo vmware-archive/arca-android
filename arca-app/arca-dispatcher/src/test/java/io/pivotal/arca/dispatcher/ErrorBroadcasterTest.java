@@ -13,16 +13,12 @@ import android.os.Looper;
 import android.os.Message;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.broadcaster.ArcaBroadcastManager;
-import io.pivotal.arca.dispatcher.Error;
-import io.pivotal.arca.dispatcher.ErrorBroadcaster;
-import io.pivotal.arca.dispatcher.ErrorListener;
-import io.pivotal.arca.dispatcher.ErrorReceiver;
-
 import junit.framework.Assert;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import io.pivotal.arca.broadcaster.ArcaBroadcastManager;
 
 public class ErrorBroadcasterTest extends AndroidTestCase {
 

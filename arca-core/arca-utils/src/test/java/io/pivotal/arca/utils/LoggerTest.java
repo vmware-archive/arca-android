@@ -9,8 +9,6 @@ package io.pivotal.arca.utils;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.utils.Logger;
-
 import junit.framework.Assert;
 
 public class LoggerTest extends AndroidTestCase {

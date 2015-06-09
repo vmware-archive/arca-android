@@ -7,10 +7,6 @@
  */
 package io.pivotal.arca.service;
 
-import io.pivotal.arca.service.NetworkingPrioritizable;
-import io.pivotal.arca.service.NetworkingRequest;
-import io.pivotal.arca.service.ServiceError;
-
 public class TestNetworkingRequest extends NetworkingRequest<String> {
 
 	public TestNetworkingRequest(final NetworkingPrioritizable<String> prioritizable) {

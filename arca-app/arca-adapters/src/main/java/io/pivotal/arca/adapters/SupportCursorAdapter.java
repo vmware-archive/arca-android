@@ -7,12 +7,12 @@
  */
 package io.pivotal.arca.adapters;
 
-import java.util.Collection;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.view.View;
+
+import java.util.Collection;
 
 public class SupportCursorAdapter extends ResourceCursorAdapter {
 

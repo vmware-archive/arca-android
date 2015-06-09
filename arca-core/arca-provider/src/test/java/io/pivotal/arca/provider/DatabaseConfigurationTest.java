@@ -11,7 +11,6 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.provider.DatabaseConfiguration;
 import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 
 public class DatabaseConfigurationTest extends AndroidTestCase {

@@ -11,8 +11,6 @@ import android.test.AndroidTestCase;
 
 import java.util.Collection;
 
-import io.pivotal.arca.provider.ClassMapping;
-
 public class ClassMappingTest extends AndroidTestCase {
 
 	public void testClassMappingCountWithInvalidClass() throws Exception {

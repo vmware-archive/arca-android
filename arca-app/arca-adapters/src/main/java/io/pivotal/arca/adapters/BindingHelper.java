@@ -7,12 +7,12 @@
  */
 package io.pivotal.arca.adapters;
 
+import android.database.Cursor;
+import android.util.SparseArray;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import android.database.Cursor;
-import android.util.SparseArray;
 
 class BindingHelper {
 

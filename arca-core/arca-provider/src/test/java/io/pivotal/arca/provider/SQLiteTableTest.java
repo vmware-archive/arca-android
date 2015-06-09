@@ -18,12 +18,6 @@ import junit.framework.Assert;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import io.pivotal.arca.provider.Column;
-import io.pivotal.arca.provider.DatabaseConfiguration;
-import io.pivotal.arca.provider.DatabaseHelper;
-import io.pivotal.arca.provider.SQLiteDataset;
-import io.pivotal.arca.provider.SQLiteTable;
-
 public class SQLiteTableTest extends AndroidTestCase {
 
 	private static final Uri URI = Uri.EMPTY;

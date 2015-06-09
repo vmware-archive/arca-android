@@ -9,10 +9,6 @@ package io.pivotal.arca.dispatcher;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Error;
-import io.pivotal.arca.dispatcher.InsertResult;
-import io.pivotal.arca.dispatcher.ModernInsertLoader;
-
 public class ModernInsertLoaderTest extends AndroidTestCase {
 
 	public void testErrorResult() {

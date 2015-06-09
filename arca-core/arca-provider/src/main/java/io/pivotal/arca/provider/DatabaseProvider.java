@@ -13,10 +13,10 @@ import android.content.OperationApplicationException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
+import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
 
 public abstract class DatabaseProvider extends DatasetProvider {
 

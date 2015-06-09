@@ -9,10 +9,6 @@ package io.pivotal.arca.dispatcher;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Error;
-import io.pivotal.arca.dispatcher.SupportUpdateLoader;
-import io.pivotal.arca.dispatcher.UpdateResult;
-
 public class SupportUpdateLoaderTest extends AndroidTestCase {
 
 	public void testErrorResult() {

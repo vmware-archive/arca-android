@@ -10,8 +10,6 @@ package io.pivotal.arca.dispatcher;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Error;
-
 import java.util.Locale;
 
 public class ErrorTest extends AndroidTestCase {

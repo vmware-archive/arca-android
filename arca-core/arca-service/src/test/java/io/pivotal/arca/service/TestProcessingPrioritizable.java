@@ -7,7 +7,6 @@
  */
 package io.pivotal.arca.service;
 
-import io.pivotal.arca.service.ProcessingPrioritizable;
 import io.pivotal.arca.threading.Identifier;
 
 public class TestProcessingPrioritizable extends ProcessingPrioritizable<String> {

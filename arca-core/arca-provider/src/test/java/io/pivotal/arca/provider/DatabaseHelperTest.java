@@ -18,14 +18,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import io.pivotal.arca.provider.Column;
-import io.pivotal.arca.provider.DatabaseConfiguration;
 import io.pivotal.arca.provider.DatabaseConfiguration.DefaultDatabaseConfiguration;
-import io.pivotal.arca.provider.DatabaseHelper;
-import io.pivotal.arca.provider.SelectFrom;
-import io.pivotal.arca.provider.SQLiteDataset;
-import io.pivotal.arca.provider.SQLiteTable;
-import io.pivotal.arca.provider.SQLiteView;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DatabaseHelperTest extends AndroidTestCase {

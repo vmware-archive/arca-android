@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Insert;
-
 import java.util.Arrays;
 
 public class InsertTest extends AndroidTestCase {

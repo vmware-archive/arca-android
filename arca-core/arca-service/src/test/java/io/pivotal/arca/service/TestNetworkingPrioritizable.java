@@ -7,7 +7,6 @@
  */
 package io.pivotal.arca.service;
 
-import io.pivotal.arca.service.NetworkingPrioritizable;
 import io.pivotal.arca.threading.Identifier;
 
 public class TestNetworkingPrioritizable extends NetworkingPrioritizable<String> {

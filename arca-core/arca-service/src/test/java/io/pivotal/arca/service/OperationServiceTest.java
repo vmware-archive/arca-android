@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.test.ServiceTestCase;
 
-import io.pivotal.arca.service.OperationService;
-
 public class OperationServiceTest extends ServiceTestCase<OperationService> {
 
 	public OperationServiceTest() {

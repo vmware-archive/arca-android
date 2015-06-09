@@ -20,23 +20,6 @@ import android.test.LoaderTestCase;
 import android.test.mock.MockContentProvider;
 import android.test.mock.MockContentResolver;
 
-import io.pivotal.arca.dispatcher.Delete;
-import io.pivotal.arca.dispatcher.DeleteListener;
-import io.pivotal.arca.dispatcher.DeleteResult;
-import io.pivotal.arca.dispatcher.Error;
-import io.pivotal.arca.dispatcher.Insert;
-import io.pivotal.arca.dispatcher.InsertListener;
-import io.pivotal.arca.dispatcher.InsertResult;
-import io.pivotal.arca.dispatcher.ModernRequestDispatcher;
-import io.pivotal.arca.dispatcher.Query;
-import io.pivotal.arca.dispatcher.QueryListener;
-import io.pivotal.arca.dispatcher.QueryResult;
-import io.pivotal.arca.dispatcher.RequestDispatcher;
-import io.pivotal.arca.dispatcher.RequestExecutor;
-import io.pivotal.arca.dispatcher.Update;
-import io.pivotal.arca.dispatcher.UpdateListener;
-import io.pivotal.arca.dispatcher.UpdateResult;
-
 import junit.framework.Assert;
 
 import java.io.FileDescriptor;

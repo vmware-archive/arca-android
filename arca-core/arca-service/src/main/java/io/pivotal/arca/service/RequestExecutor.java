@@ -7,13 +7,13 @@
  */
 package io.pivotal.arca.service;
 
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import io.pivotal.arca.threading.AuxiliaryExecutor;
 import io.pivotal.arca.threading.AuxiliaryExecutorObserver;
 import io.pivotal.arca.threading.Identifier;
 import io.pivotal.arca.threading.PrioritizableRequest;
-
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public interface RequestExecutor {
 	public void executeNetworkingRequest(NetworkingRequest<?> request);

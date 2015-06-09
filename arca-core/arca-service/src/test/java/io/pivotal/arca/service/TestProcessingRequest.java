@@ -7,10 +7,6 @@
  */
 package io.pivotal.arca.service;
 
-import io.pivotal.arca.service.ProcessingPrioritizable;
-import io.pivotal.arca.service.ProcessingRequest;
-import io.pivotal.arca.service.ServiceError;
-
 public class TestProcessingRequest extends ProcessingRequest<String> {
 
 	public TestProcessingRequest(final ProcessingPrioritizable<String> prioritizable) {

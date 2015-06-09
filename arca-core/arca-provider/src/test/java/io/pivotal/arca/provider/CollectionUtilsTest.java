@@ -9,8 +9,6 @@ package io.pivotal.arca.provider;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.provider.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 

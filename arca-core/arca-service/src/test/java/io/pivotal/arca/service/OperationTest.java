@@ -13,8 +13,6 @@ import android.test.AndroidTestCase;
 
 import junit.framework.Assert;
 
-import io.pivotal.arca.utils.Logger;
-
 public class OperationTest extends AndroidTestCase {
 
     private static final String ERROR = "test_error";

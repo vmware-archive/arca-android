@@ -9,8 +9,6 @@ package io.pivotal.arca.utils;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.utils.ArrayUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

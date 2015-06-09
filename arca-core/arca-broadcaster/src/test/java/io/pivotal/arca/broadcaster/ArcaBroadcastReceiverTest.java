@@ -11,8 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.broadcaster.ArcaBroadcastReceiver;
-
 public class ArcaBroadcastReceiverTest extends AndroidTestCase {
 
 	private static final String ACTION = "action";

@@ -7,11 +7,11 @@
  */
 package io.pivotal.arca.service;
 
-import io.pivotal.arca.threading.Identifier;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import io.pivotal.arca.threading.Identifier;
 
 class IdentifierMap<T> extends HashMap<Identifier<?>, Set<T>> {
 	private static final long serialVersionUID = 2219124556989041435L;

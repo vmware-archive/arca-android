@@ -7,10 +7,6 @@
  */
 package io.pivotal.arca.adapters;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import junit.framework.Assert;
 import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -20,9 +16,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import io.pivotal.arca.adapters.Binding;
-import io.pivotal.arca.adapters.ModernItemAdapter;
-import io.pivotal.arca.adapters.ViewBinder;
+import junit.framework.Assert;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ModernItemAdapterTest extends AndroidTestCase {

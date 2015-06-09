@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Delete;
-
 import java.util.Arrays;
 
 public class DeleteTest extends AndroidTestCase {

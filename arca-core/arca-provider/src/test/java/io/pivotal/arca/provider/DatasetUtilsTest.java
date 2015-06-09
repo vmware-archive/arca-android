@@ -9,17 +9,6 @@ package io.pivotal.arca.provider;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.provider.Column;
-import io.pivotal.arca.provider.DatasetUtils;
-import io.pivotal.arca.provider.GroupBy;
-import io.pivotal.arca.provider.Joins;
-import io.pivotal.arca.provider.OrderBy;
-import io.pivotal.arca.provider.SQLiteTable;
-import io.pivotal.arca.provider.SQLiteView;
-import io.pivotal.arca.provider.Select;
-import io.pivotal.arca.provider.SelectFrom;
-import io.pivotal.arca.provider.Where;
-
 public class DatasetUtilsTest extends AndroidTestCase {
 
 	public void testDatasetUtilsDefaultTableConversion() {

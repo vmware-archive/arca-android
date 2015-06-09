@@ -14,8 +14,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.broadcaster.ArcaBroadcastManager;
-
 import junit.framework.Assert;
 
 import java.util.concurrent.CountDownLatch;

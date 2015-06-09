@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
-import io.pivotal.arca.service.SimpleOperation;
-
 public class TestSimpleOperation extends SimpleOperation {
 
     private final ContentValues[] mData;

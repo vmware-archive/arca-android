@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.dispatcher.Update;
-
 import java.util.Arrays;
 
 public class UpdateTest extends AndroidTestCase {

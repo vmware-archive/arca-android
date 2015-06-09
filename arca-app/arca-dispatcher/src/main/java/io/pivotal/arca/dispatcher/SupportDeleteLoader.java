@@ -9,8 +9,6 @@ package io.pivotal.arca.dispatcher;
 
 import android.content.Context;
 
-import java.lang.*;
-
 public class SupportDeleteLoader extends SupportResultLoader<DeleteResult> {
 
 	public SupportDeleteLoader(final Context context, final RequestExecutor executor, final Delete request) {

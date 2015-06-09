@@ -9,11 +9,6 @@ package io.pivotal.arca.threading;
 
 import android.test.AndroidTestCase;
 
-import io.pivotal.arca.threading.Identifier;
-import io.pivotal.arca.threading.Prioritizable;
-import io.pivotal.arca.threading.PrioritizableRequest;
-import io.pivotal.arca.threading.QueuingMaps;
-
 public class QueuingMapsTests extends AndroidTestCase {
 	private QueuingMaps mMaps;
 

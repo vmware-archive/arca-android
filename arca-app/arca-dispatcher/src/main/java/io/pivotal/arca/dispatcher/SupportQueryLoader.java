@@ -51,16 +51,22 @@ public class SupportQueryLoader extends SupportLoader<QueryResult> {
 
         } else {
 
-            if (isStarted() && result.isValid()) {
-                super.deliverResult(result);
-            }
+			if (isStarted() && result.isValid()) {
+				super.deliverResult(result);
+			}
 
-            if (result.isValid() && !result.hasError()) {
-                mTracker.trackValidResult(result);
-            } else {
-                mTracker.trackInvalidResult(result, mObserver);
-            }
+			if (!result.hasError()) {
+				trackResult(result);
+			}
         }
+	}
+
+	private void trackResult(final QueryResult result) {
+		if (result.isValid()) {
+			mTracker.trackValidResult(result);
+		} else {
+			mTracker.trackInvalidResult(result, mObserver);
+		}
 	}
 
 	@Override

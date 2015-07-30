@@ -1,4 +1,4 @@
 dependencies {
     compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
 }

@@ -15,23 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings({"UnnecessaryUnboxing", "UnnecessaryBoxing"})
 public class DataUtilsTest extends AndroidTestCase {
-
-    private static final class TestTable {
-        public static final class Columns {
-            @Column(Column.Type.TEXT)
-            public static final String STRING = "string";
-
-            @Column(Column.Type.BLOB)
-            public static final String BLOB = "blob";
-
-            @Column(Column.Type.INTEGER)
-            public static final String INTEGER = "integer1";
-
-            @Column(Column.Type.REAL)
-            public static final String FLOAT = "float1";
-        }
-    }
 
     public void testDataUtilsConvertsEmptyCursorToContentValues() {
         final MatrixCursor cursor = new MatrixCursor(new String[]{
@@ -78,14 +63,14 @@ public class DataUtilsTest extends AndroidTestCase {
 
 
     public void testDataUtilsConvertsEmptyListToContentValues() {
-        final List<Model> models = new ArrayList<Model>();
+        final List<AnnotatedModel> models = new ArrayList<AnnotatedModel>();
         final ContentValues[] values = DataUtils.getContentValues(models);
         assertEquals(0, values.length);
     }
 
     public void testDataUtilsConvertsListToContentValues() {
-        final List<Model> models = new ArrayList<Model>();
-        models.add(new Model("0", "test"));
+        final List<AnnotatedModel> models = new ArrayList<AnnotatedModel>();
+        models.add(new AnnotatedModel("0", "test"));
 
         final ContentValues[] values = DataUtils.getContentValues(models);
 
@@ -95,8 +80,8 @@ public class DataUtilsTest extends AndroidTestCase {
     }
 
     public void testDataUtilsConvertsListToContentValuesWithCustomValues() {
-        final List<Model> models = new ArrayList<Model>();
-        models.add(new Model("0", "test"));
+        final List<AnnotatedModel> models = new ArrayList<AnnotatedModel>();
+        models.add(new AnnotatedModel("0", "test"));
 
         final ContentValues custom = new ContentValues();
         custom.put("custom", "custom_test");
@@ -293,7 +278,122 @@ public class DataUtilsTest extends AndroidTestCase {
         assertEquals(null,  model2.mByte2);
     }
 
-    private static final class Model {
+    public void testGetCursorWithNullList() throws Exception {
+        final MatrixCursor cursor = DataUtils.getCursor(null);
+
+        final String[] columnNames = cursor.getColumnNames();
+
+        assertEquals(1, columnNames.length);
+        assertEquals(columnNames[0], "_id");
+    }
+
+    public void testGetCursorWithEmptyList() throws Exception {
+        final MatrixCursor cursor = DataUtils.getCursor(new ArrayList<Object>());
+
+        final String[] columnNames = cursor.getColumnNames();
+
+        assertEquals(1, columnNames.length);
+        assertEquals(columnNames[0], "_id");
+    }
+
+    public void testGetCursorReturnsAppropriateCursor() throws Exception {
+
+        final List<SimpleModel> models = new ArrayList<SimpleModel>();
+        models.add(new SimpleModel("id0", "title0"));
+        models.add(new SimpleModel("id1", "title1"));
+        models.add(new SimpleModel("id2", "title2"));
+
+        final MatrixCursor cursor = DataUtils.getCursor(models);
+        final String[] columnNames = cursor.getColumnNames();
+
+        assertEquals(3, columnNames.length);
+        assertEquals(columnNames[0], "_id");
+        assertEquals(columnNames[1], "mId");
+        assertEquals(columnNames[2], "mTitle");
+
+        cursor.moveToPosition(0);
+
+        assertEquals("0", cursor.getString(0));
+        assertEquals("id0", cursor.getString(1));
+        assertEquals("title0", cursor.getString(2));
+
+        cursor.moveToPosition(1);
+
+        assertEquals("1", cursor.getString(0));
+        assertEquals("id1", cursor.getString(1));
+        assertEquals("title1", cursor.getString(2));
+
+        cursor.moveToPosition(2);
+
+        assertEquals("2", cursor.getString(0));
+        assertEquals("id2", cursor.getString(1));
+        assertEquals("title2", cursor.getString(2));
+    }
+
+    public void testGetCursorReturnsAppropriateCursorWithAnnotatedModel() throws Exception {
+
+        final List<AnnotatedModel> models = new ArrayList<AnnotatedModel>();
+        models.add(new AnnotatedModel("id0", "title0"));
+        models.add(new AnnotatedModel("id1", "title1"));
+        models.add(new AnnotatedModel("id2", "title2"));
+
+        final MatrixCursor cursor = DataUtils.getCursor(models);
+        final String[] columnNames = cursor.getColumnNames();
+
+        assertEquals(3, columnNames.length);
+        assertEquals(columnNames[0], "_id");
+        assertEquals(columnNames[1], "id");
+        assertEquals(columnNames[2], "title");
+
+        cursor.moveToPosition(0);
+
+        assertEquals("0", cursor.getString(0));
+        assertEquals("id0", cursor.getString(1));
+        assertEquals("title0", cursor.getString(2));
+
+        cursor.moveToPosition(1);
+
+        assertEquals("1", cursor.getString(0));
+        assertEquals("id1", cursor.getString(1));
+        assertEquals("title1", cursor.getString(2));
+
+        cursor.moveToPosition(2);
+
+        assertEquals("2", cursor.getString(0));
+        assertEquals("id2", cursor.getString(1));
+        assertEquals("title2", cursor.getString(2));
+    }
+
+    private static final class TestTable {
+        public static final class Columns {
+            @Column(Column.Type.TEXT)
+            public static final String STRING = "string";
+
+            @Column(Column.Type.BLOB)
+            public static final String BLOB = "blob";
+
+            @Column(Column.Type.INTEGER)
+            public static final String INTEGER = "integer1";
+
+            @Column(Column.Type.REAL)
+            public static final String FLOAT = "float1";
+        }
+    }
+
+    private static final class SimpleModel {
+
+        private String mId;
+
+        private String mTitle;
+
+        private SimpleModel(final String id, final String title) {
+            mId = id;
+            mTitle = title;
+        }
+    }
+
+
+    private static final class AnnotatedModel {
 
         @ColumnName("id")
         private String mId;
@@ -301,7 +401,7 @@ public class DataUtilsTest extends AndroidTestCase {
         @ColumnName("title")
         private String mTitle;
 
-        private Model(final String id, final String title) {
+        private AnnotatedModel(final String id, final String title) {
             mId = id;
             mTitle = title;
         }

@@ -9,6 +9,7 @@ package io.pivotal.arca.provider;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -18,7 +19,6 @@ import java.util.List;
 import io.pivotal.arca.utils.Logger;
 
 public class DataUtils {
-
 
     public static ContentValues[] getContentValues(final Cursor cursor, final Class<?> klass) {
         final ContentValues[] values = new ContentValues[cursor.getCount()];
@@ -307,4 +307,68 @@ public class DataUtils {
             field.set(object, isNotEmpty ? string.charAt(0) : '\0');
         }
     }
+
+
+    // =============================================
+
+
+    public static <T> MatrixCursor getCursor(final List<T> list) {
+        if (list == null || list.isEmpty())
+            return new MatrixCursor(new String[] { "_id" });
+
+        final String[] titles = getFieldTitlesFromObject(list.get(0));
+
+        final MatrixCursor cursor = new MatrixCursor(titles);
+
+        try {
+            addFieldValuesFromList(cursor, list);
+        } catch (final IllegalAccessException e) {
+            Logger.ex(e);
+        }
+
+        return cursor;
+    }
+
+    private static <T> String[] getFieldTitlesFromObject(final T object) {
+        final List<String> titles = new ArrayList<String>();
+        titles.add("_id");
+
+        final Field[] fields = object.getClass().getDeclaredFields();
+        for (final Field field : fields) {
+            field.setAccessible(true);
+
+            final ColumnName annotation = field.getAnnotation(ColumnName.class);
+            if (annotation != null) {
+                titles.add(annotation.value());
+            } else {
+                titles.add(field.getName());
+            }
+        }
+
+        return titles.toArray(new String[titles.size()]);
+    }
+
+    private static <T> void addFieldValuesFromList(final MatrixCursor cursor, final List<T> list) throws IllegalAccessException {
+        int position = 0;
+        for (final T object : list) {
+            final List<String> values = getFieldValuesFromObject(object, position++);
+            cursor.addRow(values);
+        }
+    }
+
+    private static <T> List<String> getFieldValuesFromObject(final T object, final int position) throws IllegalAccessException {
+        final List<String> values = new ArrayList<String>();
+        values.add(String.valueOf(position));
+
+        final Field[] fields = object.getClass().getDeclaredFields();
+        for (final Field field : fields) {
+            field.setAccessible(true);
+            final Object value = field.get(object);
+
+            values.add(String.valueOf(value));
+        }
+
+        return values;
+    }
+
 }

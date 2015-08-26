@@ -23,7 +23,7 @@ public class DataUtils {
     public static ContentValues[] getContentValues(final Cursor cursor, final Class<?> klass) {
         final ContentValues[] values = new ContentValues[cursor.getCount()];
         for (int i = 0; i < values.length; i++) {
-            values[i] = getContentValues(cursor, klass,i);
+            values[i] = getContentValues(cursor, klass, i);
         }
         return values;
     }
@@ -363,6 +363,7 @@ public class DataUtils {
         final Field[] fields = object.getClass().getDeclaredFields();
         for (final Field field : fields) {
             field.setAccessible(true);
+
             final Object value = field.get(object);
 
             values.add(String.valueOf(value));

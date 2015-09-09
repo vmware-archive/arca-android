@@ -66,7 +66,7 @@ public class DataUtils {
                 values.put(columnName, cursor.getBlob(columnIndex));
 
             } else if (columnType.value() == Column.Type.INTEGER) {
-                values.put(columnName, cursor.getInt(columnIndex));
+                values.put(columnName, cursor.getLong(columnIndex));
 
             } else if (columnType.value() == Column.Type.REAL) {
                 values.put(columnName, cursor.getFloat(columnIndex));

@@ -37,7 +37,6 @@ public class FragmentUtils {
             try {
                 return monitor.newInstance();
             } catch (final Exception e) {
-                Logger.ex(e);
                 return null;
             }
         } else {
@@ -52,7 +51,6 @@ public class FragmentUtils {
             try {
                 return binder.newInstance();
             } catch (final Exception e) {
-                Logger.ex(e);
                 return null;
             }
         } else {

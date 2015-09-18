@@ -72,13 +72,16 @@ allprojects {
     uploadArchives {
         repositories.mavenDeployer {
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
-            }
+            // Publishes AAR to local Maven cache:
+            repository(url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository/').absolutePath)
 
-            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
 //                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
-            }
+//            }
+
+//            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+//            }
         }
     }
 }

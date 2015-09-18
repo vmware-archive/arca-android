@@ -45,4 +45,27 @@ public class DeleteTest extends AndroidTestCase {
 
 		parcel.recycle();
 	}
+
+	public void testDeleteAddWhere() {
+		final Uri uri = Uri.parse("content://empty");
+		final Delete request = new Delete(uri);
+
+		final String where1 = "test1 = ?";
+		final String[] whereArgs1 = { "true" };
+		final String where2 = "test2 = ?";
+		final String[] whereArgs2 = { "false" };
+
+		assertEquals(null, request.getWhereArgs());
+		assertEquals(null, request.getWhereClause());
+
+		request.addWhere(where1, whereArgs1);
+
+		assertEquals("test1 = ?", request.getWhereClause());
+		assertTrue(Arrays.deepEquals(new String[] { "true" }, request.getWhereArgs()));
+
+		request.addWhere(where2, whereArgs2);
+
+		assertEquals("test1 = ? AND test2 = ?", request.getWhereClause());
+		assertTrue(Arrays.deepEquals(new String[] { "true", "false" }, request.getWhereArgs()));
+	}
 }

@@ -11,6 +11,9 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import io.pivotal.arca.utils.ArrayUtils;
+import io.pivotal.arca.utils.StringUtils;
+
 public class Delete extends Request<Integer> {
 
 	private String mWhereClause;
@@ -36,6 +39,11 @@ public class Delete extends Request<Integer> {
 	public void setWhere(final String whereClause, final String... whereArgs) {
 		mWhereClause = whereClause;
 		mWhereArgs = whereArgs;
+	}
+
+	public void addWhere(final String whereClause, final String... whereArgs) {
+		mWhereClause = StringUtils.append(mWhereClause, whereClause, " AND ");
+		mWhereArgs = ArrayUtils.append(mWhereArgs, whereArgs);
 	}
 
 	public String getWhereClause() {

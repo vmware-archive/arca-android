@@ -11,6 +11,9 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Parcel;
 
+import io.pivotal.arca.utils.ArrayUtils;
+import io.pivotal.arca.utils.StringUtils;
+
 public class Update extends Request<Integer> {
 
 	private final ContentValues mValues;
@@ -41,6 +44,11 @@ public class Update extends Request<Integer> {
 	public void setWhere(final String whereClause, final String... whereArgs) {
 		mWhereClause = whereClause;
 		mWhereArgs = whereArgs;
+	}
+
+	public void addWhere(final String whereClause, final String... whereArgs) {
+		mWhereClause = StringUtils.append(mWhereClause, whereClause, " AND ");
+		mWhereArgs = ArrayUtils.append(mWhereArgs, whereArgs);
 	}
 
 	public ContentValues getContentValues() {

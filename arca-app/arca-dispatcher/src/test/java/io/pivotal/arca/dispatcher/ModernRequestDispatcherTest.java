@@ -37,7 +37,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 	public void testSychronousQuery() {
 		final Query query = new Query(TEST_URI);
 		final QueryResult response = getDispatcher().execute(query);
-		final Cursor result = response.getResult();
+		final Cursor result = response.getData();
 		assertNotNull(result);
 		result.close();
 	}
@@ -49,7 +49,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final QueryResult result) {
 				latch.countDown();
-				final Cursor cursor = result.getResult();
+				final Cursor cursor = result.getData();
 				assertNotNull(cursor);
 				cursor.close();
 			}
@@ -102,7 +102,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 		final ContentValues values = new ContentValues();
 		final Insert insert = new Insert(TEST_URI, values);
 		final InsertResult response = getDispatcher().execute(insert);
-		final Integer count = response.getResult();
+		final Integer count = response.getData();
 		assertEquals(Integer.valueOf(1), count);
 	}
 
@@ -114,7 +114,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final InsertResult result) {
 				latch.countDown();
-				final Integer count = result.getResult();
+				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
 
@@ -167,7 +167,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 		final ContentValues values = new ContentValues();
 		final Update update = new Update(TEST_URI, values);
 		final UpdateResult response = getDispatcher().execute(update);
-		final Integer count = response.getResult();
+		final Integer count = response.getData();
 		assertEquals(Integer.valueOf(1), count);
 	}
 
@@ -179,7 +179,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final UpdateResult result) {
 				latch.countDown();
-				final Integer count = result.getResult();
+				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
 
@@ -231,7 +231,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 	public void testSychronousDelete() {
 		final Delete delete = new Delete(TEST_URI);
 		final DeleteResult response = getDispatcher().execute(delete);
-		final Integer count = response.getResult();
+		final Integer count = response.getData();
 		assertEquals(Integer.valueOf(1), count);
 	}
 
@@ -242,7 +242,7 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			@Override
 			public void onRequestComplete(final DeleteResult result) {
 				latch.countDown();
-				final Integer count = result.getResult();
+				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
 

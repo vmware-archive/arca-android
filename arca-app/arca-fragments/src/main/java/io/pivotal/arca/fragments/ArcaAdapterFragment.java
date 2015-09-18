@@ -68,7 +68,7 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 		if (result.hasError()) {
 			onContentError(result.getError());
 		} else {
-			getCursorAdapter().swapCursor(result.getResult());
+			getCursorAdapter().swapCursor(result.getData());
 			onContentChanged(result);
 		}
 	}

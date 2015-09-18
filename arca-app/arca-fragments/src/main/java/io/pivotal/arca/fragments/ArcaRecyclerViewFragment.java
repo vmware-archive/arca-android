@@ -62,7 +62,7 @@ public abstract class ArcaRecyclerViewFragment extends ArcaQueryFragment {
 		if (result.hasError()) {
 			onContentError(result.getError());
 		} else {
-			getRecyclerViewAdapter().swapCursor(result.getResult());
+			getRecyclerViewAdapter().swapCursor(result.getData());
 			onContentChanged(result);
 		}
 	}

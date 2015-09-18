@@ -25,7 +25,12 @@ public abstract class Result<T> {
 		mError = error;
 	}
 
-	public T getResult() {
+    @Deprecated
+    public T getResult() {
+        return mData;
+    }
+
+	public T getData() {
 		return mData;
 	}
 

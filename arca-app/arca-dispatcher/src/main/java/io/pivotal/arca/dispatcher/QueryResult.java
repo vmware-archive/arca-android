@@ -23,28 +23,28 @@ public class QueryResult extends Result<Cursor> {
 	}
 
 	public void setNotificationUri(final ContentResolver resolver, final Uri uri) {
-		final Cursor cursor = getResult();
+		final Cursor cursor = getData();
 		if (cursor != null) {
 			cursor.setNotificationUri(resolver, uri);
 		}
 	}
 
 	public void registerContentObserver(final ContentObserver observer) {
-		final Cursor cursor = getResult();
+		final Cursor cursor = getData();
 		if (cursor != null) {
 			cursor.registerContentObserver(observer);
 		}
 	}
 
 	public void unregisterContentObserver(final ContentObserver observer) {
-		final Cursor cursor = getResult();
+		final Cursor cursor = getData();
 		if (cursor != null) {
 			cursor.unregisterContentObserver(observer);
 		}
 	}
 
 	public boolean isClosed() {
-		final Cursor cursor = getResult();
+		final Cursor cursor = getData();
 		if (cursor != null) {
 			return cursor.isClosed();
 		} else {
@@ -53,7 +53,7 @@ public class QueryResult extends Result<Cursor> {
 	}
 
 	public void close() {
-		final Cursor cursor = getResult();
+		final Cursor cursor = getData();
 		if (cursor != null) {
 			cursor.close();
 		}

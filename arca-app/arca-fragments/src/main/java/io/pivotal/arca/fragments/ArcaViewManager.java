@@ -72,7 +72,7 @@ public class ArcaViewManager {
     }
 
     public void checkResult(final QueryResult result) {
-        if (result.getResult().getCount() > 0) {
+        if (result.getData().getCount() > 0) {
             showContentView();
         } else if (!result.isSyncing()) {
             showEmptyView();

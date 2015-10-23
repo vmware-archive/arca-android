@@ -39,10 +39,6 @@ public abstract class SimpleOperation extends Operation {
         return new HashSet<Task<?>>(Arrays.asList(new InnerTask()));
     }
 
-    public Identifier<?> onCreateIdentifier() {
-        return new Identifier<Uri>(getUri());
-    }
-
     public abstract ContentValues[] onExecute(final Context context) throws Exception;
 
     public void onPostExecute(final Context context, final ContentValues[] values) throws Exception {

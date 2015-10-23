@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import io.pivotal.arca.threading.Identifier;
+
 public class TestOperation extends Operation {
 
 	private final Set<Task<?>> mTasks;
@@ -42,7 +44,12 @@ public class TestOperation extends Operation {
 		return mTasks;
 	}
 
-    public List<Task<?>> getCompletedTasks() {
+	@Override
+	public Identifier<?> onCreateIdentifier() {
+		return new Identifier<String>("operation");
+	}
+
+	public List<Task<?>> getCompletedTasks() {
         return mCompletedTasks;
     }
 

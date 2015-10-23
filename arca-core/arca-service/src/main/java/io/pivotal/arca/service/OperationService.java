@@ -10,17 +10,18 @@ package io.pivotal.arca.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.IBinder;
 
+import java.util.Collection;
 import java.util.HashMap;
 
+import io.pivotal.arca.threading.Identifier;
 import io.pivotal.arca.utils.Logger;
 
 public class OperationService extends Service implements OperationHandler.OnStateChangeListener, OperationHandlerObserver {
 
     private static final Object LOCK = new Object();
-    private static final HashMap<Uri, Operation> OPERATIONS = new HashMap<Uri, Operation>();
+    private static final HashMap<Identifier<?>, Operation> OPERATIONS = new HashMap<Identifier<?>, Operation>();
 
     public static enum Action {
         START, CANCEL
@@ -33,7 +34,7 @@ public class OperationService extends Service implements OperationHandler.OnStat
 
     public static boolean contains(final Operation operation) {
         synchronized (LOCK) {
-            return OPERATIONS.containsKey(operation.getUri());
+            return OPERATIONS.containsKey(operation.getIdentifier());
         }
     }
 
@@ -108,14 +109,17 @@ public class OperationService extends Service implements OperationHandler.OnStat
     }
 
     protected void handleAction(final Action action, final Operation operation) {
-        if (action == Action.START) {
-            handleStart(operation);
+        switch (action) {
+            case START:
+                handleStart(operation);
+                break;
 
-        } else if (action == Action.CANCEL) {
-            handleCancel(operation);
+            case CANCEL:
+                handleCancel(operation);
+                break;
 
-        } else {
-            throw new UnsupportedOperationException("This action has not yet been implemented.");
+            default:
+                throw new UnsupportedOperationException("This action has not yet been implemented.");
         }
     }
 
@@ -131,7 +135,13 @@ public class OperationService extends Service implements OperationHandler.OnStat
         }
     }
 
-    private void clearOperations() {
+    protected Collection<Operation> getOperations() {
+        synchronized (LOCK) {
+            return OPERATIONS.values();
+        }
+    }
+
+    protected void clearOperations() {
         synchronized (LOCK) {
             OPERATIONS.clear();
         }
@@ -140,16 +150,14 @@ public class OperationService extends Service implements OperationHandler.OnStat
     @Override
     public void onOperationStarted(final Operation operation) {
         synchronized (LOCK) {
-            final Uri uri = operation.getUri();
-            OPERATIONS.put(uri, operation);
+            OPERATIONS.put(operation.getIdentifier(), operation);
         }
     }
 
     @Override
     public void onOperationFinished(final Operation operation) {
         synchronized (LOCK) {
-            final Uri uri = operation.getUri();
-            OPERATIONS.remove(uri);
+            OPERATIONS.remove(operation.getIdentifier());
         }
     }
 

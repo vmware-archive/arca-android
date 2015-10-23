@@ -7,15 +7,16 @@
  */
 package io.pivotal.arca.service;
 
-import android.net.Uri;
 import android.test.AndroidTestCase;
+
+import io.pivotal.arca.threading.Identifier;
 
 public class OperationHandlerTest extends AndroidTestCase {
 
     public void testOperationServiceDoesntExecuteAlreadyRunningOperation() {
         final OperationHandler handler = new OperationHandler(null, null);
         final TestOperation operation = new TestOperation(null, null);
-        handler.getOperations().put(operation.getUri(), operation);
+        handler.getOperations().put(operation.getIdentifier(), operation);
 
         assertFalse(handler.start(operation));
     }
@@ -30,7 +31,7 @@ public class OperationHandlerTest extends AndroidTestCase {
     public void testOperationServiceCancelsAlreadyRunningOperation() {
         final OperationHandler handler = new OperationHandler(null, null);
         final TestOperation operation = new TestOperation(null, null);
-        handler.getOperations().put(operation.getUri(), operation);
+        handler.getOperations().put(operation.getIdentifier(), operation);
 
         assertTrue(handler.cancel(operation));
     }
@@ -38,17 +39,27 @@ public class OperationHandlerTest extends AndroidTestCase {
     public void testOperationServiceShutsDownWhenAllOperationsFinish() {
         final OperationHandler handler = new OperationHandler(null, null);
         final TestOperation operation = new TestOperation(null, null);
-        handler.getOperations().put(operation.getUri(), operation);
+        handler.getOperations().put(operation.getIdentifier(), operation);
 
         assertTrue(handler.finish(operation));
     }
 
     public void testOperationServiceDoesntShutDownWhenMoreOperationsRunning() {
         final OperationHandler handler = new OperationHandler(null, null);
-        final TestOperation operation1 = new TestOperation(Uri.parse("operation1"), null);
-        final TestOperation operation2 = new TestOperation(Uri.parse("operation2"), null);
-        handler.getOperations().put(operation1.getUri(), operation1);
-        handler.getOperations().put(operation2.getUri(), operation2);
+        final TestOperation operation1 = new TestOperation(null, null) {
+            @Override
+            public Identifier<?> onCreateIdentifier() {
+                return new Identifier<String>("operation1");
+            }
+        };
+        final TestOperation operation2 = new TestOperation(null, null) {
+            @Override
+            public Identifier<?> onCreateIdentifier() {
+                return new Identifier<String>("operation2");
+            }
+        };
+        handler.getOperations().put(operation1.getIdentifier(), operation1);
+        handler.getOperations().put(operation2.getIdentifier(), operation2);
 
         assertFalse(handler.finish(operation1));
         assertTrue(handler.finish(operation2));

@@ -8,13 +8,13 @@
 package io.pivotal.arca.service;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import io.pivotal.arca.threading.Identifier;
 import io.pivotal.arca.utils.Logger;
 
 public class OperationHandler extends Handler implements OperationObserver {
@@ -25,11 +25,11 @@ public class OperationHandler extends Handler implements OperationObserver {
         IDLE, RUNNING
     }
 
-    public static interface OnStateChangeListener {
+    public interface OnStateChangeListener {
         public void onStateChanged(HandlerState state);
     }
 
-    private final Map<Uri, Operation> mOperations = new HashMap<Uri, Operation>();
+    private final Map<Identifier<?>, Operation> mOperations = new HashMap<Identifier<?>, Operation>();
     private final RequestExecutor mExecutor;
     private final Context mContext;
 
@@ -49,7 +49,7 @@ public class OperationHandler extends Handler implements OperationObserver {
         mListener = listener;
     }
 
-    public Map<Uri, Operation> getOperations() {
+    public Map<Identifier<?>, Operation> getOperations() {
         return mOperations;
     }
 
@@ -64,10 +64,10 @@ public class OperationHandler extends Handler implements OperationObserver {
             mObserver.onOperationStarted(operation);
         }
 
-        final Uri uri = operation.getUri();
+        final Identifier<?> identifier = operation.getIdentifier();
 
-        if (!mOperations.containsKey(uri)) {
-            mOperations.put(uri, operation);
+        if (!mOperations.containsKey(identifier)) {
+            mOperations.put(identifier, operation);
             operation.setContext(mContext);
             operation.setRequestExecutor(mExecutor);
             operation.setOperationObserver(this);
@@ -78,25 +78,12 @@ public class OperationHandler extends Handler implements OperationObserver {
         }
     }
 
-    public boolean cancel(final Operation operation) {
-        Logger.v("OperationHandler[%s] Operation[%s] cancel", this, operation);
-
-        final Uri uri = operation.getUri();
-
-        if (mOperations.containsKey(uri)) {
-            mOperations.get(uri).cancel();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public boolean finish(final Operation operation) {
         Logger.v("OperationHandler[%s] Operation[%s] finish", this, operation);
 
-        final Uri uri = operation.getUri();
+        final Identifier<?> identifier = operation.getIdentifier();
 
-        mOperations.remove(uri);
+        mOperations.remove(identifier);
 
         if (mObserver != null) {
             mObserver.onOperationFinished(operation);
@@ -104,6 +91,19 @@ public class OperationHandler extends Handler implements OperationObserver {
 
         if (mOperations.isEmpty()) {
             notifyEmpty();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean cancel(final Operation operation) {
+        Logger.v("OperationHandler[%s] Operation[%s] cancel", this, operation);
+
+        final Identifier<?> identifier = operation.getIdentifier();
+
+        if (mOperations.containsKey(identifier)) {
+            mOperations.get(identifier).cancel();
             return true;
         } else {
             return false;

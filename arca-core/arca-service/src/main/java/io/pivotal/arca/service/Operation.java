@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.pivotal.arca.threading.Identifier;
 import io.pivotal.arca.utils.Logger;
 
 @SuppressLint("ParcelCreator")
@@ -36,6 +37,7 @@ public abstract class Operation implements Parcelable, TaskObserver {
     private final Uri mUri;
 
     private boolean mIsComplete;
+    private Identifier<?> mIdentifier;
     private OperationObserver mObserver;
     private RequestExecutor mExecutor;
     private Context mContext;
@@ -53,6 +55,13 @@ public abstract class Operation implements Parcelable, TaskObserver {
     public Operation(final Parcel in) {
         mUri = in.readParcelable(Uri.class.getClassLoader());
         mPriority = (Priority) in.readSerializable();
+    }
+
+    public Identifier<?> getIdentifier() {
+        if (mIdentifier == null) {
+            mIdentifier = onCreateIdentifier();
+        }
+        return mIdentifier;
     }
 
     public ServiceError getError() {
@@ -296,6 +305,10 @@ public abstract class Operation implements Parcelable, TaskObserver {
     }
 
     public abstract Set<Task<?>> onCreateTasks();
+
+    public Identifier<?> onCreateIdentifier() {
+        return new Identifier<Uri>(getUri());
+    }
 
     public void onComplete(Context context, Results results) {}
 

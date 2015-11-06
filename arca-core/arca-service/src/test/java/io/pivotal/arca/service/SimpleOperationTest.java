@@ -1,10 +1,4 @@
-/*
- * Copyright (C) 2015 Pivotal Software, Inc.
- *
- * Licensed under the Modified BSD License.
- *
- * All rights reserved.
- */
+
 package io.pivotal.arca.service;
 
 import android.content.ContentResolver;
@@ -70,6 +64,7 @@ public class SimpleOperationTest extends AndroidTestCase {
         final Exception exception = new Exception(ERROR);
         final TestSimpleOperation operation = new TestSimpleOperation(exception, null);
         operation.setRequestExecutor(new RequestExecutor.SerialRequestExecutor());
+        operation.setContext(new MockContextWithProvider(null));
         operation.setOperationObserver(new OperationObserver() {
             @Override
             public void onOperationComplete(final Operation o) {
@@ -88,6 +83,7 @@ public class SimpleOperationTest extends AndroidTestCase {
         final Exception exception = new ServiceException(error);
         final TestSimpleOperation operation = new TestSimpleOperation(exception, null);
         operation.setRequestExecutor(new RequestExecutor.SerialRequestExecutor());
+        operation.setContext(new MockContextWithProvider(null));
         operation.setOperationObserver(new OperationObserver() {
             @Override
             public void onOperationComplete(final Operation o) {
@@ -105,6 +101,7 @@ public class SimpleOperationTest extends AndroidTestCase {
         final Exception exception = new Exception(ERROR);
         final TestSimpleOperation operation = new TestSimpleOperation(null, exception);
         operation.setRequestExecutor(new RequestExecutor.SerialRequestExecutor());
+        operation.setContext(new MockContextWithProvider(null));
         operation.setOperationObserver(new OperationObserver() {
             @Override
             public void onOperationComplete(final Operation o) {
@@ -123,6 +120,7 @@ public class SimpleOperationTest extends AndroidTestCase {
         final Exception exception = new ServiceException(error);
         final TestSimpleOperation operation = new TestSimpleOperation(null, exception);
         operation.setRequestExecutor(new RequestExecutor.SerialRequestExecutor());
+        operation.setContext(new MockContextWithProvider(null));
         operation.setOperationObserver(new OperationObserver() {
             @Override
             public void onOperationComplete(final Operation o) {
@@ -164,7 +162,7 @@ public class SimpleOperationTest extends AndroidTestCase {
             }
         });
         final TestSimpleOperation operation = new TestSimpleOperation(URI);
-        operation.onPostExecute(context, null);
+        operation.onPostExecute(context, new ContentValues[0]);
         latch.assertComplete();
     }
 

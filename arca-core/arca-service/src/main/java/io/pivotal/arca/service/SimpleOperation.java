@@ -7,7 +7,6 @@
  */
 package io.pivotal.arca.service;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
@@ -42,14 +41,14 @@ public abstract class SimpleOperation extends Operation {
     public abstract ContentValues[] onExecute(final Context context) throws Exception;
 
     public void onPostExecute(final Context context, final ContentValues[] values) throws Exception {
-        final ContentResolver resolver = context.getContentResolver();
-        resolver.bulkInsert(getUri(), values);
+        if (values != null) {
+            context.getContentResolver().bulkInsert(getUri(), values);
+        }
     }
 
     @Override
     public void onSuccess(final Context context, final List<Task<?>> completed) {
-        final ContentResolver resolver = context.getContentResolver();
-        resolver.notifyChange(getUri(), null);
+        context.getContentResolver().notifyChange(getUri(), null);
     }
 
     @Override

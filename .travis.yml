@@ -30,5 +30,5 @@ before_script:
 
 script:
     - ./gradlew clean assemble
-    - ./wait_for_emulator.sh
+    - ./scripts/wait_for_emulator.sh
     - ./gradlew connectedAndroidTest

@@ -26,8 +26,8 @@ public abstract class SQLiteTable extends SQLiteDataset {
 
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		final String columns = DatasetUtils.getColumns(this);
-		final String create = String.format("CREATE TABLE IF NOT EXISTS %s (%s)", getName(), columns);
+		final String definition = DatasetUtils.getTableDefinition(this);
+		final String create = String.format("CREATE TABLE IF NOT EXISTS %s %s", getName(), definition);
 		db.execSQL(create);
 	}
 

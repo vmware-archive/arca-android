@@ -15,8 +15,8 @@ public abstract class SQLiteView extends SQLiteDataset {
 
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		final String select = DatasetUtils.getSelect(this);
-		final String create = String.format("CREATE VIEW IF NOT EXISTS %s AS %s;", getName(), select);
+		final String definition = DatasetUtils.getViewDefinition(this);
+		final String create = String.format("CREATE VIEW IF NOT EXISTS %s %s;", getName(), definition);
 		db.execSQL(create);
 	}
 

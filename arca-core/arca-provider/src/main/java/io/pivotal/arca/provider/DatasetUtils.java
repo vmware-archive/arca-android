@@ -16,11 +16,34 @@ import io.pivotal.arca.utils.Logger;
 
 public class DatasetUtils {
 
-	public static String getSelect(final SQLiteView view) {
-		final Class<?> klass = view.getClass();
+    public static String getTableDefinition(final SQLiteTable table) {
+        final String select = getSelect(table);
+
+        if (!TextUtils.isEmpty(select)) {
+            return "AS " + select;
+        }
+
+        return getColumns(table);
+    }
+
+    public static String getViewDefinition(final SQLiteView view) {
+        final String select = getSelect(view);
+
+        if (!TextUtils.isEmpty(select)) {
+            return "AS " + select;
+        }
+
+        return "";
+    }
+
+
+    // =================================================
+
+
+	public static String getSelect(final SQLiteDataset dataset) {
+		final Class<?> klass = dataset.getClass();
 		try {
-			final String clause = getSelect(klass);
-			return clause;
+			return getSelect(klass);
 		} catch (final Exception e) {
 			Logger.ex(e);
 			return "";
@@ -28,19 +51,18 @@ public class DatasetUtils {
 	}
 
 	private static String getSelect(final Class<?> klass) throws Exception {
-
 		final SelectFrom from = klass.getAnnotation(SelectFrom.class);
 		if (from != null) {
             return getSelectString(klass, from);
 		}
 
 		final Class<?>[] klasses = klass.getDeclaredClasses();
-		for (int i = 0; i < klasses.length; i++) {
-			final String declared = getSelect(klasses[i]);
-			if (!TextUtils.isEmpty(declared)) {
-				return declared;
-			}
-		}
+        for (final Class<?> declared : klasses) {
+            final String select = getSelect(declared);
+            if (!TextUtils.isEmpty(select)) {
+                return select;
+            }
+        }
 
 		return "";
 	}
@@ -49,10 +71,8 @@ public class DatasetUtils {
         final String columnString = getColumnString(klass);
         final String fromString = getFromString(klass, from);
 
-        final String selectString = String.format("SELECT %s FROM (%s)", columnString, fromString);
-
         final StringBuilder selectBuilder = new StringBuilder();
-        selectBuilder.append(selectString);
+        selectBuilder.append(String.format("SELECT %s FROM (%s)", columnString, fromString));
 
         final Where where = klass.getAnnotation(Where.class);
         if (where != null) {
@@ -90,7 +110,7 @@ public class DatasetUtils {
         return builder.toString();
     }
 
-    private static String getFromString(Class<?> klass, SelectFrom from) {
+    private static String getFromString(final Class<?> klass, final SelectFrom from) {
         final StringBuilder fromBuilder = new StringBuilder(from.value());
 
         final Joins joins = klass.getAnnotation(Joins.class);
@@ -144,7 +164,7 @@ public class DatasetUtils {
 			builder.deleteCharAt(builder.length() - 1);
 		}
 
-		return builder.toString();
+		return "(" + builder.toString() + ")";
 	}
 
 	private static void getColumns(final Class<?> klass, final StringBuilder builder, final ConcatMap uniqueMap) throws Exception {
@@ -187,5 +207,4 @@ public class DatasetUtils {
 		}
 		return builder.toString();
 	}
-
 }

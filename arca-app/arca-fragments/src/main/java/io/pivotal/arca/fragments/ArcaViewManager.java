@@ -7,6 +7,7 @@
  */
 package io.pivotal.arca.fragments;
 
+import android.database.Cursor;
 import android.view.View;
 import android.widget.Toast;
 
@@ -79,7 +80,9 @@ public class ArcaViewManager {
     }
 
     public void checkResult(final QueryResult result) {
-        if (result.getData().getCount() > 0) {
+        final Cursor data = result.getData();
+
+        if (data != null && data.getCount() > 0) {
             showContentView();
         } else if (!result.isSyncing()) {
             showEmptyView();

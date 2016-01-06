@@ -73,18 +73,9 @@ public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
 		}
 	}
 
-	@Override
-	public final void onRequestReset() {
-		getCursorAdapter().swapCursor(null);
-		onContentReset();
-	}
-
     protected void onContentChanged(final QueryResult result) {
     }
 
     protected void onContentError(final Error error) {
     }
-
-	protected void onContentReset() {
-	}
 }

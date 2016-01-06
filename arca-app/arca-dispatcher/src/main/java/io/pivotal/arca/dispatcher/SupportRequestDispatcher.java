@@ -8,6 +8,7 @@
 package io.pivotal.arca.dispatcher;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -58,52 +59,102 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 
 	// ========================================
 
-	private class QueryLoaderCallbacks extends NotifierCallbacks<QueryResult> {
+	private class QueryLoaderCallbacks implements LoaderCallbacks<QueryResult> {
 
-		public QueryLoaderCallbacks(final QueryListener listener) {
-			super(listener);
-		}
+        private final RequestListener<QueryResult> mListener;
 
-		@Override
-		public Loader<QueryResult> onCreateLoader(final int id, final Bundle args) {
-			final RequestExecutor executor = getRequestExecutor();
-			final Query request = args.getParcelable(Extras.REQUEST);
-			return new SupportQueryLoader(mContext, executor, request);
-		}
+        public QueryLoaderCallbacks(final QueryListener listener) {
+            mListener= listener;
+        }
+
+        @Override
+        public Loader<QueryResult> onCreateLoader(final int id, final Bundle args) {
+            final RequestExecutor executor = getRequestExecutor();
+            final Query request = args.getParcelable(Extras.REQUEST);
+            return new SupportQueryLoader(mContext, executor, request);
+        }
+
+        @Override
+        public void onLoadFinished(final Loader<QueryResult> loader, final QueryResult result) {
+            if (mListener != null) {
+                mListener.onRequestComplete(result);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(final Loader<QueryResult> loader) {
+            if (mListener != null) {
+                mListener.onRequestComplete(new QueryResult((Cursor) null));
+            }
+        }
 	}
 
-	private class UpdateLoaderCallbacks extends NotifierCallbacks<UpdateResult> {
+	private class UpdateLoaderCallbacks implements LoaderCallbacks<UpdateResult> {
 
-		public UpdateLoaderCallbacks(final UpdateListener listener) {
-			super(listener);
-		}
+        private final RequestListener<UpdateResult> mListener;
 
-		@Override
-		public Loader<UpdateResult> onCreateLoader(final int id, final Bundle args) {
-			final RequestExecutor executor = getRequestExecutor();
-			final Update request = args.getParcelable(Extras.REQUEST);
-			return new SupportUpdateLoader(mContext, executor, request);
-		}
+        public UpdateLoaderCallbacks(final UpdateListener listener) {
+            mListener= listener;
+        }
+
+        @Override
+        public Loader<UpdateResult> onCreateLoader(final int id, final Bundle args) {
+            final RequestExecutor executor = getRequestExecutor();
+            final Update request = args.getParcelable(Extras.REQUEST);
+            return new SupportUpdateLoader(mContext, executor, request);
+        }
+
+        @Override
+        public void onLoadFinished(final Loader<UpdateResult> loader, final UpdateResult result) {
+            if (mListener != null) {
+                mListener.onRequestComplete(result);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(final Loader<UpdateResult> loader) {
+            if (mListener != null) {
+                mListener.onRequestComplete(new UpdateResult(0));
+            }
+        }
 	}
 
-	private class InsertLoaderCallbacks extends NotifierCallbacks<InsertResult> {
+	private class InsertLoaderCallbacks implements LoaderCallbacks<InsertResult> {
 
-		public InsertLoaderCallbacks(final InsertListener listener) {
-			super(listener);
-		}
+        private final RequestListener<InsertResult> mListener;
 
-		@Override
-		public Loader<InsertResult> onCreateLoader(final int id, final Bundle args) {
-			final RequestExecutor executor = getRequestExecutor();
-			final Insert request = args.getParcelable(Extras.REQUEST);
-			return new SupportInsertLoader(mContext, executor, request);
-		}
+        public InsertLoaderCallbacks(final InsertListener listener) {
+            mListener= listener;
+        }
+
+        @Override
+        public Loader<InsertResult> onCreateLoader(final int id, final Bundle args) {
+            final RequestExecutor executor = getRequestExecutor();
+            final Insert request = args.getParcelable(Extras.REQUEST);
+            return new SupportInsertLoader(mContext, executor, request);
+        }
+
+        @Override
+        public void onLoadFinished(final Loader<InsertResult> loader, final InsertResult result) {
+            if (mListener != null) {
+                mListener.onRequestComplete(result);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(final Loader<InsertResult> loader) {
+            if (mListener != null) {
+                mListener.onRequestComplete(new InsertResult(0));
+            }
+        }
 	}
 
-	private class DeleteLoaderCallbacks extends NotifierCallbacks<DeleteResult> {
+	private class DeleteLoaderCallbacks implements LoaderCallbacks<DeleteResult> {
+
+		private final RequestListener<DeleteResult> mListener;
 
 		public DeleteLoaderCallbacks(final DeleteListener listener) {
-			super(listener);
+			mListener= listener;
 		}
 
 		@Override
@@ -112,27 +163,18 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 			final Delete request = args.getParcelable(Extras.REQUEST);
 			return new SupportDeleteLoader(mContext, executor, request);
 		}
-	}
-
-	private abstract class NotifierCallbacks<T extends Result<?>> implements LoaderCallbacks<T> {
-
-		private final RequestListener<T> mListener;
-
-		public NotifierCallbacks(final RequestListener<T> listener) {
-			mListener = listener;
-		}
 
 		@Override
-		public void onLoadFinished(final Loader<T> loader, final T result) {
+		public void onLoadFinished(final Loader<DeleteResult> loader, final DeleteResult result) {
 			if (mListener != null) {
 				mListener.onRequestComplete(result);
 			}
 		}
 
 		@Override
-		public void onLoaderReset(final Loader<T> loader) {
+		public void onLoaderReset(final Loader<DeleteResult> loader) {
 			if (mListener != null) {
-				mListener.onRequestReset();
+				mListener.onRequestComplete(new DeleteResult(0));
 			}
 		}
 	}

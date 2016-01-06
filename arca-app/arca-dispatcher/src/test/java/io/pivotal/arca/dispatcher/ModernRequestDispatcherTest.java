@@ -53,12 +53,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 				assertNotNull(cursor);
 				cursor.close();
 			}
-
-			@Override
-			public void onRequestReset() {
-
-			}
-
 		});
 		latch.assertComplete();
 	}
@@ -69,12 +63,10 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(query, new QueryListener() {
 			@Override
 			public void onRequestComplete(final QueryResult result) {
-
-			}
-
-			@Override
-			public void onRequestReset() {
 				latch.countDown();
+
+				final Cursor cursor = result.getData();
+				assertNull(cursor);
 			}
 		});
 		latch.assertComplete();
@@ -88,11 +80,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			public void onRequestComplete(final QueryResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-
-			@Override
-			public void onRequestReset() {
-
 			}
 		});
 		latch.assertComplete();
@@ -117,11 +104,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
-
-			@Override
-			public void onRequestReset() {
-
-			}
 		});
 		latch.assertComplete();
 	}
@@ -133,12 +115,8 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(insert, new InsertListener() {
 			@Override
 			public void onRequestComplete(final InsertResult result) {
-
-			}
-
-			@Override
-			public void onRequestReset() {
 				latch.countDown();
+                assertTrue(result.getData() == 0);
 			}
 		});
 		latch.assertComplete();
@@ -153,11 +131,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			public void onRequestComplete(final InsertResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-
-			@Override
-			public void onRequestReset() {
-
 			}
 		});
 		latch.assertComplete();
@@ -182,11 +155,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
-
-			@Override
-			public void onRequestReset() {
-
-			}
 		});
 		latch.assertComplete();
 	}
@@ -198,12 +166,8 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(update, new UpdateListener() {
 			@Override
 			public void onRequestComplete(final UpdateResult result) {
-
-			}
-
-			@Override
-			public void onRequestReset() {
 				latch.countDown();
+                assertTrue(result.getData() == 0);
 			}
 		});
 		latch.assertComplete();
@@ -218,11 +182,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			public void onRequestComplete(final UpdateResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-
-			@Override
-			public void onRequestReset() {
-
 			}
 		});
 		latch.assertComplete();
@@ -245,11 +204,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
-
-			@Override
-			public void onRequestReset() {
-
-			}
 		});
 		latch.assertComplete();
 	}
@@ -260,12 +214,8 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 		getResetDispatcher().execute(delete, new DeleteListener() {
 			@Override
 			public void onRequestComplete(final DeleteResult result) {
-
-			}
-
-			@Override
-			public void onRequestReset() {
 				latch.countDown();
+				assertTrue(result.getData() == 0);
 			}
 		});
 		latch.assertComplete();
@@ -279,11 +229,6 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			public void onRequestComplete(final DeleteResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-
-			@Override
-			public void onRequestReset() {
-
 			}
 		});
 		latch.assertComplete();

@@ -66,18 +66,10 @@ public abstract class ArcaRecyclerViewFragment extends ArcaQueryFragment {
 			onContentChanged(result);
 		}
 	}
-	@Override
-	public final void onRequestReset() {
-		getRecyclerViewAdapter().swapCursor(null);
-		onContentReset();
-	}
 
 	protected void onContentChanged(final QueryResult result) {
 	}
 
 	protected void onContentError(final Error error) {
-	}
-
-	protected void onContentReset() {
 	}
 }

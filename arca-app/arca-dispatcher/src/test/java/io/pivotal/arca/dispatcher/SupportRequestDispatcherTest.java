@@ -48,12 +48,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 				assertNotNull(cursor);
 				cursor.close();
 			}
-			
-			@Override
-			public void onRequestReset() {
-				
-			}
-
 		});
 		latch.assertComplete();
 	}
@@ -64,12 +58,9 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 		getResetDispatcher().execute(query, new QueryListener() {
 			@Override
 			public void onRequestComplete(final QueryResult result) {
-
-			}
-			
-			@Override
-			public void onRequestReset() {
 				latch.countDown();
+				final Cursor cursor = result.getData();
+				assertNull(cursor);
 			}
 		});
 		latch.assertComplete();
@@ -83,11 +74,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 			public void onRequestComplete(final QueryResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-			
-			@Override
-			public void onRequestReset() {
-				
 			}
 		});
 		latch.assertComplete();
@@ -113,11 +99,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
-			
-			@Override
-			public void onRequestReset() {
-				
-			}
 		});
 		latch.assertComplete();
 	}
@@ -129,12 +110,8 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 		getResetDispatcher().execute(insert, new InsertListener() {
 			@Override
 			public void onRequestComplete(final InsertResult result) {
-			
-			}
-			
-			@Override
-			public void onRequestReset() {
 				latch.countDown();
+                assertTrue(result.getData() == 0);
 			}
 		});
 		latch.assertComplete();
@@ -149,11 +126,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 			public void onRequestComplete(final InsertResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-			
-			@Override
-			public void onRequestReset() {
-				
 			}
 		});
 		latch.assertComplete();
@@ -179,11 +151,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
-			
-			@Override
-			public void onRequestReset() {
-				
-			}
 		});
 		latch.assertComplete();
 	}
@@ -195,12 +162,8 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 		getResetDispatcher().execute(update, new UpdateListener() {
 			@Override
 			public void onRequestComplete(final UpdateResult result) {
-				
-			}
-
-			@Override
-			public void onRequestReset() {
 				latch.countDown();
+                assertTrue(result.getData() == 0);
 			}
 		});
 		latch.assertComplete();
@@ -215,11 +178,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 			public void onRequestComplete(final UpdateResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-			
-			@Override
-			public void onRequestReset() {
-				
 			}
 		});
 		latch.assertComplete();
@@ -243,11 +201,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 				final Integer count = result.getData();
 				assertEquals(Integer.valueOf(1), count);
 			}
-			
-			@Override
-			public void onRequestReset() {
-				
-			}
 		});
 		latch.assertComplete();
 	}
@@ -258,12 +211,8 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 		getResetDispatcher().execute(delete, new DeleteListener() {
 			@Override
 			public void onRequestComplete(final DeleteResult result) {
-
-			}
-			
-			@Override
-			public void onRequestReset() {
-				latch.countDown();	
+				latch.countDown();
+				assertTrue(result.getData() == 0);
 			}
 		});
 		latch.assertComplete();
@@ -277,11 +226,6 @@ public class SupportRequestDispatcherTest extends SupportLoaderTestCase {
 			public void onRequestComplete(final DeleteResult result) {
 				latch.countDown();
 				assertNotNull(result.getError());
-			}
-			
-			@Override
-			public void onRequestReset() {
-				
 			}
 		});
 		latch.assertComplete();

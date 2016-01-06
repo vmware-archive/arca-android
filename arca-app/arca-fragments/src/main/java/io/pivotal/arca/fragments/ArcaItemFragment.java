@@ -58,18 +58,9 @@ public abstract class ArcaItemFragment extends ArcaQueryFragment {
 		}
 	}
 
-	@Override
-	public final void onRequestReset() {
-		getCursorAdapter().swapCursor(null);
-		onContentReset();
-	}
-
 	protected void onContentChanged(final QueryResult result) {
 	}
 
 	protected void onContentError(final io.pivotal.arca.dispatcher.Error error) {
-	}
-
-	protected void onContentReset() {
 	}
 }

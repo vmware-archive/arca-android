@@ -19,26 +19,11 @@ The Arca App package makes it really easy to fetch data from a ContentProvider a
 
 # Getting Started
 
-### Levo
-
-The easiest way to get started with the Arca library is to scaffold a project with [levo](https://github.com/cfmobile/levo).
-
-```bash
-levo -t github.com/cfmobile/arca-android-templates -m "User id:long name:string age:int"
-```
-
 ### Gradle
 
 ```groovy
-compile 'io.pivotal:arca:1.0-beta'
-```
-
-#### Gradle Plugin 1.1+
-
-With newer versions of the android gradle plugin, you will need to specify each individual Arca component in your dependencies. For all components use the following:
-
-```groovy
 compile 'io.pivotal:arca-service:1.0-beta'
+
 compile 'io.pivotal:arca-provider:1.0-beta'
 
 compile ('io.pivotal:arca-fragments:1.0-beta') {

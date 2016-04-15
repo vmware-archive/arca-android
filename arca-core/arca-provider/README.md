@@ -29,9 +29,7 @@ public class MyAppContentProvider extends DatabaseProvider {
 	@Override
 	public boolean onCreate() {
 		registerDataset(AUTHORITY, Paths.POSTS, PostTable.class);
-		registerDataset(AUTHORITY, Paths.POSTS + "/*", PostTable.class);
 		registerDataset(AUTHORITY, Paths.USERS, UserTable.class);
-		registerDataset(AUTHORITY, Paths.USERS + "/*", UserTable.class);
 		return true;
 	}
 }
@@ -74,8 +72,8 @@ public class PostTable extends SQLiteTable {
 		@Column(Column.Type.INTEGER)
 		public static final String USER_ID = "user_id";
 
-		@Column(Column.Type.TEXT)
 		@ColumnOptions("DEFAULT CURRENT_TIMESTAMP")
+		@Column(Column.Type.TEXT)
 		public static final String DATE = "date";
 	}
 }

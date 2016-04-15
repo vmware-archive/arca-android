@@ -1,7 +1,0 @@
-dependencies {
-    compile project(":arca-core:arca-broadcaster")
-    compile project(":arca-core:arca-provider")
-    compile project(":arca-core:arca-service")
-    compile project(":arca-core:arca-threading")
-    compile project(":arca-core:arca-utils")
-}

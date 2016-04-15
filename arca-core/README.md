@@ -44,44 +44,29 @@ public class MyAppContentProvider extends DatabaseProvider {
 	@Override
 	public boolean onCreate() {
 		registerDataset(AUTHORITY, Paths.POSTS, PostTable.class);
-		registerDataset(AUTHORITY, Paths.POSTS + "/*", PostTable.class);
 		registerDataset(AUTHORITY, Paths.USERS, UserTable.class);
-		registerDataset(AUTHORITY, Paths.USERS + "/*", UserTable.class);
 		registerDataset(AUTHORITY, Paths.USER_POSTS, UserPostView.class);
-		registerDataset(AUTHORITY, Paths.USER_POSTS + "/*", UserPostView.class);
 		return true;
 	}
 
 	public static class PostTable extends SQLiteTable {
 
-		public static interface Columns extends SQLiteTable.Columns {
+		public interface Columns extends SQLiteTable.Columns {
 			@Unique(Unique.OnConflict.REPLACE)
-			@Column(Column.Type.INTEGER)
-			public static final String ID = "id";
-
-			@Column(Column.Type.TEXT)
-			public static final String TEXT = "text";
-
-			@Column(Column.Type.INTEGER)
-			public static final String USER_ID = "user_id";
-
-			@Column(Column.Type.INTEGER)
-			public static final String DATE = "date";
+			@Column(Column.Type.INTEGER) String ID = "id";
+			@Column(Column.Type.TEXT) String TEXT = "text";
+			@Column(Column.Type.INTEGER) String USER_ID = "user_id";
+			@Column(Column.Type.INTEGER) String DATE = "date";
 		}
 	}
 
 	public static class UserTable extends SQLiteTable {
 
-		public static interface Columns extends SQLiteTable.Columns {
+		public interface Columns extends SQLiteTable.Columns {
 			@Unique(Unique.OnConflict.REPLACE)
-			@Column(Column.Type.INTEGER)
-			public static final String ID = "id";
-
-			@Column(Column.Type.TEXT)
-			public static final String NAME = "name";
-
-			@Column(Column.Type.INTEGER)
-			public static final String AGE = "age";
+			@Column(Column.Type.INTEGER) String ID = "id";
+			@Column(Column.Type.TEXT) String NAME = "name";
+			@Column(Column.Type.INTEGER) String AGE = "age";
 		}
 	}
 
@@ -95,21 +80,12 @@ public class MyAppContentProvider extends DatabaseProvider {
 
 		@OrderBy("posts.date")
 
-		public static interface Columns {
-			@Select("posts.id")
-			public static final String _ID = "_id";
-
-			@Select("posts.text")
-			public static final String TEXT = "text";
-
-			@Select("posts.date")
-			public static final String DATE = "date";
-
-			@Select("users.id")
-			public static final String USER_ID = "user_id";
-
-			@Select("users.name")
-			public static final String USER_NAME = "user_name";
+		public interface Columns {
+			@Select("posts.id") String _ID = "_id";
+			@Select("posts.text") String TEXT = "text";
+			@Select("posts.date") String DATE = "date";
+			@Select("users.id") String USER_ID = "user_id";
+			@Select("users.name") String USER_NAME = "user_name";
 		}
 	}
 }
@@ -117,27 +93,7 @@ public class MyAppContentProvider extends DatabaseProvider {
 
 ## Populating your Content Provider
 
-Now in order to populate our `ContentProvider` we can use the `OperationService` to send asynchronous requests to fetch data from the server.
-
-
-```java
-public class MyAppRequests {
-
-	public static void requestPosts(final Context context) {
-		final Operation operation = new GetPostListOperation();
-
-		OperationService.start(context, operation);
-	}
-
-	public static void requestUsers(final Context context) {
-		final Operation operation = new GetUserListOperation();
-
-		OperationService.start(context, operation);
-	}
-}
-```
-
-In this case we define an `Operation` for Users and Posts as follows.
+Now in order to populate our `ContentProvider` we can use the `OperationService` to make asynchronous requests to our server. To do this we invoke the `OperationService.start(context, operation)` method by passing it a new instance of an `Operation`. In this case we define an `Operation` for Users and Posts as shown below. The main advantage to delegating this responsibility to a `Service` is that the lifecycle of the network request is not tied to an `Fragment` or `Activity`.
 
 ```java
 public class GetPostListOperation extends SimpleOperation {
@@ -152,7 +108,7 @@ public class GetPostListOperation extends SimpleOperation {
 
 	@Override
 	public ContentValues[] onExecute(final Context context) throws Exception {
-		final Post.ListResponse response = MyAppApi.getPostListResponse();
+		final List<Post> response = MyAppApi.getPosts();
 		return DataUtils.getContentValues(response);
 	}
 
@@ -183,7 +139,7 @@ public class GetUserListOperation extends SimpleOperation {
 
 	@Override
 	public ContentValues[] onExecute(final Context context) throws Exception {
-		final User.ListResponse response = MyAppApi.getUserListResponse();
+		final List<User> response = MyAppApi.getUsers();
 		return DataUtils.getContentValues(response);
 	}
 
@@ -201,56 +157,21 @@ public class GetUserListOperation extends SimpleOperation {
 }
 ```
 
-In the `onExecute` method we are invoking our `MyAppApi` class which fetches json data from the server and parses the response using Gson.
-
-```java
-public class MyAppApi {
-	
-	public static Post.ListResponse getPostListResponse() throws Exception {
-		final HttpGet request = new HttpGet("http://10.0.2.2:3000/posts.json");
-		return execute(request, new Gson(), Post.ListResponse.class);
-	}
-
-	public static User.ListResponse getUserListResponse() throws Exception {
-		final HttpGet request = new HttpGet("http://10.0.2.2:3000/users.json");
-		return execute(request, new Gson(), User.ListResponse.class);
-	}
-
-	private static <T> T execute(final HttpUriRequest request, final Gson gson, final Type type) throws Exception {
-		final HttpResponse response = new DefaultHttpClient().execute(request);
-		final InputStream inputStream = response.getEntity().getContent();
-		final InputStreamReader inputReader = new InputStreamReader(inputStream);
-		final JsonReader jsonReader = new JsonReader(inputReader);
-		final T list = gson.fromJson(jsonReader, type);
-		jsonReader.close();
-		return list;
-	}
-}
-```
-
-The Post and User models are defined below. In order for the `DataUtils.getContentValues()` method to be able to convert your model into a `ContentValues` object you will need to include a `@ColumnName` annotation on each field you want saved.
+The Post and User models are defined below. In order for the `DataUtils.getContentValues()` method to be able to convert your model into a `ContentValues` object you will need to include a `@ColumnName` annotation on each field you want persisted in the database.
 
 ```java
 public static class Post {
 
-	public static class ListResponse extends ArrayList<Post> {
-		private static final long serialVersionUID = 1L;
-	}
-
 	@ColumnName(PostTable.Columns.ID)
-	@SerializedName("id")
 	private long mId;
 
 	@ColumnName(PostTable.Columns.TEXT)
-	@SerializedName("text")
 	private String mText;
 
 	@ColumnName(PostTable.Columns.USER_ID)
-	@SerializedName("user_id")
 	private long mUserId;
 
 	@ColumnName(PostTable.Columns.DATE)
-	@SerializedName("date")
 	private long mDate;
 }
 ```
@@ -258,15 +179,9 @@ public static class Post {
 ```java
 public static class User {
 
-	public static class ListResponse extends ArrayList<User> {
-		private static final long serialVersionUID = 1L;
-	}
-
 	@ColumnName(UserTable.Columns.ID)
-	@SerializedName("id")
 	private long mId;
 
-	@SerializedName("name")
 	private String mName;
 
 	@ColumnName(UserTable.Columns.NAME)
@@ -275,7 +190,6 @@ public static class User {
 	}
 
 	@ColumnName(UserTable.Columns.AGE)
-	@SerializedName("age")
 	private int mAge;
 }
 ```

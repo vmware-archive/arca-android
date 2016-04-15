@@ -1,6 +1,0 @@
-dependencies {
-    compile project(":arca-app:arca-adapters")
-    compile project(":arca-app:arca-dispatcher")
-    compile project(":arca-app:arca-fragments")
-    compile project(":arca-app:arca-monitor")
-}

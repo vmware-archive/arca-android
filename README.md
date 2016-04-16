@@ -21,6 +21,8 @@ The Arca App package makes it really easy to fetch data from a ContentProvider a
 
 ### Gradle
 
+Add the following lines to your `build.gradle`:
+
 ```groovy
 compile 'io.pivotal:arca-service:1.0-beta'
 

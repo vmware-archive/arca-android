@@ -1,4 +1,3 @@
-
 package io.pivotal.arca.service;
 
 import android.content.ContentResolver;

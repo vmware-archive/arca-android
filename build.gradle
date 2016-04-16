@@ -61,15 +61,15 @@ allprojects {
         repositories.mavenDeployer {
 
             // Publishes AAR to local Maven cache:
-            //repository(url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository/').absolutePath)
+            repository(url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository/').absolutePath)
 
 //            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
 //                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
 //            }
 //
-            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
-                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
-            }
+//            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+//            }
         }
     }
 }
@@ -79,7 +79,7 @@ configure(projects) {
 
     android {
         compileSdkVersion 23
-        buildToolsVersion "23.0.3"
+        buildToolsVersion "23.0.1"
 
         defaultConfig {
             minSdkVersion 9

@@ -2,6 +2,7 @@ package io.pivotal.arca.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
 
     public RecyclerViewCursorAdapter(final Context context, final int layout, final Collection<Binding> bindings) {
         mCursorAdapter = new ModernCursorAdapter(context, layout, bindings);
+        mCursorAdapter.registerDataSetObserver(new RecyclerViewDataSetObserver());
         setHasStableIds(true);
     }
 
@@ -58,6 +60,13 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
     public boolean hasResults() {
         final Cursor cursor = getCursor();
         return cursor != null && cursor.getCount() > 0;
+    }
+
+    private class RecyclerViewDataSetObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            notifyDataSetChanged();
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

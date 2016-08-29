@@ -1,14 +1,17 @@
 package io.pivotal.arca.adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Collection;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerViewCursorAdapter.ViewHolder> {
 
     private final ModernCursorAdapter mCursorAdapter;

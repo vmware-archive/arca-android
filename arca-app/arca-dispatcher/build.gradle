@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":arca-core:arca-utils")
-    compile project(":arca-core:arca-broadcaster")
-    compile 'com.android.support:support-v4:23.4.0'
+    compile project(":arca-utils")
+    compile project(":arca-broadcaster")
+    compile 'com.android.support:support-v4:24.2.0'
 }

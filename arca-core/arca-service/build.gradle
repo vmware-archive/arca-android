@@ -1,4 +1,4 @@
 dependencies {
-    compile project(":arca-core:arca-utils")
-    compile project(":arca-core:arca-threading")
+    compile project(":arca-utils")
+    compile project(":arca-threading")
 }

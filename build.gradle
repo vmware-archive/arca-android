@@ -9,15 +9,15 @@ buildscript {
 }
 
 ext.projects = [
-        project('arca-app:arca-adapters'),
-        project('arca-app:arca-dispatcher'),
-        project('arca-app:arca-fragments'),
-        project('arca-app:arca-monitor'),
-        project('arca-core:arca-broadcaster'),
-        project('arca-core:arca-provider'),
-        project('arca-core:arca-service'),
-        project('arca-core:arca-threading'),
-        project('arca-core:arca-utils')
+        project(':arca-adapters'),
+        project(':arca-dispatcher'),
+        project(':arca-fragments'),
+        project(':arca-monitor'),
+        project(':arca-broadcaster'),
+        project(':arca-provider'),
+        project(':arca-service'),
+        project(':arca-threading'),
+        project(':arca-utils')
 ]
 
 ext.pomInfo = {
@@ -51,7 +51,7 @@ allprojects {
     apply plugin: 'maven'
 
     group = 'io.pivotal'
-    version = '1.0-beta.7-SNAPSHOT'
+    version = '1.0-beta.8-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -61,15 +61,15 @@ allprojects {
         repositories.mavenDeployer {
 
             // Publishes AAR to local Maven cache:
-            repository(url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository/').absolutePath)
+//             repository(url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository/').absolutePath)
 
-//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
-//            }
-//
-//            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
-//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
-//            }
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+            }
+
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+            }
         }
     }
 }
@@ -78,40 +78,16 @@ configure(projects) {
     apply plugin: 'com.android.library'
 
     android {
-        compileSdkVersion 23
-        buildToolsVersion "23.0.1"
+        compileSdkVersion 24
+        buildToolsVersion "24.0.1"
 
         defaultConfig {
             minSdkVersion 9
-            targetSdkVersion 23
+            targetSdkVersion 24
         }
 
         sourceSets {
             androidTest.setRoot('src/test')
-        }
-    }
-
-    task jarClasses(type: Jar, dependsOn: assembleRelease) {
-        from fileTree(dir: 'build/intermediates/classes/release')
-    }
-
-    task jarSources(type: Jar) {
-        classifier = 'sources'
-        from android.sourceSets.main.java.srcDirs
-    }
-
-    artifacts {
-        archives jarClasses
-        archives jarSources
-    }
-
-    uploadArchives {
-        repositories.mavenDeployer {
-            pom.project pomInfo
-
-            pom.whenConfigured {
-                pom -> pom.packaging = 'jar'
-            }
         }
     }
 }

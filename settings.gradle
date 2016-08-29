@@ -1,11 +1,28 @@
 rootProject.name = 'arca'
 
-include 'arca-core:arca-broadcaster'
-include 'arca-core:arca-provider'
-include 'arca-core:arca-service'
-include 'arca-core:arca-threading'
-include 'arca-core:arca-utils'
-include 'arca-app:arca-adapters'
-include 'arca-app:arca-dispatcher'
-include 'arca-app:arca-fragments'
-include 'arca-app:arca-monitor'
+include ':arca-broadcaster'
+project(':arca-broadcaster').projectDir = new File(rootProject.projectDir, 'arca-core/arca-broadcaster')
+
+include ':arca-provider'
+project(':arca-provider').projectDir = new File(rootProject.projectDir, 'arca-core/arca-provider')
+
+include ':arca-service'
+project(':arca-service').projectDir = new File(rootProject.projectDir, 'arca-core/arca-service')
+
+include ':arca-threading'
+project(':arca-threading').projectDir = new File(rootProject.projectDir, 'arca-core/arca-threading')
+
+include ':arca-utils'
+project(':arca-utils').projectDir = new File(rootProject.projectDir, 'arca-core/arca-utils')
+
+include ':arca-adapters'
+project(':arca-adapters').projectDir = new File(rootProject.projectDir, 'arca-app/arca-adapters')
+
+include ':arca-dispatcher'
+project(':arca-dispatcher').projectDir = new File(rootProject.projectDir, 'arca-app/arca-dispatcher')
+
+include ':arca-fragments'
+project(':arca-fragments').projectDir = new File(rootProject.projectDir, 'arca-app/arca-fragments')
+
+include ':arca-monitor'
+project(':arca-monitor').projectDir = new File(rootProject.projectDir, 'arca-app/arca-monitor')

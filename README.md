@@ -28,9 +28,7 @@ compile 'io.pivotal:arca-service:1.0-beta'
 
 compile 'io.pivotal:arca-provider:1.0-beta'
 
-compile ('io.pivotal:arca-fragments:1.0-beta') {
-  exclude group: 'com.android.support'
-}
+compile 'io.pivotal:arca-fragments:1.0-beta'
 ```
 
 # Further Reading

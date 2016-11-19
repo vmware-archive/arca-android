@@ -16,10 +16,14 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
 
     private final ModernCursorAdapter mCursorAdapter;
 
-    public RecyclerViewCursorAdapter(final Context context, final int layout, final Collection<Binding> bindings) {
-        mCursorAdapter = new ModernCursorAdapter(context, layout, bindings);
-        mCursorAdapter.registerDataSetObserver(new RecyclerViewDataSetObserver());
+    public RecyclerViewCursorAdapter(final ModernCursorAdapter cursorAdapter) {
+        cursorAdapter.registerDataSetObserver(new RecyclerViewDataSetObserver());
+        mCursorAdapter = cursorAdapter;
         setHasStableIds(true);
+    }
+
+    public RecyclerViewCursorAdapter(final Context context, final int layout, final Collection<Binding> bindings) {
+        this(new ModernCursorAdapter(context, layout, bindings));
     }
 
     @Override
@@ -32,6 +36,11 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(final RecyclerViewCursorAdapter.ViewHolder holder, final int position) {
         final Cursor cursor = (Cursor) mCursorAdapter.getItem(position);
         mCursorAdapter.bindView(holder.getView(), holder.getView().getContext(), cursor);
+    }
+
+    @Override
+    public int getItemViewType(final int position) {
+        return mCursorAdapter.getItemViewType(position);
     }
 
     @Override

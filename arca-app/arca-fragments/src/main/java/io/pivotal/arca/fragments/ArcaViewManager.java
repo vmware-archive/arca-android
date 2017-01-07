@@ -11,13 +11,17 @@ public class ArcaViewManager {
 
     private final View mView;
 
+    private int mContentId = android.R.id.content;
     private int mProgressId = android.R.id.progress;
     private int mEmptyId = android.R.id.empty;
-    private int mContentId = android.R.id.content;
     private int mListId = android.R.id.list;
 
     public ArcaViewManager(final View view) {
         mView = view;
+    }
+
+    public void setContentId(final int id) {
+        mContentId = id;
     }
 
     public void setProgressId(final int id) {
@@ -28,12 +32,13 @@ public class ArcaViewManager {
         mEmptyId = id;
     }
 
-    public void setContentId(final int id) {
-        mContentId = id;
-    }
-
     private View getView() {
         return mView;
+    }
+
+    private View getContentView() {
+        final View content = getView().findViewById(mContentId);
+        return content != null ? content : getView().findViewById(mListId);
     }
 
     private View getProgressView() {
@@ -44,30 +49,25 @@ public class ArcaViewManager {
         return getView().findViewById(mEmptyId);
     }
 
-    private View getContentView() {
-        final View content = getView().findViewById(mContentId);
-        return content != null ? content : getView().findViewById(mListId);
+    public void showContentView() {
+        if (getContentView() != null) getContentView().setVisibility(View.VISIBLE);
+        if (getProgressView() != null) getProgressView().setVisibility(View.INVISIBLE);
+        if (getEmptyView() != null) getEmptyView().setVisibility(View.INVISIBLE);
     }
 
     public void showProgressView() {
-        getContentView().setVisibility(View.INVISIBLE);
-        getProgressView().setVisibility(View.VISIBLE);
-        getEmptyView().setVisibility(View.INVISIBLE);
-    }
-
-    public void showContentView() {
-        getContentView().setVisibility(View.VISIBLE);
-        getProgressView().setVisibility(View.INVISIBLE);
-        getEmptyView().setVisibility(View.INVISIBLE);
+        if (getContentView() != null) getContentView().setVisibility(View.INVISIBLE);
+        if (getProgressView() != null) getProgressView().setVisibility(View.VISIBLE);
+        if (getEmptyView() != null) getEmptyView().setVisibility(View.INVISIBLE);
     }
 
     public void showEmptyView() {
-        getContentView().setVisibility(View.INVISIBLE);
-        getProgressView().setVisibility(View.INVISIBLE);
-        getEmptyView().setVisibility(View.VISIBLE);
+        if (getContentView() != null) getContentView().setVisibility(View.INVISIBLE);
+        if (getProgressView() != null) getProgressView().setVisibility(View.INVISIBLE);
+        if (getEmptyView() != null) getEmptyView().setVisibility(View.VISIBLE);
     }
 
-    public void toastError(final Error error) {
+    public void showError(final Error error) {
         final String message = String.format("%s", error.getMessage());
         Toast.makeText(mView.getContext(), message, Toast.LENGTH_SHORT).show();
     }
@@ -85,7 +85,7 @@ public class ArcaViewManager {
     public void checkError(final Error error) {
         if (error != null) {
             showEmptyView();
-            toastError(error);
+            showError(error);
         }
     }
 }

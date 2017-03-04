@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-public abstract class SQLiteDataset implements Dataset {
+public abstract class SQLiteDataset extends ContextDataset {
 
 	public abstract void onCreate(final SQLiteDatabase db);
 

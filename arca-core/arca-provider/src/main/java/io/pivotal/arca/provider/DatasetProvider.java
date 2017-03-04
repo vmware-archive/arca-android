@@ -73,6 +73,9 @@ public abstract class DatasetProvider extends ContentProvider {
 		if (dataset == null) {
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
+		if (dataset instanceof ContextDataset) {
+			((ContextDataset)dataset).setContext(getContext());
+		}
 		return dataset;
 	}
 

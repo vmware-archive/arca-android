@@ -9,11 +9,11 @@ This [Google I/O talk](http://www.youtube.com/watch?v=xHXn3Kg2IQE) explains the 
 
 Below is a list of all the major components within the Arca framework. Each major component has a variety of minor components. Each component can be used independently or as part of the entire framework.
 
-##[Arca-Core](arca-core)
+## [Arca-Core](arca-core)
 
 The Arca Core package provides all the groundwork for caching data within a ContentProvider and interacting with a remote store using a Service (i.e. outside the context of your Fragments/Activities). This means your application can use less battery, less bandwidth and provide a much more responsive user experience.
 
-##[Arca-App](arca-app)
+## [Arca-App](arca-app)
 
 The Arca App package makes it really easy to fetch data from a ContentProvider and bind it to elements in your layout. Your application is notified when your data changes so your UI is always up to date with the latest content.
 

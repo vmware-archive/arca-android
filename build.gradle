@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.3.0'
     }
 }
 
@@ -51,7 +51,7 @@ allprojects {
     apply plugin: 'maven'
 
     group = 'io.pivotal'
-    version = '1.0-beta.10-SNAPSHOT'
+    version = '1.0-beta.13-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -78,12 +78,12 @@ configure(projects) {
     apply plugin: 'com.android.library'
 
     android {
-        compileSdkVersion 24
-        buildToolsVersion "24.0.1"
+        compileSdkVersion 25
+        buildToolsVersion "25.0.2"
 
         defaultConfig {
             minSdkVersion 9
-            targetSdkVersion 24
+            targetSdkVersion 25
         }
 
         sourceSets {

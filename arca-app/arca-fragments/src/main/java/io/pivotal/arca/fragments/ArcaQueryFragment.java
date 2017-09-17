@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
 
+import io.pivotal.arca.dispatcher.Batch;
+import io.pivotal.arca.dispatcher.BatchResult;
 import io.pivotal.arca.dispatcher.Delete;
 import io.pivotal.arca.dispatcher.DeleteResult;
 import io.pivotal.arca.dispatcher.Error;
@@ -84,6 +86,15 @@ public abstract class ArcaQueryFragment extends Fragment implements QueryListene
 			return dispatcher.execute(request);
 		} else {
             return new DeleteResult(new Error(0, "No dispatcher found"));
+		}
+	}
+
+	protected BatchResult execute(final Batch request) {
+		final ArcaDispatcher dispatcher = getRequestDispatcher();
+		if (dispatcher != null) {
+			return dispatcher.execute(request);
+		} else {
+			return new BatchResult(new Error(0, "No dispatcher found"));
 		}
 	}
 }

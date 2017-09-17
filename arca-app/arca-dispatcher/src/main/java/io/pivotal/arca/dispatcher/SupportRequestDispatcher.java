@@ -1,5 +1,6 @@
 package io.pivotal.arca.dispatcher;
 
+import android.content.ContentProviderResult;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -42,9 +43,15 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 	public void execute(final Delete request, final DeleteListener listener) {
 		final LoaderCallbacks<?> callbacks = new DeleteLoaderCallbacks(listener);
 		execute(request, callbacks);
-	}
+    }
 
-	private void execute(final Request<?> request, final LoaderCallbacks<?> callbacks) {
+    @Override
+    public void execute(final Batch request, final BatchListener listener) {
+        final LoaderCallbacks<?> callbacks = new BatchLoaderCallbacks(listener);
+        execute(request, callbacks);
+    }
+
+    private void execute(final Request<?> request, final LoaderCallbacks<?> callbacks) {
 		final int identifier = request.getIdentifier();
 		final Bundle bundle = createRequestBundle(request);
 		mLoaderManager.restartLoader(identifier, bundle, callbacks);
@@ -171,4 +178,34 @@ public class SupportRequestDispatcher extends AbstractRequestDispatcher {
 			}
 		}
 	}
+
+    private class BatchLoaderCallbacks implements LoaderCallbacks<BatchResult> {
+
+        private final RequestListener<BatchResult> mListener;
+
+        public BatchLoaderCallbacks(final BatchListener listener) {
+            mListener= listener;
+        }
+
+        @Override
+        public Loader<BatchResult> onCreateLoader(final int id, final Bundle args) {
+            final RequestExecutor executor = getRequestExecutor();
+            final Batch request = args.getParcelable(Extras.REQUEST);
+            return new SupportBatchLoader(mContext, executor, request);
+        }
+
+        @Override
+        public void onLoadFinished(final Loader<BatchResult> loader, final BatchResult result) {
+            if (mListener != null) {
+                mListener.onRequestComplete(result);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(final Loader<BatchResult> loader) {
+            if (mListener != null) {
+                mListener.onRequestComplete(new BatchResult(new ContentProviderResult[0]));
+            }
+        }
+    }
 }

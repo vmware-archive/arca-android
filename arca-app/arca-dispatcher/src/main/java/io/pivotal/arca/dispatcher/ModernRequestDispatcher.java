@@ -3,6 +3,7 @@ package io.pivotal.arca.dispatcher;
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentProviderResult;
 import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
@@ -44,6 +45,12 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 	@Override
 	public void execute(final Delete request, final DeleteListener listener) {
 		final LoaderCallbacks<?> callbacks = new DeleteLoaderCallbacks(listener);
+		execute(request, callbacks);
+	}
+
+	@Override
+	public void execute(final Batch request, final BatchListener listener) {
+		final LoaderCallbacks<?> callbacks = new BatchLoaderCallbacks(listener);
 		execute(request, callbacks);
 	}
 
@@ -171,6 +178,36 @@ public class ModernRequestDispatcher extends AbstractRequestDispatcher {
 		public void onLoaderReset(final Loader<DeleteResult> loader) {
 			if (mListener != null) {
 				mListener.onRequestComplete(new DeleteResult(0));
+			}
+		}
+	}
+
+	private class BatchLoaderCallbacks implements LoaderCallbacks<BatchResult> {
+
+		private final RequestListener<BatchResult> mListener;
+
+		public BatchLoaderCallbacks(final BatchListener listener) {
+			mListener= listener;
+		}
+
+		@Override
+		public Loader<BatchResult> onCreateLoader(final int id, final Bundle args) {
+			final RequestExecutor executor = getRequestExecutor();
+			final Batch request = args.getParcelable(Extras.REQUEST);
+			return new ModernBatchLoader(mContext, executor, request);
+		}
+
+		@Override
+		public void onLoadFinished(final Loader<BatchResult> loader, final BatchResult result) {
+			if (mListener != null) {
+				mListener.onRequestComplete(result);
+			}
+		}
+
+		@Override
+		public void onLoaderReset(final Loader<BatchResult> loader) {
+			if (mListener != null) {
+				mListener.onRequestComplete(new BatchResult(new ContentProviderResult[0]));
 			}
 		}
 	}

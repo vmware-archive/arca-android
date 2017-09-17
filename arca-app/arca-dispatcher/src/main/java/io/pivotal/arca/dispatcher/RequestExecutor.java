@@ -1,19 +1,22 @@
 package io.pivotal.arca.dispatcher;
 
+import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
 public interface RequestExecutor {
 
-	public QueryResult execute(Query request);
+	QueryResult execute(Query request);
 
-	public UpdateResult execute(Update request);
+	UpdateResult execute(Update request);
 
-	public InsertResult execute(Insert request);
+	InsertResult execute(Insert request);
 
-	public DeleteResult execute(Delete request);
+	DeleteResult execute(Delete request);
 
-	public static class DefaultRequestExecutor implements RequestExecutor {
+    BatchResult execute(Batch request);
+
+	class DefaultRequestExecutor implements RequestExecutor {
 
 		private final ContentResolver mResolver;
 
@@ -29,8 +32,7 @@ public interface RequestExecutor {
 		public QueryResult execute(final Query request) {
 			final ContentResolver resolver = getContentResolver();
 			final Cursor cursor = resolver.query(request.getUri(), request.getProjection(), request.getWhereClause(), request.getWhereArgs(), request.getSortOrder());
-			if (cursor != null)
-				cursor.getCount();
+			if (cursor != null) cursor.getCount();
 			return new QueryResult(cursor);
 		}
 
@@ -55,5 +57,16 @@ public interface RequestExecutor {
 			return new DeleteResult(count);
 		}
 
-	}
+        @Override
+        public BatchResult execute(final Batch request) {
+            final ContentResolver resolver = getContentResolver();
+
+            try {
+                final ContentProviderResult[] results = resolver.applyBatch(request.getAuthority(), request.getOperations());
+                return new BatchResult(results);
+            } catch (final Exception e) {
+                return new BatchResult(new Error(0, e.getMessage()));
+            }
+        }
+    }
 }

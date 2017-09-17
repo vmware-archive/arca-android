@@ -4,18 +4,21 @@ import android.os.Bundle;
 
 public interface RequestDispatcher extends RequestExecutor {
 
-	public void execute(Query request, QueryListener listener);
+	void execute(Query request, QueryListener listener);
 
-	public void execute(Update request, UpdateListener listener);
+	void execute(Update request, UpdateListener listener);
 
-	public void execute(Insert request, InsertListener listener);
+	void execute(Insert request, InsertListener listener);
 
-	public void execute(Delete request, DeleteListener listener);
+	void execute(Delete request, DeleteListener listener);
 
-	public static abstract class AbstractRequestDispatcher implements RequestDispatcher {
+	void execute(Batch request, BatchListener listener);
 
-		protected static interface Extras {
-			public static final String REQUEST = "request";
+
+	abstract class AbstractRequestDispatcher implements RequestDispatcher {
+
+		interface Extras {
+			String REQUEST = "request";
 		}
 
 		private final RequestExecutor mRequestExecutor;
@@ -47,6 +50,11 @@ public interface RequestDispatcher extends RequestExecutor {
 		public DeleteResult execute(final Delete request) {
 			return getRequestExecutor().execute(request);
 		}
+
+        @Override
+        public BatchResult execute(final Batch request) {
+            return getRequestExecutor().execute(request);
+        }
 
 		protected static Bundle createRequestBundle(final Request<?> request) {
 			final Bundle bundle = new Bundle();

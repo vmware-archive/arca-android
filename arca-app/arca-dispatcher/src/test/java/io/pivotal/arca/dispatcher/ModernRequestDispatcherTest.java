@@ -358,6 +358,11 @@ public class ModernRequestDispatcherTest extends LoaderTestCase {
 			return new DeleteResult(error);
 		}
 
+		@Override
+		public BatchResult execute(final Batch request) {
+			final Error error = new Error(0, null);
+			return new BatchResult(error);
+		}
 	}
 
 	public class AssertionLatch extends CountDownLatch {

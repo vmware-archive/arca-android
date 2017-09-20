@@ -5,7 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +28,7 @@ public abstract class SimpleOperation extends Operation {
 
     @Override
     public final Set<Task<?>> onCreateTasks() {
-        return new HashSet<Task<?>>(Arrays.asList(new InnerTask()));
+        return new HashSet<Task<?>>(Collections.singletonList(new InnerTask()));
     }
 
     public abstract ContentValues[] onExecute(final Context context) throws Exception;
@@ -41,7 +41,7 @@ public abstract class SimpleOperation extends Operation {
 
     @Override
     public void onSuccess(final Context context, final List<Task<?>> completed) {
-        context.getContentResolver().notifyChange(getUri(), null);
+
     }
 
     @Override

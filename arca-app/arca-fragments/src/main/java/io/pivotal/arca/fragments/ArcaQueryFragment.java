@@ -14,13 +14,14 @@ import io.pivotal.arca.dispatcher.Insert;
 import io.pivotal.arca.dispatcher.InsertResult;
 import io.pivotal.arca.dispatcher.Query;
 import io.pivotal.arca.dispatcher.QueryListener;
+import io.pivotal.arca.dispatcher.QueryResult;
 import io.pivotal.arca.dispatcher.Update;
 import io.pivotal.arca.dispatcher.UpdateResult;
 import io.pivotal.arca.monitor.ArcaDispatcher;
 import io.pivotal.arca.monitor.RequestMonitor;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public abstract class ArcaQueryFragment extends Fragment implements QueryListener {
+public class ArcaQueryFragment extends Fragment implements QueryListener {
 
 	private ArcaDispatcher mDispatcher;
 
@@ -97,4 +98,9 @@ public abstract class ArcaQueryFragment extends Fragment implements QueryListene
 			return new BatchResult(new Error(0, "No dispatcher found"));
 		}
 	}
+
+    @Override
+    public void onRequestComplete(final QueryResult queryResult) {
+
+    }
 }

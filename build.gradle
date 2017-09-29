@@ -1,10 +1,10 @@
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:2.3.3'
     }
 }
 
@@ -51,9 +51,10 @@ allprojects {
     apply plugin: 'maven'
 
     group = 'io.pivotal'
-    version = '1.0-beta.14-SNAPSHOT'
+    version = '1.0-beta.15-SNAPSHOT'
 
     repositories {
+        jcenter()
         mavenCentral()
     }
 

@@ -6,6 +6,8 @@ import android.net.Uri;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.pivotal.arca.dispatcher.Batch;
+import io.pivotal.arca.dispatcher.BatchResult;
 import io.pivotal.arca.dispatcher.Delete;
 import io.pivotal.arca.dispatcher.DeleteResult;
 import io.pivotal.arca.dispatcher.Insert;
@@ -101,4 +103,17 @@ public class SyncingRequestMonitor extends NotifyingRequestMonitor {
         return false;
     }
 
+    @Override
+    public int onPostExecute(final Context context, final Batch request, final BatchResult result) {
+        final boolean syncing = shouldSync(context, request, result) && onSync(context, request, result);
+        return syncing ? Flags.DATA_SYNCING : super.onPostExecute(context, request, result);
+    }
+
+    public boolean shouldSync(final Context context, final Batch request, final BatchResult result) {
+        return true;
+    }
+
+    public boolean onSync(final Context context, final Batch request, final BatchResult result) {
+        return false;
+    }
 }

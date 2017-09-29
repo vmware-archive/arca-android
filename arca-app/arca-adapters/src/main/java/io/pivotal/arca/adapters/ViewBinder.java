@@ -5,9 +5,9 @@ import android.view.View;
 import android.widget.TextView;
 
 public interface ViewBinder {
-	public boolean setViewValue(View view, Cursor cursor, Binding binding);
+	boolean setViewValue(View view, Cursor cursor, Binding binding);
 
-	public static class DefaultViewBinder implements ViewBinder {
+	class DefaultViewBinder implements ViewBinder {
 
 		@Override
 		public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {

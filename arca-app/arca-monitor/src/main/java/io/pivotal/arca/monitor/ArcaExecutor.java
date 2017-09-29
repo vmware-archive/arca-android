@@ -3,6 +3,8 @@ package io.pivotal.arca.monitor;
 import android.content.ContentResolver;
 import android.content.Context;
 
+import io.pivotal.arca.dispatcher.Batch;
+import io.pivotal.arca.dispatcher.BatchResult;
 import io.pivotal.arca.dispatcher.Delete;
 import io.pivotal.arca.dispatcher.DeleteResult;
 import io.pivotal.arca.dispatcher.Insert;
@@ -17,11 +19,11 @@ import io.pivotal.arca.monitor.RequestMonitor.Flags;
 
 public interface ArcaExecutor extends RequestExecutor {
 
-	public void setRequestMonitor(final RequestMonitor monitor);
+	void setRequestMonitor(final RequestMonitor monitor);
 
-	public RequestMonitor getRequestMonitor();
+	RequestMonitor getRequestMonitor();
 
-	public static class DefaultArcaExecutor extends DefaultRequestExecutor implements ArcaExecutor {
+	class DefaultArcaExecutor extends DefaultRequestExecutor implements ArcaExecutor {
 
 		private RequestMonitor mMonitor;
 		private final Context mContext;
@@ -115,6 +117,25 @@ public interface ArcaExecutor extends RequestExecutor {
 			}
 
 			return (DeleteResult) appendFlags(result, flags);
+		}
+
+		@Override
+		public BatchResult execute(final Batch request) {
+			final RequestMonitor monitor = getRequestMonitor();
+
+			int flags = Flags.DATA_VALID;
+
+			if (monitor != null) {
+				flags = flags | monitor.onPreExecute(mContext, request);
+			}
+
+			final BatchResult result = super.execute(request);
+
+			if (monitor != null) {
+				flags = flags | monitor.onPostExecute(mContext, request, result);
+			}
+
+			return (BatchResult) appendFlags(result, flags);
 		}
 
 		private static Result<?> appendFlags(final Result<?> result, int flags) {

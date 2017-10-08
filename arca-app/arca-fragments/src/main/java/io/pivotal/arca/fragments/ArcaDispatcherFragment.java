@@ -21,7 +21,7 @@ import io.pivotal.arca.monitor.ArcaDispatcher;
 import io.pivotal.arca.monitor.RequestMonitor;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class ArcaQueryFragment extends Fragment implements QueryListener {
+public class ArcaDispatcherFragment extends Fragment implements QueryListener {
 
 	private ArcaDispatcher mDispatcher;
 

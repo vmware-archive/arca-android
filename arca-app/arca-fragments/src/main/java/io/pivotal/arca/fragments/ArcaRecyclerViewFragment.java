@@ -9,7 +9,7 @@ import io.pivotal.arca.adapters.RecyclerViewCursorAdapter;
 import io.pivotal.arca.dispatcher.QueryResult;
 import io.pivotal.arca.dispatcher.Error;
 
-public abstract class ArcaRecyclerViewFragment extends ArcaQueryFragment {
+public abstract class ArcaRecyclerViewFragment extends ArcaDispatcherFragment {
 
 	public abstract RecyclerViewCursorAdapter onCreateAdapter(final RecyclerView recyclerView, final Bundle savedInstanceState);
 

@@ -7,7 +7,7 @@ import android.view.View;
 
 import io.pivotal.arca.dispatcher.QueryResult;
 
-public abstract class ArcaItemSupportFragment extends ArcaQuerySupportFragment {
+public abstract class ArcaItemSupportFragment extends ArcaDispatcherSupportFragment {
 
 	public abstract CursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState);
 

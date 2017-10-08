@@ -11,7 +11,7 @@ import io.pivotal.arca.dispatcher.Error;
 import io.pivotal.arca.dispatcher.QueryResult;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public abstract class ArcaAdapterFragment extends ArcaQueryFragment {
+public abstract class ArcaAdapterFragment extends ArcaDispatcherFragment {
 
 	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState);
 

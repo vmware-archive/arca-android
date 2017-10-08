@@ -10,7 +10,7 @@ import android.widget.CursorAdapter;
 import io.pivotal.arca.dispatcher.QueryResult;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public abstract class ArcaItemFragment extends ArcaQueryFragment {
+public abstract class ArcaItemFragment extends ArcaDispatcherFragment {
 
 	public abstract CursorAdapter onCreateAdapter(final View view, final Bundle savedInstanceState);
 

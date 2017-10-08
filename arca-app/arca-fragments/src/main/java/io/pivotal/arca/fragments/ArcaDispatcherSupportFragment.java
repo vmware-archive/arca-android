@@ -18,7 +18,7 @@ import io.pivotal.arca.dispatcher.UpdateResult;
 import io.pivotal.arca.monitor.ArcaDispatcher;
 import io.pivotal.arca.monitor.RequestMonitor;
 
-public class ArcaQuerySupportFragment extends Fragment implements QueryListener {
+public class ArcaDispatcherSupportFragment extends Fragment implements QueryListener {
 
 	private ArcaDispatcher mDispatcher;
 

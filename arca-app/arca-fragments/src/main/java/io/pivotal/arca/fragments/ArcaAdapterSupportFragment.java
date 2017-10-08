@@ -8,7 +8,7 @@ import android.widget.AdapterView;
 import io.pivotal.arca.dispatcher.Error;
 import io.pivotal.arca.dispatcher.QueryResult;
 
-public abstract class ArcaAdapterSupportFragment extends ArcaQuerySupportFragment {
+public abstract class ArcaAdapterSupportFragment extends ArcaDispatcherSupportFragment {
 
 	public abstract CursorAdapter onCreateAdapter(final AdapterView<CursorAdapter> adapterView, final Bundle savedInstanceState);
 

@@ -67,6 +67,11 @@ public class DatasetUtils {
         final StringBuilder selectBuilder = new StringBuilder();
         selectBuilder.append(String.format("SELECT %s FROM (%s)", columnString, fromString));
 
+        final SelectAs as = klass.getAnnotation(SelectAs.class);
+        if (as != null) {
+            selectBuilder.append(String.format(" AS %s", as.value()));
+        }
+
         final Where where = klass.getAnnotation(Where.class);
         if (where != null) {
             selectBuilder.append(String.format(" WHERE %s", where.value()));

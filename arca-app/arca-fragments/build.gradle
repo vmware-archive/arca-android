@@ -1,7 +1,7 @@
 dependencies {
-    compile project(":arca-utils")
-    compile project(":arca-monitor")
-    compile project(":arca-adapters")
-    compile project(":arca-dispatcher")
-    compile 'com.android.support:support-v4:25.3.1'
+    implementation project(":arca-utils")
+    implementation project(":arca-monitor")
+    implementation project(":arca-adapters")
+    implementation project(":arca-dispatcher")
+    implementation 'com.android.support:support-v4:27.0.2'
 }

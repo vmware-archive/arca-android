@@ -4,6 +4,7 @@
     <application>
 
         <service android:name="io.pivotal.arca.service.OperationService" />
+        <service android:name="io.pivotal.arca.service.BackgroundService" />
 
     </application>
 

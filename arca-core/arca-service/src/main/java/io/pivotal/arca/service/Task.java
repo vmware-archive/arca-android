@@ -10,8 +10,8 @@ import io.pivotal.arca.utils.Logger;
 
 public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritizableObserver<T>, ProcessingTask<T>, ProcessingPrioritizableObserver<T> {
 
-    protected static interface Messages {
-        public static final String NO_EXECUTOR = "Cannot execute request. No request executor found.";
+    protected interface Messages {
+        String NO_EXECUTOR = "Cannot execute request. No request executor found.";
     }
 
     private enum State {
@@ -21,8 +21,8 @@ public abstract class Task<T> implements NetworkingTask<T>, NetworkingPrioritiza
     private final Object mTaskLock = new Object();
     private final Object mStateLock = new Object();
 
-    private final Set<Task<?>> mPrerequisites = new HashSet<Task<?>>();
-    private final Set<Task<?>> mDependencies = new HashSet<Task<?>>();
+    private final Set<Task<?>> mPrerequisites = new HashSet<>();
+    private final Set<Task<?>> mDependencies = new HashSet<>();
 
     private State mState = State.PENDING;
     private Priority mPriority = Priority.MEDIUM;

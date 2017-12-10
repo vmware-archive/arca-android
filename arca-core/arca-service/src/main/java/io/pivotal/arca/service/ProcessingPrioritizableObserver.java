@@ -1,7 +1,7 @@
 package io.pivotal.arca.service;
 
 public interface ProcessingPrioritizableObserver<T> {
-	public void onProcessingComplete();
+	void onProcessingComplete();
 
-	public void onProcessingFailure(ServiceError error);
+	void onProcessingFailure(ServiceError error);
 }

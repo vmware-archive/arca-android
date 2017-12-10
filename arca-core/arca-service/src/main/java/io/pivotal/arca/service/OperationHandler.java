@@ -14,12 +14,12 @@ public class OperationHandler extends Handler implements OperationObserver {
 
     private static final int MSG_NOTIFY_COMPLETE = 100;
 
-    public static enum HandlerState {
+    public enum HandlerState {
         IDLE, RUNNING
     }
 
     public interface OnStateChangeListener {
-        public void onStateChanged(HandlerState state);
+        void onStateChanged(HandlerState state);
     }
 
     private final Map<Identifier<?>, Operation> mOperations = new HashMap<Identifier<?>, Operation>();

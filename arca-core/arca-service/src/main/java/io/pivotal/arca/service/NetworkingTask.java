@@ -3,7 +3,7 @@ package io.pivotal.arca.service;
 import io.pivotal.arca.threading.Identifier;
 
 public interface NetworkingTask<T> {
-	public Identifier<?> getIdentifier();
+	Identifier<?> getIdentifier();
 
-	public T executeNetworking() throws Exception;
+	T executeNetworking() throws Exception;
 }

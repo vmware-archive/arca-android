@@ -1,4 +1,5 @@
 dependencies {
-    compile project(":arca-utils")
-    compile project(":arca-threading")
+    implementation project(":arca-utils")
+    implementation project(":arca-threading")
+    implementation 'com.android.support:support-v4:27.0.2'
 }

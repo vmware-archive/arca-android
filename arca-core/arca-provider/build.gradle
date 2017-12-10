@@ -1,3 +1,3 @@
 dependencies {
-    compile project(":arca-utils")
+    implementation project(":arca-utils")
 }

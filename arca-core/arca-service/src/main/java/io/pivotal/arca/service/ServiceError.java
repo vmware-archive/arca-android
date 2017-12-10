@@ -7,12 +7,12 @@ import java.util.Locale;
 
 public class ServiceError implements Parcelable {
 
-	public static interface Codes {
-		public static final int UNKNOWN = 100;
+	public interface Codes {
+		int UNKNOWN = 100;
 	}
 
-	public static interface Messages {
-		public static final String UNKNOWN = "An unknown error occured.";
+	public interface Messages {
+		String UNKNOWN = "An unknown error occured.";
 	}
 
 	private final int mCode;

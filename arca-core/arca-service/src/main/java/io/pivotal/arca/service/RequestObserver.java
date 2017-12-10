@@ -1,11 +1,11 @@
 package io.pivotal.arca.service;
 
 public interface RequestObserver {
-	public void onNetworkingRequestComplete(NetworkingRequest<?> request);
+	void onNetworkingRequestComplete(NetworkingRequest<?> request);
 
-	public void onNetworkingRequestCancelled(NetworkingRequest<?> request);
+	void onNetworkingRequestCancelled(NetworkingRequest<?> request);
 
-	public void onProcessingRequestComplete(ProcessingRequest<?> request);
+	void onProcessingRequestComplete(ProcessingRequest<?> request);
 
-	public void onProcessingRequestCancelled(ProcessingRequest<?> request);
+	void onProcessingRequestCancelled(ProcessingRequest<?> request);
 }

@@ -1,7 +1,7 @@
 package io.pivotal.arca.service;
 
 public interface NetworkingPrioritizableObserver<T> {
-	public void onNetworkingComplete(T data);
+	void onNetworkingComplete(T data);
 
-	public void onNetworkingFailure(ServiceError error);
+	void onNetworkingFailure(ServiceError error);
 }

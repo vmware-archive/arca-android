@@ -1,4 +1,4 @@
 dependencies {
-    compile project(":arca-dispatcher")
-    compile 'com.android.support:support-v4:25.3.1'
+    implementation project(":arca-dispatcher")
+    implementation 'com.android.support:support-v4:27.0.2'
 }

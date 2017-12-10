@@ -9,11 +9,11 @@ import io.pivotal.arca.threading.Identifier;
 import io.pivotal.arca.threading.PrioritizableRequest;
 
 public interface RequestExecutor {
-	public void executeNetworkingRequest(NetworkingRequest<?> request);
+	void executeNetworkingRequest(NetworkingRequest<?> request);
 
-	public void executeProcessingRequest(ProcessingRequest<?> request);
+	void executeProcessingRequest(ProcessingRequest<?> request);
 
-	public static class SerialRequestExecutor implements RequestExecutor {
+	class SerialRequestExecutor implements RequestExecutor {
 
 		@Override
 		public void executeNetworkingRequest(final NetworkingRequest<?> request) {
@@ -28,12 +28,12 @@ public interface RequestExecutor {
 		}
 	}
 
-	public static class ThreadedRequestExecutor implements RequestExecutor, RequestObserver, AuxiliaryExecutorObserver {
+	class ThreadedRequestExecutor implements RequestExecutor, RequestObserver, AuxiliaryExecutorObserver {
 
-		public static interface Config {
-			public static final int NUM_NETWORK_THREADS = 2;
-			public static final int NUM_PROCESSING_THREADS = 1;
-			public static final long THREAD_KEEP_ALIVE_TIME = 15;
+		public interface Config {
+			int NUM_NETWORK_THREADS = 2;
+			int NUM_PROCESSING_THREADS = 1;
+			long THREAD_KEEP_ALIVE_TIME = 15;
 		}
 
 		private final IdentifierMap<NetworkingRequest<?>> mNetworkMap = new IdentifierMap<NetworkingRequest<?>>();

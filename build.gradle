@@ -50,9 +50,11 @@ ext.pomInfo = {
 
 allprojects {
     apply plugin: 'maven'
+    apply plugin: 'signing'
 
     group = 'io.pivotal'
-    version = '1.0-beta.16-SNAPSHOT'
+
+    version = '1.1.1-SNAPSHOT'
 
     repositories {
         google()
@@ -60,19 +62,24 @@ allprojects {
         mavenCentral()
     }
 
+    signing {
+        sign configurations.archives
+    }
+
     uploadArchives {
         repositories.mavenDeployer {
 
-            // Publishes AAR to local Maven cache:
-            repository(url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository/').absolutePath)
+            pom.project pomInfo
 
-//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
-//            }
-//
-//            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
-//                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
-//            }
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+            }
+
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+                authentication(userName: SONATYPE_USER, password: SONATYPE_PASS)
+            }
+
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
         }
     }
 }

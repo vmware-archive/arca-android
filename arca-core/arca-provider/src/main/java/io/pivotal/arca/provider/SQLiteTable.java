@@ -9,12 +9,9 @@ public abstract class SQLiteTable extends SQLiteDataset {
 
     protected static interface Columns {
         @Column(Column.Type.INTEGER)
-        @ColumnOptions("PRIMARY KEY AUTOINCREMENT")
-        public static final String _ID = "_id";
-
+		@ColumnOptions("PRIMARY KEY AUTOINCREMENT") String _ID = "_id";
         @Column(Column.Type.INTEGER)
-        @ColumnOptions("DEFAULT 0")
-        public static final String _STATE = "_state";
+		@ColumnOptions("DEFAULT 0") String _STATE = "_state";
     }
 
 	@Override

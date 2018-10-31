@@ -31,13 +31,21 @@ public abstract class SQLiteDataset extends ContextDataset {
 	}
 
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		onDrop(db);
-		onCreate(db);
+		final Class<? extends SQLiteDataset> klass = getClass();
+		final PersistOnUpgrade persist = klass.getAnnotation(PersistOnUpgrade.class);
+		if (persist == null) {
+			onDrop(db);
+			onCreate(db);
+		}
 	}
 
 	public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		onDrop(db);
-		onCreate(db);
+		final Class<? extends SQLiteDataset> klass = getClass();
+		final PersistOnDowngrade persist = klass.getAnnotation(PersistOnDowngrade.class);
+		if (persist == null) {
+			onDrop(db);
+			onCreate(db);
+		}
 	}
 
 	@Override
@@ -49,5 +57,4 @@ public abstract class SQLiteDataset extends ContextDataset {
 			throw new IllegalStateException("Database is null.");
 		}
 	}
-
 }
